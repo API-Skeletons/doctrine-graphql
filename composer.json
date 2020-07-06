@@ -1,5 +1,5 @@
 {
-    "name": "api-skeletons/zf-doctrine-graphql",
+    "name": "api-skeletons/doctrine-graphql",
     "description": "GraphQL for Doctrine using Hydrators",
     "type": "library",
     "license": "MIT",
@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "api-skeletons/doctrine-criteria": "^2.0",
+        "api-skeletons/doctrine-criteria": "^2.0.1",
         "doctrine/instantiator": "^1.1",
         "doctrine/collections": "^1.5",
         "doctrine/common": "^2.8",
@@ -25,13 +25,13 @@
     },
     "autoload": {
         "psr-4": {
-            "ZF\\Doctrine\\GraphQL\\": "src/"
+            "ApiSkeletons\\Doctrine\\GraphQL\\": "src/"
         }
     },
     "extra": {
         "zf": {
-            "component": "ZF\\Doctrine\\GraphQL",
-            "config-provider": "ZF\\Doctrine\\GraphQL\\ConfigProvider"
+            "component": "ApiSkeletons\\Doctrine\\GraphQL",
+            "config-provider": "ApiSkeletons\\Doctrine\\GraphQL\\ConfigProvider"
         }
     },
     "require-dev": {

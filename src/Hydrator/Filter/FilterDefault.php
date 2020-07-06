@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Hydrator\Filter;
+namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter;
 
 use Laminas\Hydrator\Filter\FilterInterface;
 

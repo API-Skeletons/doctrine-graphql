@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
 // A file should declare new symbols (classes, functions,
 // constants, etc.) and cause no other side effects, or it should

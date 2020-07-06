@@ -6,9 +6,9 @@ $modules = [
     'DoctrineModule',
     'DoctrineORMModule',
     'Laminas\\ApiTools\\Doctrine\\QueryBuilder',
-    'ZF\\Doctrine\\Criteria',
+    'ApiSkeletons\\Doctrine\\Criteria',
     'DbTest',
-    'ZF\\Doctrine\\GraphQL',
+    'ApiSkeletons\\Doctrine\\GraphQL',
 ];
 
 return [

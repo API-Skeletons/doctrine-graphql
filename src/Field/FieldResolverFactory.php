@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Field;
+namespace ApiSkeletons\Doctrine\GraphQL\Field;
 
 use Interop\Container\ContainerInterface;
 
@@ -11,7 +11,7 @@ class FieldResolverFactory
         $requestedName,
         array $options = null
     ) {
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $hydratorManager = $container->get('HydratorManager');
 
         return new FieldResolver($hydratorExtractTool, $hydratorManager);

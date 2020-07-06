@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Criteria\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
 use ReflectionObject;
 use GraphQL\Type\Definition\InputObjectType;

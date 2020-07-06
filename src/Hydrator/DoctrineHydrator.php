@@ -4,7 +4,7 @@
  * This class is an edit of phpro/zf-doctrine-hydrator-module
  */
 
-namespace ZF\Doctrine\GraphQL\Hydrator;
+namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use Laminas\Hydrator\HydratorInterface;
 

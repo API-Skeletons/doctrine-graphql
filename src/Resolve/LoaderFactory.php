@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Resolve;
+namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use Interop\Container\ContainerInterface;
 

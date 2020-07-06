@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Documentation;
+namespace ApiSkeletons\Doctrine\GraphQL\Documentation;
 
 use Interop\Container\ContainerInterface;
 

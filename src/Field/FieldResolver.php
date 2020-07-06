@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ZF\Doctrine\GraphQL\Field;
+namespace ApiSkeletons\Doctrine\GraphQL\Field;
 
 use Exception as FieldResolverException;
 use Laminas\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Executor\Executor;
-use ZF\Doctrine\GraphQL\Context;
-use ZF\Doctrine\GraphQL\Hydrator\HydratorExtractToolInterface;
+use ApiSkeletons\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorExtractToolInterface;
 
 /**
  * A field resolver which uses the Doctrine hydrator. Can be used byReference or byValue.
@@ -43,7 +43,7 @@ class FieldResolver
 
         $entityClassName = ClassUtils::getRealClass(get_class($source));
         $splObjectHash = spl_object_hash($source);
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
 
         // If the hydrator does not exist pass handling to default Executor field resolver
         // @codeCoverageIgnoreStart

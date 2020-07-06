@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Documentation;
+namespace ApiSkeletons\Doctrine\GraphQL\Documentation;
 
 class HydratorConfigurationDocumentationProvider implements
     DocumentationProviderInterface
@@ -14,16 +14,16 @@ class HydratorConfigurationDocumentationProvider implements
 
     public function getEntity($entityClassName, array $options)
     {
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
-        $config = $this->config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+        $config = $this->config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
 
         return $config['documentation']['_entity'] ?? null;
     }
 
     public function getField($entityClassName, $fieldName, array $options)
     {
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
-        $config = $this->config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+        $config = $this->config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
 
         return $config['documentation'][$fieldName] ?? null;
     }

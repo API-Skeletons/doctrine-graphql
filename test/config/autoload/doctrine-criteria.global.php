@@ -1,11 +1,11 @@
 <?php
 
-namespace ZF\Doctrine\Criteria;
+namespace ApiSkeletons\Doctrine\Criteria;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'zf-doctrine-criteria-orderby' => [
+    'doctrine-criteria-orderby' => [
         'aliases' => [
             'field' => OrderBy\Field::class,
         ],
@@ -13,7 +13,7 @@ return [
             OrderBy\Field::class => InvokableFactory::class,
         ],
     ],
-    'zf-doctrine-criteria-filter' => [
+    'doctrine-criteria-filter' => [
         'aliases' => [
             'contains'   => Filter\Contains::class,
             'endswith'   => Filter\EndsWith::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use DateTime;
 use Exception;
@@ -13,13 +13,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
-use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
-use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
-use ZF\Doctrine\GraphQL\Criteria\CriteriaManager;
-use ZF\Doctrine\GraphQL\Field\FieldResolver;
-use ZF\Doctrine\GraphQL\Event;
+use ApiSkeletons\Doctrine\Criteria\Builder as CriteriaBuilder;
+use ApiSkeletons\Doctrine\GraphQL\AbstractAbstractFactory;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaManager;
+use ApiSkeletons\Doctrine\GraphQL\Field\FieldResolver;
+use ApiSkeletons\Doctrine\GraphQL\Event;
 use Doctrine\DBAL\Types\Type as ORMType;
-use ZF\Doctrine\GraphQL\Type\CustomTypeInterface;
+use ApiSkeletons\Doctrine\GraphQL\Type\CustomTypeInterface;
 
 final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -47,9 +47,9 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
+        return isset($config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
@@ -72,12 +72,12 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $typeManager = $container->get(TypeManager::class);
         $criteriaFilterManager = $container->get(CriteriaManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
-        $documentationProvider = $container->get('ZF\Doctrine\GraphQL\Documentation\DocumentationProvider');
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $documentationProvider = $container->get('ApiSkeletons\Doctrine\GraphQL\Documentation\DocumentationProvider');
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $objectManager = $container
             ->get(
-                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+                $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
 
         // Get an array of the hydrator fields
@@ -266,7 +266,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
                                         //Rebuild collection using hydrators
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
-                                        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
+                                        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\'
                                             . str_replace('\\', '_', $entityClassName);
 
                                         $data = $hydratorExtractTool

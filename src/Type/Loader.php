@@ -1,8 +1,8 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 class Loader
 {

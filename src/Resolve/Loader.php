@@ -1,8 +1,8 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Resolve;
+namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 class Loader
 {

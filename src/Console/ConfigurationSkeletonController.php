@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Console;
+namespace ApiSkeletons\Doctrine\GraphQL\Console;
 
 use Exception;
 use Interop\Container\ContainerInterface;
@@ -8,8 +8,8 @@ use Laminas\Mvc\Console\Controller\AbstractConsoleController;
 use Laminas\Config\Config;
 use Laminas\Config\Writer\PhpArray;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use ZF\Doctrine\GraphQL\Hydrator\Strategy;
-use ZF\Doctrine\GraphQL\Hydrator\Filter;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter;
 
 /**
  * @codeCoverageIgnore
@@ -40,12 +40,12 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
         });
 
         $config = [
-            'zf-doctrine-graphql-hydrator' => []
+            'apiskeletons-doctrine-graphql-hydrator' => []
         ];
 
         foreach (explode(',', $hydratorSections) as $section) {
             foreach ($metadata as $classMetadata) {
-                $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
+                $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\'
                     . str_replace('\\', '_', $classMetadata->getName());
 
                 $strategies = [];
@@ -127,7 +127,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                     'filter' => Filter\FilterDefault::class,
                 ];
 
-                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$section] = [
+                $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$section] = [
                     'entity_class' => $classMetadata->getName(),
                     'object_manager' => $objectManagerAlias,
                     'by_value' => true,

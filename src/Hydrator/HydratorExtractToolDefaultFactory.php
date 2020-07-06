@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Hydrator;
+namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use Interop\Container\ContainerInterface;
 

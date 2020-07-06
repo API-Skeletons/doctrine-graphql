@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter;
+namespace ApiSkeletons\Doctrine\GraphQL\Filter;
 
 use Laminas\Mvc\Service\AbstractPluginManagerFactory;
 

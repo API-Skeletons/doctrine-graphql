@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
 class Event
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Exception;
 use Interop\Container\ContainerInterface;
@@ -9,7 +9,7 @@ use Laminas\EventManager\EventManagerAwareInterface;
 use Laminas\EventManager\EventManagerInterface;
 use Laminas\EventManager\SharedEventManagerInterface;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\GraphQL\Type\TypeManager;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 
 /**
  * Enable caching of build() resources

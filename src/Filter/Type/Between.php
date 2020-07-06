@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 

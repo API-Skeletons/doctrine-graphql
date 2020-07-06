@@ -9,11 +9,11 @@ namespace Laminas\ApiTools\Doctrine\QueryBuilder;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'zf-doctrine-querybuilder-options' => [
+    'api-tools-doctrine-querybuilder-options' => [
         'filter_key' => 'filter',
         'order_by_key' => 'order-by',
     ],
-    'zf-doctrine-querybuilder-orderby-orm' => [
+    'api-tools-doctrine-querybuilder-orderby-orm' => [
         'aliases' => [
             'field' => OrderBy\ORM\Field::class,
         ],
@@ -21,7 +21,7 @@ return [
             OrderBy\ORM\Field::class => InvokableFactory::class,
         ],
     ],
-    'zf-doctrine-querybuilder-orderby-odm' => [
+    'api-tools-doctrine-querybuilder-orderby-odm' => [
         'aliases' => [
             'field' => OrderBy\ODM\Field::class,
         ],
@@ -29,7 +29,7 @@ return [
             OrderBy\ODM\Field::class => InvokableFactory::class,
         ],
     ],
-    'zf-doctrine-querybuilder-filter-orm' => [
+    'api-tools-doctrine-querybuilder-filter-orm' => [
         'aliases' => [
             'eq'         => Filter\ORM\Equals::class,
             'neq'        => Filter\ORM\NotEquals::class,
@@ -71,7 +71,7 @@ return [
         //    Filter\ORM\LeftJoin::class            => InvokableFactory::class,
         ],
     ],
-    'zf-doctrine-querybuilder-filter-odm' => [
+    'api-tools-doctrine-querybuilder-filter-odm' => [
         'aliases' => [
             'eq'        => Filter\ODM\Equals::class,
             'neq'       => Filter\ODM\NotEquals::class,

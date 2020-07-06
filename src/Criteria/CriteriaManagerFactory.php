@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Criteria;
+namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use Laminas\Mvc\Service\AbstractPluginManagerFactory;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use GraphQL\Type\Definition\ObjectType;
 

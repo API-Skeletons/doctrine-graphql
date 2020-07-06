@@ -1,12 +1,12 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\GraphQL;
 
-use ZFTest\Doctrine\GraphQL\AbstractTest;
+use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use Laminas\EventManager\Event as ZendEvent;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\GraphQL\Event;
+use ApiSkeletons\Doctrine\GraphQL\Event;
 use DbTest\Entity;
 
 class EventsTest extends AbstractTest
@@ -56,7 +56,7 @@ class EventsTest extends AbstractTest
 
         $container = $this->getApplication()->getServiceManager();
         $events = $container->get('SharedEventManager');
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
             Event::class,
@@ -100,7 +100,7 @@ class EventsTest extends AbstractTest
 
         $container = $this->getApplication()->getServiceManager();
         $events = $container->get('SharedEventManager');
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
             Event::class,
@@ -156,10 +156,10 @@ class EventsTest extends AbstractTest
                 $options = $event->getParam('options');
                 $fieldName = $event->getParam('fieldName');
 
-                if ($hydratorAlias == 'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist') {
+                if ($hydratorAlias == 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist') {
                     if ($fieldName === 'alias') {
                         // Update all Artist alias to a multidimentional array
-                        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+                        $hydratorConfig = $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias];
                         $objectManager =
                             $container->get($hydratorConfig[$options['hydrator_section']]['object_manager']);
 
@@ -205,10 +205,10 @@ class EventsTest extends AbstractTest
                 $options = $event->getParam('options');
                 $fieldName = $event->getParam('fieldName');
 
-                if ($hydratorAlias == 'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Performance') {
+                if ($hydratorAlias == 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Performance') {
                     if ($fieldName === 'attendance') {
                         // Update all Artist alias to a multidimentional array
-                        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+                        $hydratorConfig = $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias];
                         $objectManager =
                             $container->get($hydratorConfig[$options['hydrator_section']]['object_manager']);
 

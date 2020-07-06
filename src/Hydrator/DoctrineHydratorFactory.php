@@ -4,7 +4,7 @@
  * This class is an edit of phpro/zf-doctrine-hydrator-module
  */
 
-namespace ZF\Doctrine\GraphQL\Hydrator;
+namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use Exception;
 use Interop\Container\ContainerInterface;
@@ -32,7 +32,7 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
  */
 class DoctrineHydratorFactory implements AbstractFactoryInterface
 {
-    const FACTORY_NAMESPACE = 'zf-doctrine-graphql-hydrator';
+    const FACTORY_NAMESPACE = 'apiskeletons-doctrine-graphql-hydrator';
 
     /**
      * Cache of canCreateServiceWithName lookups.

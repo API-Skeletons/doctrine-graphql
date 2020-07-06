@@ -1,8 +1,8 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter;
+namespace ApiSkeletons\Doctrine\GraphQL\Filter;
 
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 class Loader
 {

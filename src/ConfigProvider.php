@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
@@ -18,10 +18,10 @@ class ConfigProvider
             'console' => [
                 'router' => $this->getConsoleRouterConfig(),
             ],
-            'zf-doctrine-graphql-type' => $this->getDoctrineGraphQLTypeConfig(),
-            'zf-doctrine-graphql-filter' => $this->getDoctrineGraphQLFilterConfig(),
-            'zf-doctrine-graphql-criteria' => $this->getDoctrineGraphQLCriteriaConfig(),
-            'zf-doctrine-graphql-resolve' => $this->getDoctrineGraphQLResolveConfig(),
+            'apiskeletons-doctrine-graphql-type' => $this->getDoctrineGraphQLTypeConfig(),
+            'apiskeletons-doctrine-graphql-filter' => $this->getDoctrineGraphQLFilterConfig(),
+            'apiskeletons-doctrine-graphql-criteria' => $this->getDoctrineGraphQLCriteriaConfig(),
+            'apiskeletons-doctrine-graphql-resolve' => $this->getDoctrineGraphQLResolveConfig(),
         ];
     }
 
@@ -29,8 +29,8 @@ class ConfigProvider
     {
         return [
             'aliases' => [
-                'ZF\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => Hydrator\HydratorExtractToolDefault::class,
-                'ZF\Doctrine\GraphQL\Documentation\DocumentationProvider'
+                'ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => Hydrator\HydratorExtractToolDefault::class,
+                'ApiSkeletons\Doctrine\GraphQL\Documentation\DocumentationProvider'
                     => Documentation\HydratorConfigurationDocumentationProvider::class,
             ],
             'factories' => [

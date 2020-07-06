@@ -1,11 +1,11 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Hydrator;
+namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use Laminas\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Instantiator\Instantiator;
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 /**
  * This tool centralizes all extract operations for the module.

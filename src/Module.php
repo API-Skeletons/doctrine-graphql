@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Exception;
 use Laminas\ModuleManager\Feature\BootstrapListenerInterface;
@@ -32,10 +32,10 @@ class Module implements
             'console' => [
                 'router' => $configProvider->getConsoleRouterConfig(),
             ],
-            'zf-doctrine-graphql-type' => $configProvider->getDoctrineGraphQLTypeConfig(),
-            'zf-doctrine-graphql-filter' => $configProvider->getDoctrineGraphQLFilterConfig(),
-            'zf-doctrine-graphql-criteria' => $configProvider->getDoctrineGraphQLCriteriaConfig(),
-            'zf-doctrine-graphql-resolve' => $configProvider->getDoctrineGraphQLResolveConfig(),
+            'apiskeletons-doctrine-graphql-type' => $configProvider->getDoctrineGraphQLTypeConfig(),
+            'apiskeletons-doctrine-graphql-filter' => $configProvider->getDoctrineGraphQLFilterConfig(),
+            'apiskeletons-doctrine-graphql-criteria' => $configProvider->getDoctrineGraphQLCriteriaConfig(),
+            'apiskeletons-doctrine-graphql-resolve' => $configProvider->getDoctrineGraphQLResolveConfig(),
         ];
     }
 
@@ -65,30 +65,30 @@ class Module implements
 
         $serviceListener->addServiceManager(
             Type\TypeManager::class,
-            'zf-doctrine-graphql-type',
+            'apiskeletons-doctrine-graphql-type',
             ObjectType::class,
-            'getZFDoctrineGraphQLTypeConfig'
+            'getApiSkeletonsDoctrineGraphQLTypeConfig'
         );
 
         $serviceListener->addServiceManager(
             Filter\FilterManager::class,
-            'zf-doctrine-graphql-filter',
+            'apiskeletons-doctrine-graphql-filter',
             InputObjectType::class,
-            'getZFDoctrineGraphQLFilterConfig'
+            'getApiSkeletonsDoctrineGraphQLFilterConfig'
         );
 
         $serviceListener->addServiceManager(
             Criteria\CriteriaManager::class,
-            'zf-doctrine-graphql-criteria',
+            'apiskeletons-doctrine-graphql-criteria',
             InputObjectType::class,
-            'getZFDoctrineGraphQLCriteriaConfig'
+            'getApiSkeletonsDoctrineGraphQLCriteriaConfig'
         );
 
         $serviceListener->addServiceManager(
             Resolve\ResolveManager::class,
-            'zf-doctrine-graphql-resolve',
+            'apiskeletons-doctrine-graphql-resolve',
             'function',
-            'getZFDoctrineGraphQLResolveConfig'
+            'getApiSkeletonsDoctrineGraphQLResolveConfig'
         );
     }
 

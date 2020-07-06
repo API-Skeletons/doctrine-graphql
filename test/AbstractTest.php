@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
 use Datetime;
 use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
@@ -10,10 +10,10 @@ use DbTest\Entity;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
-use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
-use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletons\Doctrine\GraphQL\Type\Loader as TypeLoader;
+use ApiSkeletons\Doctrine\GraphQL\Filter\Loader as FilterLoader;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 abstract class AbstractTest extends AbstractHttpControllerTestCase
 {

@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-namespace ZF\Doctrine\GraphQL\Type;
+namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use DateTime;
 use GraphQL\Error\Error;

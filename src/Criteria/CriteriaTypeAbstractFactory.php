@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Criteria;
+namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use Interop\Container\ContainerInterface;
 use Laminas\ServiceManager\AbstractFactoryInterface;
@@ -8,12 +8,12 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\Criteria\Filter\Service\FilterManager;
-use ZF\Doctrine\Criteria\OrderBy\Service\OrderByManager;
-use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Criteria\Type as CriteriaTypeNS;
-use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
-use ZF\Doctrine\GraphQL\Event;
+use ApiSkeletons\Doctrine\Criteria\Filter\Service\FilterManager;
+use ApiSkeletons\Doctrine\Criteria\OrderBy\Service\OrderByManager;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Type as CriteriaTypeNS;
+use ApiSkeletons\Doctrine\GraphQL\AbstractAbstractFactory;
+use ApiSkeletons\Doctrine\GraphQL\Event;
 
 final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -41,9 +41,9 @@ final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implemen
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
+        return isset($config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : CriteriaType
@@ -61,11 +61,11 @@ final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implemen
         $typeManager = $container->get(TypeManager::class);
         $filterManager = $container->get(FilterManager::class);
         $orderByManager = $container->get(OrderByManager::class);
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $objectManager = $container
             ->get(
-                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+                $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
 
         // Get an array of the hydrator fields

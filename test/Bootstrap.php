@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
 use Laminas\Loader\AutoloaderFactory;
 use RuntimeException;
@@ -32,7 +32,7 @@ class Bootstrap
 
         if (! class_exists('Laminas\Loader\AutoloaderFactory')) {
             throw new RuntimeException(
-                'Unable to load ZF2. Run `php composer.phar install`'
+                'Unable to load Laminas. Run `php composer.phar install`'
             );
         }
 

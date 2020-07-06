@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Resolve;
+namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use Closure;
 use Exception;
@@ -10,10 +10,10 @@ use Laminas\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Laminas\ApiTools\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use Laminas\ApiTools\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
-use ZF\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
-use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
-use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
-use ZF\Doctrine\GraphQL\Event;
+use ApiSkeletons\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
+use ApiSkeletons\Doctrine\Criteria\Builder as CriteriaBuilder;
+use ApiSkeletons\Doctrine\GraphQL\AbstractAbstractFactory;
+use ApiSkeletons\Doctrine\GraphQL\Event;
 
 final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -37,7 +37,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $hydratorManager = $container->get('HydratorManager');
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
         return $hydratorManager->has($hydratorAlias);
     }
@@ -53,15 +53,15 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         parent::__invoke($container, $requestedName, $options);
 
         $config = $container->get('config');
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
         $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
         $objectManager = $container
             ->get(
-                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+                $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
 
         $instance = function (

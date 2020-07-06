@@ -1,9 +1,9 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\GraphQL;
 
-use ZFTest\Doctrine\GraphQL\AbstractTest;
-use ZF\Doctrine\GraphQL\Context;
+use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
+use ApiSkeletons\Doctrine\GraphQL\Context;
 
 class ContextTest extends AbstractTest
 {

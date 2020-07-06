@@ -1,8 +1,8 @@
 <?php
 
-namespace ZFTest\Doctrine\GraphQL\GraphQL;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\GraphQL;
 
-use ZFTest\Doctrine\GraphQL\AbstractTest;
+use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use GraphQL\GraphQL;
 use Db\Entity;
 
