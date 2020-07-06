@@ -5,7 +5,7 @@ namespace ApiSkeletons\Doctrine\Criteria;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'doctrine-criteria-orderby' => [
+    'apiskeletons-doctrine-criteria-orderby' => [
         'aliases' => [
             'field' => OrderBy\Field::class,
         ],
@@ -13,7 +13,7 @@ return [
             OrderBy\Field::class => InvokableFactory::class,
         ],
     ],
-    'doctrine-criteria-filter' => [
+    'apiskeletons-doctrine-criteria-filter' => [
         'aliases' => [
             'contains'   => Filter\Contains::class,
             'endswith'   => Filter\EndsWith::class,
