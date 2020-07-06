@@ -6,7 +6,7 @@
 
 namespace ZF\Doctrine\GraphQL\Hydrator;
 
-use Zend\Hydrator\HydratorInterface;
+use Laminas\Hydrator\HydratorInterface;
 
 /**
  * Class DoctrineHydrator.
@@ -30,7 +30,7 @@ class DoctrineHydrator implements HydratorInterface
     }
 
     /**
-     * @return \Zend\Hydrator\HydratorInterface
+     * @return \Laminas\Hydrator\HydratorInterface
      * @codeCoverageIgnore
      */
     public function getExtractService()
@@ -39,7 +39,7 @@ class DoctrineHydrator implements HydratorInterface
     }
 
     /**
-     * @return \Zend\Hydrator\HydratorInterface
+     * @return \Laminas\Hydrator\HydratorInterface
      * @codeCoverageIgnore
      */
     public function getHydrateService()

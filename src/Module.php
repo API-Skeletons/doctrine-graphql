@@ -3,14 +3,14 @@
 namespace ZF\Doctrine\GraphQL;
 
 use Exception;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\InitProviderInterface;
-use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
-use Zend\Console\Adapter\AdapterInterface as Console;
-use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\ModuleManagerInterface;
-use Zend\ModuleManager\ModuleManager;
+use Laminas\ModuleManager\Feature\BootstrapListenerInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\InitProviderInterface;
+use Laminas\ModuleManager\Feature\ConsoleUsageProviderInterface;
+use Laminas\Console\Adapter\AdapterInterface as Console;
+use Laminas\EventManager\EventInterface;
+use Laminas\ModuleManager\ModuleManagerInterface;
+use Laminas\ModuleManager\ModuleManager;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\GraphQL;

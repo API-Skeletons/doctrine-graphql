@@ -4,9 +4,9 @@
  * @copyright Copyright (c] 2013-2016 Zend Technologies USA Inc. (http://www.zend.com]
  */
 
-namespace ZF\Doctrine\QueryBuilder;
+namespace Laminas\ApiTools\Doctrine\QueryBuilder;
 
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'zf-doctrine-querybuilder-options' => [

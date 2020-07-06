@@ -3,7 +3,7 @@
 namespace ZFTest\Doctrine\GraphQL\GraphQL;
 
 use ZFTest\Doctrine\GraphQL\AbstractTest;
-use Zend\EventManager\Event as ZendEvent;
+use Laminas\EventManager\Event as ZendEvent;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\GraphQL\Event;

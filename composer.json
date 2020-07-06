@@ -10,15 +10,16 @@
         }
     ],
     "require": {
+        "api-skeletons/doctrine-criteria": "^2.0",
         "doctrine/instantiator": "^1.1",
         "doctrine/collections": "^1.5",
-        "zendframework/zend-hydrator": "^2.4",
-        "zendframework/zend-modulemanager": "^2.8",
         "doctrine/common": "^2.8",
-        "zendframework/zend-mvc-console": "^1.2",
-        "zendframework/zend-config": "^3.2",
-        "api-skeletons/zf-doctrine-criteria": "^1.0",
-        "zfcampus/zf-doctrine-querybuilder": "^1.7",
+        "laminas/laminas-config": "^3.2",
+        "laminas/laminas-dependency-plugin": "^1.0",
+        "laminas/laminas-hydrator": "^2.4",
+        "laminas/laminas-modulemanager": "^2.8",
+        "laminas/laminas-mvc-console": "^1.2",
+        "laminas-api-tools/api-tools-doctrine-querybuilder": "^1.7",
         "phpro/zf-doctrine-hydration-module": "^3.0",
         "webonyx/graphql-php": "^0.12.0"
     },
@@ -38,7 +39,7 @@
         "api-skeletons/coding-standard": "^1.0",
         "phpunit/phpunit": "^7.1",
         "phpstan/phpstan-doctrine": "^0.10",
-        "zendframework/zend-test": "^3.2",
+        "laminas/laminas-test": "^3.2",
         "php-coveralls/php-coveralls": "^2.1"
     },
     "scripts": {

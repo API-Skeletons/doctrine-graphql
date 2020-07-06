@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL\Hydrator;
 
-use Zend\Hydrator\HydratorPluginManager;
+use Laminas\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Instantiator\Instantiator;
 use ZF\Doctrine\GraphQL\Context;

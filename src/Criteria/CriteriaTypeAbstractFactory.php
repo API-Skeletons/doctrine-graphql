@@ -3,8 +3,8 @@
 namespace ZF\Doctrine\GraphQL\Criteria;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\AbstractFactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;

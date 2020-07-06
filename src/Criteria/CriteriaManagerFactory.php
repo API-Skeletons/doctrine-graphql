@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL\Criteria;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Laminas\Mvc\Service\AbstractPluginManagerFactory;
 
 final class CriteriaManagerFactory extends AbstractPluginManagerFactory
 {

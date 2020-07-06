@@ -24,20 +24,20 @@ class ApigilityDocumentationProvider implements
 
     /**
      * Populate the field documentation based on teh input filter
-     * for the first matching entity found in zf-rest configuration
+     * for the first matching entity found in api-tools-rest configuration
      */
     public function getField($entityName, $fieldName, array $options)
     {
         $inputFilter = null;
         $description = null;
 
-        if (! isset($this->config['zf-rest'])) {
+        if (! isset($this->config['api-tools-rest'])) {
             return null;
         }
 
-        foreach ($this->config['zf-rest'] as $controllerName => $restConfig) {
+        foreach ($this->config['api-tools-rest'] as $controllerName => $restConfig) {
             if ($restConfig['entity_class'] == $entityName) {
-                $inputFilter = $this->config['zf-content-validation'][$controllerName]['input_filter'] ?? null;
+                $inputFilter = $this->config['api-tools-content-validation'][$controllerName]['input_filter'] ?? null;
                 break;
             }
         }

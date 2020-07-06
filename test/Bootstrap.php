@@ -2,7 +2,7 @@
 
 namespace ZFTest\Doctrine\GraphQL;
 
-use Zend\Loader\AutoloaderFactory;
+use Laminas\Loader\AutoloaderFactory;
 use RuntimeException;
 
 /**
@@ -30,14 +30,14 @@ class Bootstrap
             include $vendorPath . '/autoload.php';
         }
 
-        if (! class_exists('Zend\Loader\AutoloaderFactory')) {
+        if (! class_exists('Laminas\Loader\AutoloaderFactory')) {
             throw new RuntimeException(
                 'Unable to load ZF2. Run `php composer.phar install`'
             );
         }
 
         AutoloaderFactory::factory([
-            'Zend\Loader\StandardAutoloader' => [
+            'Laminas\Loader\StandardAutoloader' => [
                 'autoregister_zf' => true,
                 'namespaces' => [
                     __NAMESPACE__ => __DIR__,

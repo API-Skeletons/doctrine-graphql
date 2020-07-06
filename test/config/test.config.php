@@ -1,11 +1,11 @@
 <?php
 
 $modules = [
-    'Zend\\Hydrator',
-    'Zend\Router',
+    'Laminas\\Hydrator',
+    'Laminas\Router',
     'DoctrineModule',
     'DoctrineORMModule',
-    'ZF\\Doctrine\\QueryBuilder',
+    'Laminas\\ApiTools\\Doctrine\\QueryBuilder',
     'ZF\\Doctrine\\Criteria',
     'DbTest',
     'ZF\\Doctrine\\GraphQL',

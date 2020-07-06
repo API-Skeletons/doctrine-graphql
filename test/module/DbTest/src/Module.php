@@ -2,7 +2,7 @@
 
 namespace DbTest;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Laminas\ModuleManager\Feature\ConfigProviderInterface;
 
 class Module implements
     ConfigProviderInterface
@@ -13,7 +13,7 @@ class Module implements
     }
     public function getAutoloaderConfig()
     {
-        return ['Zend\Loader\StandardAutoloader' => ['namespaces' => [
+        return ['Laminas\Loader\StandardAutoloader' => ['namespaces' => [
             __NAMESPACE__ => __DIR__,
         ]
         ]

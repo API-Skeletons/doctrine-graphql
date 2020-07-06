@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL\Hydrator\Filter;
 
-use Zend\Hydrator\Filter\FilterInterface;
+use Laminas\Hydrator\Filter\FilterInterface;
 
 class FilterDefault implements FilterInterface
 {

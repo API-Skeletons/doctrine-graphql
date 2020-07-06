@@ -2,8 +2,8 @@
 
 namespace ZF\Doctrine\GraphQL\Criteria;
 
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception;
 use GraphQL\Type\Definition\Type;
 
 class CriteriaManager extends AbstractPluginManager

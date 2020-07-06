@@ -4,9 +4,9 @@ namespace ZF\Doctrine\GraphQL\Console;
 
 use Exception;
 use Interop\Container\ContainerInterface;
-use Zend\Mvc\Console\Controller\AbstractConsoleController;
-use Zend\Config\Config;
-use Zend\Config\Writer\PhpArray;
+use Laminas\Mvc\Console\Controller\AbstractConsoleController;
+use Laminas\Config\Config;
+use Laminas\Config\Writer\PhpArray;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use ZF\Doctrine\GraphQL\Hydrator\Strategy;
 use ZF\Doctrine\GraphQL\Hydrator\Filter;

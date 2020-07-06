@@ -2,7 +2,7 @@
 
 namespace DbTest\Hydrator\Filter;
 
-use Zend\Hydrator\Filter\FilterInterface;
+use Laminas\Hydrator\Filter\FilterInterface;
 
 class EventTestFilter implements FilterInterface
 {

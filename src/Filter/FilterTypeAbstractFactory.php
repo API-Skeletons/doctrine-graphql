@@ -3,12 +3,12 @@
 namespace ZF\Doctrine\GraphQL\Filter;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\AbstractFactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Laminas\ServiceManager\AbstractFactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
-use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use Laminas\ApiTools\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
+use Laminas\ApiTools\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 use ZF\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;

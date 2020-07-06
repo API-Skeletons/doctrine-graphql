@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\Criteria;
 
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
     'zf-doctrine-criteria-orderby' => [

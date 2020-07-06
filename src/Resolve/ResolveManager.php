@@ -2,8 +2,8 @@
 
 namespace ZF\Doctrine\GraphQL\Resolve;
 
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Exception;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Exception;
 use Closure;
 
 class ResolveManager extends AbstractPluginManager

@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL\Type;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Laminas\Mvc\Service\AbstractPluginManagerFactory;
 
 final class TypeManagerFactory extends AbstractPluginManagerFactory
 {

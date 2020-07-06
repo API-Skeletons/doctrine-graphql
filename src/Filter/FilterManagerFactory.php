@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL\Filter;
 
-use Zend\Mvc\Service\AbstractPluginManagerFactory;
+use Laminas\Mvc\Service\AbstractPluginManagerFactory;
 
 final class FilterManagerFactory extends AbstractPluginManagerFactory
 {

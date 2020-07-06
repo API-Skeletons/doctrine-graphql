@@ -2,7 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL;
 
-use Zend\Stdlib\AbstractOptions;
+use Laminas\Stdlib\AbstractOptions;
 
 /**
  * This class serves as the context array for

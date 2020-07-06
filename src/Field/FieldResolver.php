@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ZF\Doctrine\GraphQL\Field;
 
 use Exception as FieldResolverException;
-use Zend\Hydrator\HydratorPluginManager;
+use Laminas\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Executor\Executor;

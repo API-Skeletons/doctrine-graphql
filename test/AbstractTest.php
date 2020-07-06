@@ -3,7 +3,7 @@
 namespace ZFTest\Doctrine\GraphQL;
 
 use Datetime;
-use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 use DbTest\Entity;
 
