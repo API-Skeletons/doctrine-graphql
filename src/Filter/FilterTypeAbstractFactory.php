@@ -61,10 +61,12 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
         $typeManager = $container->get(TypeManager::class);
         $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        // @codingStandardsIgnoreStart
         $objectManager = $container
             ->get(
                 $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
+        // @codingStandardsIgnoreEnd
         $filterManager = $container->get(ORMFilterManager::class);
         $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);

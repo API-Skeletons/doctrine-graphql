@@ -15,7 +15,9 @@ class HydratorConfigurationDocumentationProvider implements
     public function getEntity($entityClassName, array $options)
     {
         $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+        // @codingStandardsIgnoreStart
         $config = $this->config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
+        // @codingStandardsIgnoreEnd
 
         return $config['documentation']['_entity'] ?? null;
     }
@@ -23,7 +25,9 @@ class HydratorConfigurationDocumentationProvider implements
     public function getField($entityClassName, $fieldName, array $options)
     {
         $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+        // @codingStandardsIgnoreStart
         $config = $this->config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']] ?? null;
+        // @codingStandardsIgnoreEnd
 
         return $config['documentation'][$fieldName] ?? null;
     }

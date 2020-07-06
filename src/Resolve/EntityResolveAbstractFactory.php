@@ -59,10 +59,12 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         $orderByManager = $container->get(ORMOrderByManager::class);
         $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
+        // @codingStandardsIgnoreStart
         $objectManager = $container
             ->get(
                 $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
+        // @codingStandardsIgnoreEnd
 
         $instance = function (
             $obj,

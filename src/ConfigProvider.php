@@ -29,7 +29,8 @@ class ConfigProvider
     {
         return [
             'aliases' => [
-                'ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => Hydrator\HydratorExtractToolDefault::class,
+                'ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorExtractTool'
+                    => Hydrator\HydratorExtractToolDefault::class,
                 'ApiSkeletons\Doctrine\GraphQL\Documentation\DocumentationProvider'
                     => Documentation\HydratorConfigurationDocumentationProvider::class,
             ],

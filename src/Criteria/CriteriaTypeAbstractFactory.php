@@ -63,10 +63,12 @@ final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implemen
         $orderByManager = $container->get(OrderByManager::class);
         $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorExtractTool = $container->get('ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        // @codingStandardsIgnoreStart
         $objectManager = $container
             ->get(
                 $config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
             );
+        // @codingStandardsIgnoreEnd
 
         // Get an array of the hydrator fields
         $entityFields = $hydratorExtractTool->getFieldArray($requestedName, $hydratorAlias, $options);
