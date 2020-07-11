@@ -1,5 +1,5 @@
-GraphQL for Doctrine using Hydrators
-====================================
+GraphQL for Doctrine using Hydrators for Laminas
+================================================
 
 [![Build Status](https://travis-ci.org/API-Skeletons/doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/doctrine-graphql)
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/doctrine-graphql/badge.svg?branch=master&124)](https://coveralls.io/repos/github/API-Skeletons/doctrine-graphql/badge.svg?branch=master&124)
@@ -54,6 +54,6 @@ And see it realized in GraphQL with fine grained control over each field via hyd
 ```
 
 
-[Read the Documentation](http://graphql.apiskeletons.com)
+[Read the Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
 ==========================================================
 
