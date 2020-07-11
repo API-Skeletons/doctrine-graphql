@@ -6,4 +6,3 @@ with us: [contact@apiskeletons.com](mailto:contact@apiskeletons.com)
 
 [Read The Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
 ------------------------
-
