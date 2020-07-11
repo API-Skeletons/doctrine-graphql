@@ -45,7 +45,7 @@ class Module implements
     public function getConsoleUsage(Console $console)
     {
         return [
-            'graphql:config-skeleton [--hydrator-sections=] [--object-manager=]'
+            'apiskeletons:graphql:config-skeleton [--hydrator-sections=] [--object-manager=]'
                 => 'Create GraphQL configuration skeleton',
             ['<hydrator-sections>', 'A comma delimited list of sections to generate.'],
             ['<object-manager>', 'Defaults to doctrine.entitymanager.orm_default.'],
