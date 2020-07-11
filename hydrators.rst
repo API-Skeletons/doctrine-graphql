@@ -19,12 +19,12 @@ a hydrator can create an array from your entity resulting in::
     $array['name']
     $array['description']
 
-The `Zend Framework documentaion on Hydrators <https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.html>`_
+The `Laminas documentaion on Hydrators <https://docs.laminas.dev/laminas-hydrator/v3/quick-start/>`_
 is a good read for background about coding hydrators from scratch.
 
-The `Doctrine Hydrator documentation <https://github.com/doctrine/DoctrineModule/blob/master/docs/hydrator.md>`_
+The `Doctrine Laminas Hydrator documentation <https://github.com/doctrine/doctrine-laminas-hydrator>`_
 is more complete and more pertinent to this repository.  A notable section is
-`By Value and By Reference <https://github.com/doctrine/DoctrineModule/blob/master/docs/hydrator.md#by-value-and-by-reference>`_
+By Value and By Reference.
 
 
 Generating a Skeleton Configuration
@@ -43,7 +43,7 @@ To generate configuration:
 
 .. code-block:: bash
 
-    php public/index.php graphql:config-skeleton [--hydrator-sections=] [--object-manager=]
+    php public/index.php apiskeletons:graphql:config-skeleton [--hydrator-sections=] [--object-manager=]
 
 
 The hydrator-sections parameter is a comma delimited list of sections to
@@ -57,12 +57,12 @@ root location then move it to your `config/autoload` directory.
 
 .. code-block:: bash
 
-    php public/index.php graphql:config-skeleton > zf-doctrine-graphql-orm_default.global.php
-    mv zf-doctrine-graphql-orm_default.global.php config/autoload
+    php public/index.php apiskeletons:graphql:config-skeleton > apiskeletons-doctrine-graphql-orm_default.global.php
+    mv apiskeletons-doctrine-graphql-orm_default.global.php config/autoload
 
 
-(Writing directly into the `config/autoload` directory is not recommended at
-run time.)
+Writing directly into the `config/autoload` directory is not recommended at
+run time!
 
 Default hydrator strategies and filters are set for every association and field
 in your ORM.  Modify each hydrator configuration section with your hydrator
@@ -74,28 +74,28 @@ Generated Configuration
 
 Here is an example of a generated configuration::
 
-    'ZF\\Doctrine\\GraphQL\\Hydrator\\ZF_Doctrine_Audit_Entity_Revision' => [
+    'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\ApiSkeletons_Doctrine_Audit_Entity_Revision' => [
         'default' => [
-            'entity_class' => \ZF\Doctrine\Audit\Entity\Revision::class,
-            'object_manager' => 'doctrine.entitymanager.orm_zf_doctrine_audit',
+            'entity_class' => \ApiSkeletons\Doctrine\Audit\Entity\Revision::class,
+            'object_manager' => 'doctrine.entitymanager.orm_apiskeletons_doctrine_audit',
             'by_value' => true,
             'use_generated_hydrator' => true,
             'naming_strategy' => null,
             'hydrator' => null,
             'strategies' => [
-                'id' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
-                'comment' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
-                'connectionId' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
-                'createdAt' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
-                'userEmail' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
-                'userId' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
-                'userName' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
-                'revisionEntity' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
+                'id' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
+                'comment' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                'connectionId' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
+                'createdAt' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                'userEmail' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                'userId' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
+                'userName' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                'revisionEntity' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
             ],
             'filters' => [
                 'default' => [
                     'condition' => 'and',
-                    'filter' => \ZF\Doctrine\GraphQL\Hydrator\Filter\FilterDefault::class,
+                    'filter' => \ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\FilterDefault::class,
                 ],
             ],
             'documentation' => [
@@ -125,7 +125,7 @@ entities are not extracting properly try toggling this value.
 
 `by_value` set to `false` is useful when your entity does not have getter
 methods such as a dynamically created entity.
-`API-Skeletons/zf-doctrine-audit <https://github.com/API-Skeletons/zf-doctrine-audit>`_
+`API-Skeletons/doctrine-audit <https://github.com/API-Skeletons/doctrine-audit>`_
 is a good example for this.  The dynamically generated auditing entities do
 not have getter methods but do have properties to contain the field values.
 These can be extracted `by reference`.
@@ -139,7 +139,7 @@ for its use.
 extract and hydrate services will be assigned to the specified hydrator.
 
 `naming_strategy` is an instance of
-**Zend\Hydrator\NamingStrategy\NamingStrategyInterface** and is a service
+**Laminas\Hydrator\NamingStrategy\NamingStrategyInterface** and is a service
 manager alias.  You may only have one `naming_strategy` per hydrator
 configuration.  A naming strategy lets you rename fields.
 
@@ -180,7 +180,7 @@ command nullifies the owning side of many to many relations by default causing
 an error when the query tries to go from role > user but not when it goes from
 user > role becuase role is the owning side of the many to many relationship.
 See
-`NullifyOwningAssociation <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Hydrator/Strategy/NullifyOwningAssociation.php>`_
+`NullifyOwningAssociation <https://github.com/API-Skeletons/doctrine-graphql/blob/master/src/Hydrator/Strategy/NullifyOwningAssociation.php>`_
 for more information.
 
 
@@ -212,7 +212,7 @@ the same entity in different ways.  The Documentation will be returned in
 tools like `GraphiQL <https://github.com/graphql/graphiql>`_
 
 GraphiQL is the standard for browsing introspected GraphQL types.
-zf-doctrine-graphql fully supports GraphiQL.
+API-Skeletons/doctrine-graphql fully supports GraphiQL.
 
 
 .. role:: raw-html(raw)

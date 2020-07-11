@@ -10,7 +10,7 @@ custom GraphQL type.
 
 Add the new custom GraphQL type to your configuration::
 
-    'zf-doctrine-graphql-type' => [
+    'apiskeletons-doctrine-graphql-type' => [
         'invokables' => [
             'datetime_microsecond'
                 => Types\GraphQL\DateTimeMicrosecondType::class,

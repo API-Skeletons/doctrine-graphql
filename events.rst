@@ -1,11 +1,11 @@
 Events
 ======
 
-All events are grouped under a common **ZF\\Doctrine\\GraphQL\\Event** object.
-In this repository the same event can be called in different places based on
-context such as when building an EntityType and when building the filters for
-an EntityType; both places need the same type override.  That is why all events
-are grouped.
+All events are grouped under a common **ApiSkeletons\\Doctrine\\GraphQL\\Event**
+object.  In this repository the same event can be called in different places
+based on context such as when building an EntityType and when building the
+filters for an EntityType; both places need the same type override.  That is
+why all events are grouped.
 
 
 Filtering Query Builders
@@ -20,7 +20,7 @@ alias 'row'.
 
 .. code-block:: php
 
-    use Zend\EventManager\Event as ZendEvent;
+    use Laminas\EventManager\Event as LaminasEvent;
     use ZF\Doctrine\GraphQL\Event;
 
     $events = $container->get('SharedEventManager');
@@ -28,7 +28,7 @@ alias 'row'.
     $events->attach(
         Event::class,
         Event::FILTER_QUERY_BUILDER,
-        function(ZendEvent $event)
+        function(LaminasEvent $event)
         {
             switch ($event->getParam('entityClassName')) {
                 case 'Db\Entity\Performance':
@@ -73,7 +73,7 @@ value into JSON in a hydrator strategy and override the type to a String.
 
 .. code-block:: php
 
-    use Zend\EventManager\Event as ZendEvent;
+    use Laminas\EventManager\Event as LaminasEvent;
     use GraphQL\Type\Definition\Type;
     use ZF\Doctrine\GraphQL\Event;
 
@@ -82,12 +82,12 @@ value into JSON in a hydrator strategy and override the type to a String.
     $events->attach(
         Event::class,
         Event::MAP_FIELD_TYPE,
-        function(ZendEvent $event)
+        function(LaminasEvent $event)
         {
             $hydratorAlias = $event->getParam('hydratorAlias');
             $fieldName = $event->getParam('fieldName');
 
-            if ($hydratorAlias == 'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist') {
+            if ($hydratorAlias == 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\Db_Entity_Artist') {
                 if ($fieldName === 'arrayField') {
                     $event->stopPropagation();
 

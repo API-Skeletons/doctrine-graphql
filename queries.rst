@@ -104,8 +104,8 @@ To select a distinct list of years
     }
 
 
-All filters are AND filters.  For OR support use multiple aliases queries
-and aggregate them.  TODO:  Add `orx` and `andx` support
+All filters are **AND** filters.  For **OR** support use multiple aliases
+queries and aggregate them.
 
 
 Pagination
@@ -115,7 +115,7 @@ The filter supports `_skip` and `_limit`.  There is a configuration
 variable to set the max limit size and anything under this limit is
 valid.  To select a page of data set the `_skip:10 _limit:10` and
 increment `_skip` by the `_limit` for each request.  These pagination
-filters exist for filtering collections too.
+filters exist for collections too.
 
 
 .. role:: raw-html(raw)

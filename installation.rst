@@ -4,9 +4,9 @@ Installation
 Installation of this module uses composer. For composer documentation, please
 refer to `getcomposer.org <http://getcomposer.org/>`_ ::
 
-    $ composer require api-skeletons/zf-doctrine-graphql
+    $ composer require api-skeletons/doctrine-graphql
 
-Once installed, add **ZF\\Doctrine\\GraphQL** to your list of modules inside
+Once installed, add **ApiSkeletons\\Doctrine\\GraphQL** to your list of modules inside
 `config/application.config.php` or `config/modules.config.php`.
 
 
@@ -14,15 +14,15 @@ zf-component-installer
 ----------------------
 
 If you use `zf-component-installer <https://github.com/zendframework/zf-component-installer>`_,
-that plugin will install zf-doctrine-graphql as a module for you.
+that plugin will install **ApiSkeletons\\Doctrine\\GraphQL**  as a module for you.
 
 
-zf-doctrine-criteria configuration
+API-Skeletons/doctrine-criteria configuration
 ----------------------------------
 
-You must copy the config for zf-doctrine-criteria to your autoload directory::
+You must copy the config for API-Skeletons/doctrine-criteria to your autoload directory::
 
-    $ cp vendor/api-skeletons/zf-doctrine-criteria/config/zf-doctrine-criteria.global.php.dist config/autoload/zf-doctrine-criteria.global.php
+    $ cp vendor/api-skeletons/doctrine-criteria/config/apiskeletons-doctrine-criteria.global.php.dist config/autoload/apiskeletons-doctrine-criteria.global.php
 
 .. role:: raw-html(raw)
    :format: html

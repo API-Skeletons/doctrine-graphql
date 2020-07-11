@@ -2,7 +2,7 @@ Doctrine and GraphQL
 ====================
 
 Welcome to the documentation for
-`api-skeletons/zf-doctrine-graphql <https://github.com/API-Skeletons/zf-doctrine-graphql>`_
+`API-Skeletons/doctrine-graphql <https://github.com/API-Skeletons/doctrine-graphql>`_
 
 This repository uses Doctrine metadata to introspect your entities and builds
 relationships dynamically covering your entire schema, if you wish, allowing

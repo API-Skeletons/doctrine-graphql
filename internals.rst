@@ -13,7 +13,7 @@ where to do it.  To register a custom hydrator extract tool use
 .. code-block:: php
 
     'aliases' => [
-        'ZF\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => CustomExtractTool::class,
+        'ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => CustomExtractTool::class,
     ],
 
 

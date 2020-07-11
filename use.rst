@@ -10,10 +10,10 @@ yield a working example.::
     use GraphQL\Type\Schema;
     use GraphQL\Type\Definition\Type;
     use GraphQL\Type\Definition\ObjectType;
-    use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
-    use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
-    use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
-    use ZF\Doctrine\GraphQL\Context;
+    use ApiSkeletons\Doctrine\GraphQL\Type\Loader as TypeLoader;
+    use ApiSkeletons\Doctrine\GraphQL\Filter\Loader as FilterLoader;
+    use ApiSkeletons\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
+    use ApiSkeletons\Doctrine\GraphQL\Context;
 
     $typeLoader = $container->get(TypeLoader::class);
     $filterLoader = $container->get(FilterLoader::class);

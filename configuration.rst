@@ -13,7 +13,7 @@ following options:
   be used
 * useHydratorCache - By default all hydrator operations are not cached.
   Enabling this value will cache all the hydrator operation in anticipation
-  that the result may be reused.
+  that the result may be reused later in the same query.
 
 Context is the configuration for each GraphQL entry point.  This allows
 unlimited configuration through multiple hydrator sections.
@@ -27,7 +27,7 @@ useHydratorCache Context Option
 
 The hydrator cache by defaults stores only the most recent hydrator extract
 data in anticipation that the next call to the
-`FieldResolver <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php>`_
+`FieldResolver <https://github.com/API-Skeletons/doctrine-graphql/blob/master/src/Field/FieldResolver.php>`_
 will be the same object and the cache can be used.  If the same object is
 not requesed for extraction then the cache is flushed and the new result
 is cached.
@@ -112,11 +112,11 @@ GraphQL Schema.
 * **TypeLoader** - This tool creates a GraphQL type for a top-level entity and
   all related entities beneath it.  It also creates resolvers for related
   collections using the
-  `api-skeletons/zf-doctrine-criteria <https://github.com/API-Skeletons/zf-doctrine-criteria>`_
+  `api-skeletons/doctrine-criteria <https://github.com/API-Skeletons/doctrine-criteria>`_
   library.
 * **FilterLoader** - This tool creates filters for all non-related fields
   (collections) such as strings, integers, etc.  These filters are built from
-  the `zfcampus/zf-doctrine-querybuilder <https://github.com/zfcampus/zf-doctrine-querybuilder>`_
+  the `laminas-api-tools/api-tools-doctrine-querybuilder <https://github.com/laminas-api-tools/api-tools-doctrine-querybuilder>`_
   library.
 * **ResolveLoader** - This tool builds the querybuilder object and queries the
   database based on the FilterLoader filters.

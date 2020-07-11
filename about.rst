@@ -4,7 +4,7 @@ About
 Authored by Tom H Anderson <tom.h.anderson@gmail.com> of
 `API Skeletons <https://apiskeletons.com>`_
 and a member of the `Doctrine Core <https://www.doctrine-project.org/team/>`_
-team specializing in Zend modules, this module is the fourth offering in the
+team specializing in Laminas modules; this module is the fourth offering in the
 space of Doctrine and GraphQL according to Packagist. Other implementations
 have used strategies such as annotations or GraphQL types
 which are only one entity deep and only support a single object manager.
