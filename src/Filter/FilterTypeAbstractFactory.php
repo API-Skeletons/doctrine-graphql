@@ -269,7 +269,8 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
         $instance = new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . '__Filter',
-            'fields' => function () use ($fields) { #, $references
+            'fields' => function () use ($fields) {
+                #, $references
 #                foreach ($references as $referenceName => $resolve) {
 #                    // @codeCoverageIgnoreStart
 #                    // This works fine but may need bigger unit tests
