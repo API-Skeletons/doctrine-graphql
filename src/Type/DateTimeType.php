@@ -32,7 +32,7 @@ e.g. 2004-02-12T15:19:21+00:00.';
         // Note: throwing GraphQL\Error\Error vs \UnexpectedValueException to benefit from GraphQL
         // error location in query:
         if (! $valueNode instanceof StringValueNode) {
-            throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, [$valueNode]);
+            throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, $valueNode);
         }
 
         return $valueNode->value;
