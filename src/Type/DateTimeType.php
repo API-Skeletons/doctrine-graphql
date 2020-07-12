@@ -11,6 +11,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use DateTime;
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\StringValueNode;
+use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Utils;
 
@@ -27,7 +28,7 @@ e.g. 2004-02-12T15:19:21+00:00.';
     /**
      * @codeCoverageIgnore
      */
-    public function parseLiteral($valueNode, ?array $variables = null)
+    public function parseLiteral(Node $valueNode, ?array $variables = null)
     {
         // Note: throwing GraphQL\Error\Error vs \UnexpectedValueException to benefit from GraphQL
         // error location in query:
