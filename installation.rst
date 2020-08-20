@@ -13,7 +13,7 @@ Once installed, add **ApiSkeletons\\Doctrine\\GraphQL** to your list of modules 
 zf-component-installer
 ----------------------
 
-If you use `zf-component-installer <https://github.com/zendframework/zf-component-installer>`_,
+If you use `laminas-component-installer <https://github.com/zendframework/laminas-component-installer>`_,
 that plugin will install **ApiSkeletons\\Doctrine\\GraphQL**  as a module for you.
 
 

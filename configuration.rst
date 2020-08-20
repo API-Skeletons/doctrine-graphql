@@ -51,7 +51,7 @@ assigned to the hydrator section and entity.  This may be many more fields
 than just performanceDate.  And since we are only interested in one value
 setting useHydratorCache to false will flush the cache with each new object
 so once a performanceDate is read and the next performance is sent to the
-`FieldResolver <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php>`_
+`FieldResolver <https://github.com/API-Skeletons/doctrine-graphql/blob/master/src/Field/FieldResolver.php>`_
 the previous hydrator extract data is purged.
 
 For a query
