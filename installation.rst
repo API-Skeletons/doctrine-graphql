@@ -10,10 +10,10 @@ Once installed, add **ApiSkeletons\\Doctrine\\GraphQL** to your list of modules 
 `config/application.config.php` or `config/modules.config.php`.
 
 
-zf-component-installer
-----------------------
+laminas-component-installer
+---------------------------
 
-If you use `laminas-component-installer <https://github.com/zendframework/laminas-component-installer>`_,
+If you use `laminas-component-installer <https://github.com/laminas/laminas-component-installer>`_,
 that plugin will install **ApiSkeletons\\Doctrine\\GraphQL**  as a module for you.
 
 
