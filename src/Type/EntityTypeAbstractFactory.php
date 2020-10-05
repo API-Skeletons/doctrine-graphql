@@ -269,7 +269,11 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         $hydratorAlias = 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\'
                                             . str_replace('\\', '_', $entityClassName);
                                         $matching = $hydratorExtractTool
-                                            ->extractToCollection($collection->matching($criteria), $hydratorAlias, $options);
+                                            ->extractToCollection(
+                                                $collection->matching($criteria),
+                                                $hydratorAlias,
+                                                $options
+                                            );
 
                                         if ($distinctField) {
                                             $distinctValueArray = [];
