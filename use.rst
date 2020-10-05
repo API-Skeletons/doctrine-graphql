@@ -26,6 +26,7 @@ yield a working example.::
         ->setLimit(1000)
         ->setHydratorSection('default')
         ->setUseHydratorCache(true)
+        ->setUsePartials(false)
         ;
 
     $schema = new Schema([

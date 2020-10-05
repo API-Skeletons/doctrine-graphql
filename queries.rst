@@ -56,11 +56,11 @@ Provided Filters::
     fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
     fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
     fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
-    fieldName_memberof  -   Matches a value in an array field.
     fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field is null.
                               If FALSE returns results where the field is not null.
-                              NOTE: acts as "isEmpty" for collection filters.  A value of false will
-                              be handled as though it were null.
+                              IMPORTANT NOTE: acts as "isEmpty" for collection
+                              filters when set to false.  When set to true a
+                              proper isNull is executed on the collection.
     fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
     fieldName_distinct   -  Return a unique list of fieldName.  Only one distinct fieldName allowed per filter.
 

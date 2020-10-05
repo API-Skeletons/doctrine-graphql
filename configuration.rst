@@ -14,6 +14,9 @@ following options:
 * useHydratorCache - By default all hydrator operations are not cached.
   Enabling this value will cache all the hydrator operation in anticipation
   that the result may be reused later in the same query.
+* usePartials - Instead of fetching entire entities enabling this will use
+  partial objects.  This is a performance feature and is defaulted to false.
+  Before enabling this be sure to understand `Doctrine Partial Objects <https://www.doctrine-project.org/projects/doctrine-orm/en/2.7/reference/partial-objects.html>`_
 
 Context is the configuration for each GraphQL entry point.  This allows
 unlimited configuration through multiple hydrator sections.
