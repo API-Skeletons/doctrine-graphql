@@ -110,7 +110,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
 
                 // Verify all fields exist and only query for scalar values, not relations
                 foreach ($fieldArray as $fieldName => $value) {
-                    if (! $meta->hasField($fieldName)) {
+                    if ($meta->hasAssociation($fieldName)) {
                         unset($fieldArray[$fieldName]);
                     }
                 }
