@@ -2,18 +2,19 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
-use Closure;
-use Exception;
-use Interop\Container\ContainerInterface;
-use Laminas\ServiceManager\AbstractFactoryInterface;
-use Laminas\ServiceManager\ServiceLocatorInterface;
-use Doctrine\Common\Collections\ArrayCollection;
-use Laminas\ApiTools\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
-use Laminas\ApiTools\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 use ApiSkeletons\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
 use ApiSkeletons\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ApiSkeletons\Doctrine\GraphQL\AbstractAbstractFactory;
 use ApiSkeletons\Doctrine\GraphQL\Event;
+use Closure;
+use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
+use GraphQL\Type\Definition\ResolveInfo;
+use Interop\Container\ContainerInterface;
+use Laminas\ServiceManager\AbstractFactoryInterface;
+use Laminas\ServiceManager\ServiceLocatorInterface;
+use Laminas\ApiTools\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
+use Laminas\ApiTools\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 
 final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -69,7 +70,8 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         $instance = function (
             $obj,
             $args,
-            $context
+            $context,
+            ResolveInfo $info
         ) use (
             $options,
             $hydratorAlias,
@@ -98,11 +100,35 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 return $results->last();
             }
 
-            // Build query builder from Query Provider
-            $queryBuilder = ($objectManager->createQueryBuilder())
-                ->select('row')
-                ->from($requestedName, 'row')
-                ;
+            if ($context->getUsePartials()) {
+                // Select only the fields being queried
+                $fieldArray = $info->getFieldSelection();
+
+                // Add primary key of this entity; required for partials
+                $meta = $objectManager->getClassMetadata($requestedName);
+                $fieldArray[$meta->getSingleIdentifierFieldName()] = 1;
+
+                // Verify all fields exist and only query for scalar values, not relations
+                foreach ($fieldArray as $fieldName => $value) {
+                    if ($meta->hasAssociation($fieldName)) {
+                        unset($fieldArray[$fieldName]);
+                    }
+                }
+                $fieldList = implode(',', array_keys($fieldArray));
+
+                // Build query builder from Query Provider
+                $queryBuilder = ($objectManager->createQueryBuilder())
+                    ->select('partial row.{' . $fieldList . '}')
+                    ->from($requestedName, 'row')
+                    ;
+            } else {
+                // Build query builder from Query Provider
+                $queryBuilder = ($objectManager->createQueryBuilder())
+                    ->select('row')
+                    ->from($requestedName, 'row')
+                    ;
+            }
+
             $this->getEventManager()->trigger(
                 Event::FILTER_QUERY_BUILDER,
                 $this,

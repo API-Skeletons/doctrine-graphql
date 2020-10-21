@@ -261,6 +261,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             'type' => Type::int(),
             'documentation' => 'Skip forward x records from beginning of data set.',
         ];
+
         $fields['_limit'] = [
             'name' => '_limit',
             'type' => Type::int(),
@@ -270,14 +271,6 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
         $instance = new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . '__Filter',
             'fields' => function () use ($fields) {
-                #, $references
-#                foreach ($references as $referenceName => $resolve) {
-#                    // @codeCoverageIgnoreStart
-#                    // This works fine but may need bigger unit tests
-#                    $fields[$referenceName] = $resolve();
-#                    // @codeCoverageIgnoreEnd
-#                }
-
                 return $fields;
             },
         ]);

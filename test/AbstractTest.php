@@ -213,10 +213,20 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $testContext->setUseHydratorCache(true);
         $testContext->setLimit(1000);
 
+        $partialContext = new Context();
+        $partialContext->setHydratorSection('test');
+        $partialContext->setUseHydratorCache(true);
+        $partialContext->setLimit(1000);
+        $partialContext->setUsePartials(true);
+
         $providers = [
             [
                 'schemaName' => 'default',
                 'context' => new Context(),
+            ],
+            [
+                'schemaName' => 'partials',
+                'context' => $partialContext,
             ],
             [
                 'schemaName' => 'test',
@@ -232,6 +242,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $eventContext->setHydratorSection('event');
         $eventContext->setUseHydratorCache(false);
         $eventContext->setLimit(1000);
+        $eventContext->setUsePartials(false);
 
         $providers = [
             [
@@ -248,6 +259,8 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         switch ($schemaName) {
             case 'default':
                 return $this->getDefaultSchema();
+            case 'partials':
+                return $this->getPartialsSchema();
             case 'test':
                 return $this->getTestSchema();
             case 'event':
@@ -303,6 +316,58 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         return $schema;
     }
 
+    protected function getPartialsSchema()
+    {
+        $serviceManager = $this->getApplication()->getServiceManager();
+        $typeLoader = $serviceManager->get(TypeLoader::class);
+        $filterLoader = $serviceManager->get(FilterLoader::class);
+        $resolveLoader = $serviceManager->get(ResolveLoader::class);
+
+        $context = new Context();
+        $context->setHydratorSection('partials');
+        $context->setUseHydratorCache(true);
+        $context->setLimit(1000);
+        $context->setUsePartials(true);
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Artist::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
+                    ],
+                    'performance' => [
+                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Performance::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
+                    ],
+                    'user' => [
+                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\User::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\User::class, $context),
+                    ],
+                    'address' => [
+                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Address::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Address::class, $context),
+                    ],
+                ],
+            ]),
+        ]);
+
+        return $schema;
+    }
+
     protected function getTestSchema()
     {
         $serviceManager = $this->getApplication()->getServiceManager();
@@ -313,6 +378,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $context = new Context();
         $context->setHydratorSection('test');
         $context->setUseHydratorCache(false);
+        $context->setUsePartials(false);
 
         $schema = new Schema([
             'query' => new ObjectType([
@@ -363,6 +429,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $context = new Context();
         $context->setHydratorSection('event');
         $context->setUseHydratorCache(false);
+        $context->setUsePartials(false);
 
         $schema = new Schema([
             'query' => new ObjectType([

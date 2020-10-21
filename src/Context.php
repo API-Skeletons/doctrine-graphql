@@ -13,6 +13,7 @@ class Context extends AbstractOptions
     protected $hydratorSection = 'default';
     protected $limit = 1000;
     protected $useHydratorCache = false;
+    protected $usePartials = false;
 
     public function setHydratorSection(string $value)
     {
@@ -46,6 +47,18 @@ class Context extends AbstractOptions
     public function setUseHydratorCache(bool $value)
     {
         $this->useHydratorCache = $value;
+
+        return $this;
+    }
+
+    public function getUsePartials()
+    {
+        return $this->usePartials;
+    }
+
+    public function setUsePartials(bool $usePartials)
+    {
+        $this->usePartials = $usePartials;
 
         return $this;
     }

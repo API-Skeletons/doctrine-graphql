@@ -27,6 +27,7 @@ return [
             'neq'        => Filter\NotEquals::class,
             'notin'      => Filter\NotIn::class,
             'startswith' => Filter\StartsWith::class,
+            'isnull'     => Filter\IsNull::class,
         ],
         'factories' => [
             Filter\Contains::class            => InvokableFactory::class,
@@ -41,6 +42,7 @@ return [
             Filter\NotEquals::class           => InvokableFactory::class,
             Filter\NotIn::class               => InvokableFactory::class,
             Filter\StartsWith::class          => InvokableFactory::class,
+            Filter\IsNull::class              => InvokableFactory::class,
         ],
     ],
 ];
