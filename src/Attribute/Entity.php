@@ -2,14 +2,19 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
-#[Attribute]
-class Entity
+#[Attribute(Attribute::TARGET_CLASS & Attribute::IS_REPEATABLE)]
+final class Entity
 {
-    private $group;
+    private string $group = 'default';
 
     public function __construct(?string $group = null)
     {
-        $this->group = $group;
+        $this->group = $group ?? $this->group;
+    }
+
+    public function getGroup(): ?string
+    {
+        return $this->group;
     }
 
     public function __invoke()
