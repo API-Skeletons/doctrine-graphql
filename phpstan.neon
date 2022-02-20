@@ -1,7 +1,0 @@
-includes:
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-
-parameters:
-    fileExtensions:
-        - php
-    excludes_analyse:
