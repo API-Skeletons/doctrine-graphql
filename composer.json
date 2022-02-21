@@ -30,8 +30,6 @@
         "doctrine/dbal": "^3.1.1",
         "symfony/cache": "^5.3",
         "doctrine/coding-standard": "^9.0",
-        "doctrine/dbal": "^2.13.7||^3.1.1",
-        "doctrine/annotations": "^1.13.2",
         "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "^4.21"
     },
