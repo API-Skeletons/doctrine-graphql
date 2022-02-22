@@ -18,25 +18,9 @@ final class Entity
     private bool $byValue;
 
     /**
-     * @var string An alternate hydrator classname to use to extract the entity
+     * @var string The hydrator classname to used extract the entity
      */
-    private ?string $hydrator;
-
-    /**
-     * @var string[] An array of field and collection names to allow,
-     *               thereby bypassing individual attribute configuration.
-     *               A value of '*' is accepted when used in combination with
-     *               the blockFields.  If left empty then Attribute
-     *               configuration determines each field's inclusion in the
-     *               schema.
-     */
-    private array $allowFields = [];
-
-    /**
-     * @var string[] An array of fields to exclude from schema whether they
-     *               have matching group configuration or not.
-     */
-    private array $blockFields = [];
+    private string $hydrator;
 
     /**
      * @var string|null Documentation for the entity within GraphQL
@@ -46,16 +30,15 @@ final class Entity
     public function __construct(
         string $group = 'default',
         bool $byValue = true,
-        ?string $hydrator = null,
-        array $allowFields = [],
-        array $blockFields = [],
+        string $hydrator = 'default',
         ?string $docs = null,
+        ?string $typeName = null,
     ) {
         $this->group = $group;
         $this->byValue = $byValue;
         $this->hydrator = $hydrator;
-        $this->allowFields = $allowFields;
-        $this->blockFields = $blockFields;
+        $this->docs = $docs;
+        $this->typeName = $typeName;
     }
 
     public function getGroup(): ?string
@@ -63,11 +46,23 @@ final class Entity
         return $this->group;
     }
 
-    public function __invoke()
+    public function getByValue(): bool
     {
-        return [
-            'group' => $this->group,
-            'byValue' => $this->byValue,
-        ];
+        return $this->byValue;
+    }
+
+    public function getHydrator(): string
+    {
+        return $this->hydrator;
+    }
+
+    public function getDocs(): string
+    {
+        return $this->docs;
+    }
+
+    public function getTypeName(): string
+    {
+        return $this->typeName;
     }
 }

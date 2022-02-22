@@ -54,7 +54,7 @@ class DoctrineHydrator implements HydratorInterface
      *
      * @return array
      */
-    public function extract($object)
+    public function extract($object): array
     {
         return $this->extractService->extract($object);
     }

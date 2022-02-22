@@ -126,7 +126,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         $useCustomHydrator = (array_key_exists('hydrator', $config));
 
         if ($useEntityHydrator && $config['use_generated_hydrator']) {
-            $hydrateService = $this->loadEntityHydrator($container, $config, $objectManager);
+            $this->loadEntityHydrator($container, $config, $objectManager);
         }
 
         // @codeCoverageIgnoreStart
