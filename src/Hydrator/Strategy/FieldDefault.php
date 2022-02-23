@@ -3,15 +3,15 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Return the same value
  */
-class FieldDefault extends AbstractCollectionStrategy implements
-    StrategyInterface
+class FieldDefault implements
+    StrategyInterface,
+    Invokable
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         return $value;
     }
@@ -19,7 +19,7 @@ class FieldDefault extends AbstractCollectionStrategy implements
     /**
      * @codeCoverageIgnore
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         return $value;
     }

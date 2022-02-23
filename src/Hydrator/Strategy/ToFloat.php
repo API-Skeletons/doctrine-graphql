@@ -3,17 +3,17 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Transform a number value into a php native float
  *
  * @returns float
  */
-class ToFloat extends AbstractCollectionStrategy implements
-    StrategyInterface
+class ToFloat implements
+    StrategyInterface,
+    Invokable
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         if (is_null($value)) {
             return $value;
@@ -25,7 +25,7 @@ class ToFloat extends AbstractCollectionStrategy implements
     /**
      * @codeCoverageIgnore
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         if (is_null($value)) {
             return $value;
