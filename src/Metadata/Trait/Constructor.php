@@ -2,19 +2,18 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 
+use ApiSkeletons\Doctrine\GraphQL\Driver;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 trait Constructor
 {
-    protected ContainerInterface $container;
-    protected EntityManager $entityManager;
+    protected Driver $driver;
     protected array $metadata;
 
-    public function __construct(ContainerInterface $container, EntityManager $entityManager, array $metadata)
+    public function __construct(Driver $driver, array $metadata)
     {
-        $this->container = $container;
-        $this->entityManager = $entityManager;
+        $this->driver = $driver;
         $this->metadata = $metadata;
     }
 }

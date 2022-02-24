@@ -92,7 +92,6 @@ abstract class AbstractAbstractFactory
             case 'smallint':
             case 'integer':
             case 'int':
-            case 'bigint':
                 $graphQLType = Type::int();
                 break;
             case 'boolean':
@@ -102,6 +101,7 @@ abstract class AbstractAbstractFactory
             case 'float':
                 $graphQLType = Type::float();
                 break;
+            case 'bigint':
             case 'string':
             case 'text':
                 $graphQLType = Type::string();

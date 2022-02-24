@@ -13,7 +13,6 @@ use GraphQL\Error\Error;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;
-use GraphQL\Utils;
 
 final class DateTimeType extends ScalarType
 {
@@ -22,8 +21,7 @@ final class DateTimeType extends ScalarType
      */
     public $description =
     'The `DateTime` scalar type represents datetime data.
-The format for the DateTime is ISO-8601
-e.g. 2004-02-12T15:19:21+00:00.';
+The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
 
     /**
      * @codeCoverageIgnore
@@ -39,13 +37,9 @@ e.g. 2004-02-12T15:19:21+00:00.';
         return $valueNode->value;
     }
 
-    /**
-     * @codeCoverageIgnore
-     */
     public function parseValue($value)
     {
         if (! is_string($value)) {
-            $stringValue = print_r($value, true);
             throw new \UnexpectedValueException('Date is not a string: ' . $stringValue);
         }
 

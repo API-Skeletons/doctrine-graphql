@@ -66,7 +66,7 @@ class ConfigProvider
     {
         return [
             'abstract_factories' => [
-                Hydrator\DoctrineHydratorFactory::class,
+                Hydrator\Factory::class,
             ],
         ];
     }

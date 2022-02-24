@@ -27,18 +27,33 @@ final class Entity
      */
     private ?string $docs = null;
 
+    /**
+     * @var array[string[]] An array of filters as
+     * [
+     *   'condition' => FilterComposite::CONDITION_AND,
+     *   'filter' => 'Filter\ClassName',
+     * ]
+     */
+    private array $filters = [];
+
+    private ?string $namingStrategy;
+
     public function __construct(
         string $group = 'default',
         bool $byValue = true,
         string $hydrator = 'default',
         ?string $docs = null,
         ?string $typeName = null,
+        array $filters = [],
+        ?string $namingStrategy = null,
     ) {
         $this->group = $group;
         $this->byValue = $byValue;
         $this->hydrator = $hydrator;
         $this->docs = $docs;
         $this->typeName = $typeName;
+        $this->filters = $filters;
+        $this->namingStrategy = $namingStrategy;
     }
 
     public function getGroup(): ?string
@@ -64,5 +79,15 @@ final class Entity
     public function getTypeName(): string
     {
         return $this->typeName;
+    }
+
+    public function getFilters(): array
+    {
+        return $this->filters;
+    }
+
+    public function getNamingStrategy(): ?string
+    {
+        return $this->namingStrategy;
     }
 }

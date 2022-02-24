@@ -10,7 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Context;
 /**
  * This tool centralizes all extract operations for the module.
  * By doing so caching and optimization of operations can be applied
- * by overriding the this class alias in the config.
+* by overriding this class alias in the config.
  */
 class HydratorExtractToolDefault implements
     HydratorExtractToolInterface

@@ -52,7 +52,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         return isset($config['apiskeletons-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Entity
     {
         // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
@@ -338,7 +338,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
             }
         }
 
-        $instance = new EntityType([
+        $instance = new Entity([
             'name' => str_replace('\\', '_', $requestedName) . '__' . $options['hydrator_section'],
             'description' => $documentationProvider->getEntity($requestedName, $options),
             'fields' => function () use ($fields, $references) {

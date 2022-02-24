@@ -49,7 +49,7 @@ class Config
     {
         $this->group = (string)$config['group'] ?? 'default';
         $this->useHydratorCache = (bool)$config['useHydratorCache'] ?? false;
-        $this->limit = (int)$config['limit'] ?? 0;
+        $this->limit = (int)$config['limit'] ?? 1000;
         $this->usePartials = (bool)$config['usePartials'] ?? false;
         $this->allowList = $config['allowList'] ?? [];
     }

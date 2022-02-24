@@ -13,7 +13,7 @@ class Loader
         $this->typeManager = $typeManager;
     }
 
-    public function __invoke(string $name, Context $context = null) : EntityType
+    public function __invoke(string $name, Context $context = null) : Entity
     {
         $context = $context ?? new Context();
 

@@ -150,6 +150,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $distinctField = null;
             $skip = 0;
             $limit = $options['limit'];
+
             foreach ($filter as $field => $value) {
                 // Command fields
                 if ($field == '_skip') {

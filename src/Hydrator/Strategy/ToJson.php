@@ -2,6 +2,7 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
+use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
 /**

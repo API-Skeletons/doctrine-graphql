@@ -6,19 +6,15 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Psr\Container\ContainerInterface;
 
 class Factory
 {
-    protected ContainerInterface $container;
     protected Driver $driver;
-    protected Metadata $metadata;
 
-    public function __construct(ContainerInterface $container, Driver $driver, ?Metadata $metadata = null)
+    public function __construct(Driver $driver)
     {
-        $this->container = $container;
         $this->driver = $driver;
-        $this->metadata = $metadata;
+        $this->metadata = $driver->getMetadata();
     }
 
     public function getMetadata(): Metadata
@@ -66,14 +62,12 @@ class Factory
 
                 // Save entity-level metadata
                 $this->metadata[$entityClass] = [
-                    'entity_class' => $entityClass,
-                    'object_manager' => $this->driver->getEntityManagerAlias(),
+                    'entityClass' => $entityClass,
                     'byValue' => $instance->getByValue(),
-                    'use_generated_hydrator' => true,
                     'hydrator' => $instance->getHydrator(),
-                    'naming_strategy' => null,
+                    'namingStrategy' => $instance->getNamingStrategy(),
                     'strategies' => [],
-                    'filters' => [],
+                    'filters' => $instance->getFilters(),
                     'documentation' => [],
                     'typeName' => $instance->getTypeName()
                         ?: str_replace('\\', '_', $entityClass)

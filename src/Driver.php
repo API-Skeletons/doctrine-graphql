@@ -2,9 +2,10 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
-use ApiSkeletons\Doctrine\GraphQL\Type\EntityType;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Factory as CriteriaFactory;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
@@ -17,9 +18,9 @@ class Driver
     protected ContainerInterface $container;
 
     /**
-     * @var string
+     * @var EntityManager
      */
-    protected string $entityManagerAlias;
+    protected EntityManager $entityManager;
 
     /**
      * @var Config The config must contain a `group`
@@ -32,52 +33,45 @@ class Driver
     protected Metadata $metadata;
 
     /**
+     * @var CriteriaFactory
+     */
+    protected CriteriaFactory $criteria;
+
+    /**
      * @param string $entityManagerAlias required
      * @param Config $config required
      * @param Metadata|null $metadata optional so cached metadata can be loaded
      */
-    public function __construct(ContainerInterface $container, string $entityManagerAlias, Config $config, ?Metadata $metadata = null)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager, Config $config, ?Metadata $metadata = null)
     {
         $this->container = $container;
-        $this->entityManagerAlias = $entityManagerAlias;
+        $this->entityManager = $entityManager;
         $this->config = $config;
 
         // Build the metadata from factory
-        $metadataFactory = new Factory($container, $this, $metadata);
+        $metadataFactory = new MetadataFactory($this);
         $this->metadata = $metadataFactory->getMetadata();
+
+        $this->criteria = new CriteriaFactory($this);
     }
 
     public function type(string $entityClass): object
     {
-        $instance = new EntityType([
-            'name' => $this->metadata->getEntity($entityClass)->getType
-            'name' => str_replace('\\', '_', $entityClass) . '__' . $this->getConfig()->getGroup(),
-            'description' => $this->metadata->getDocsForEntity($entityClass),
-            'fields' => function () use ($fields, $references) {
-                foreach ($references as $referenceName => $resolve) {
-                    $fields[$referenceName] = $resolve();
-                }
+        $entity = $this->metadata->getEntity($entityClass);
 
-                return $fields;
-            },
-        ]);
-
-        return $instance;
+        return $entity->getGraphQLType();
     }
 
     public function filter(string $entityClass): object
     {
+        $criteria = $this->criteria;
 
+        return $criteria($this->metadata->getEntity($entityClass));
     }
 
     public function resolve(string $entityClass): object
     {
 
-    }
-
-    public function getEntityManagerAlias(): string
-    {
-        return $this->entityManagerAlias;
     }
 
     public  function getConfig(): Config
@@ -87,6 +81,16 @@ class Driver
 
     public  function getEntityManager(): EntityManager
     {
-        return $this->container->get($this->getEntityManagerAlias());
+        return $this->entityManager);
+    }
+
+    public function getMetadata(): Metadata
+    {
+        return $this->metadata;
+    }
+
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }

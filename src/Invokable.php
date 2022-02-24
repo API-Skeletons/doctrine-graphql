@@ -1,6 +1,6 @@
 <?php
 
-namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
 /**
  * This interface is used for classes which should not be run through the

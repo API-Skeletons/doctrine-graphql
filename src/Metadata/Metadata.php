@@ -2,6 +2,8 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+
 class Metadata
 {
     use Trait\Constructor;
