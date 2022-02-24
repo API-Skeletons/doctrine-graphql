@@ -3,11 +3,11 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
-use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ResolveInfo;
 
-class Factory
+class EntityFactory
 {
     protected Driver $driver;
 
@@ -16,8 +16,10 @@ class Factory
         $this->driver = $driver;
     }
 
-    public function __invoke(string $entityClass)
+    public function __invoke(Entity $entity): \Closure
     {
+        $entityClass = $entity->getEntityClass();
+
         return function($obj, $args, $context, ResolveInfo $info) use ($entityClass) {
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];

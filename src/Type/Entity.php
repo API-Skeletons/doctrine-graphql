@@ -4,6 +4,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -84,7 +85,7 @@ class Entity
                     case ClassMetadataInfo::MANY_TO_ONE:
                     case ClassMetadataInfo::TO_ONE:
                         $targetEntity = $associationMetadata['targetEntity'];
-                        $graphQLFields[$associationName] = function() use ($targetEntity) {
+                        $graphQLFields[$associationName] = function () use ($targetEntity) {
 
                             // getGraphQLType should use a type manager/service provider?
 
@@ -107,10 +108,12 @@ class Entity
                             return [
                                 'type' => Type::listOf($entity->getGraphQLType()),
                                 'args' => [
-                                    'filter' => $criteriaFilterManager->build($targetEntity, $options),
+                                    'filter' => $this->driver->filter($entity->getEntityClass()),
                                 ],
-                                    'resolve' => function (
-
+                                'resolve' => function () use ($entity) {
+                                    return $this->resolveCollection($entity);
+                                },
+                            ];
                         };
 
                     default:
@@ -118,5 +121,25 @@ class Entity
                 }
             }
         }
+
+        return new ObjectType([
+            'name' => $this->getTypeName(),
+            'description' => $this->getDocs(),
+            'fields' => function () use ($graphQLFields) {
+                return $graphQLFields;
+            },
+        ]);
+    }
+
+
+    protected function resolveCollection(Entity $entity): \Closure
+    {
+        static $resolve;
+
+        if (! $resolve) {
+            $resolve = new CollectionFactory($this->driver);
+        }
+
+        return $resolve($entity);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Factory as CriteriaFactory;
+use ApiSkeletons\Doctrine\GraphQL\Field\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
-use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
-use ApiSkeletons\Doctrine\GraphQL\Criteria\Factory as CriteriaFactory;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
@@ -38,6 +39,16 @@ class Driver
     protected CriteriaFactory $criteria;
 
     /**
+     * @var ResolveEntityFactory
+     */
+    protected ResolveEntityFactory $resolveEntityFactory;
+
+    /**
+     * @var FieldResolver
+     */
+    protected FieldResolver $fieldResolver;
+
+    /**
      * @param string $entityManagerAlias required
      * @param Config $config required
      * @param Metadata|null $metadata optional so cached metadata can be loaded
@@ -53,6 +64,12 @@ class Driver
         $this->metadata = $metadataFactory->getMetadata();
 
         $this->criteria = new CriteriaFactory($this);
+        $this->resolve = new ResolveEntityFactory($this);
+    }
+
+    public function getFieldResolver(): FieldResolver
+    {
+        return $this->fieldResolver;
     }
 
     public function type(string $entityClass): object
@@ -69,9 +86,11 @@ class Driver
         return $criteria($this->metadata->getEntity($entityClass));
     }
 
-    public function resolve(string $entityClass): object
+    public function resolve(string $entityClass): \Closure
     {
+        $resolve = $this->resolveEntityFactory;
 
+        return $resolve($this->metadata->getEntity($entityClass));
     }
 
     public  function getConfig(): Config
