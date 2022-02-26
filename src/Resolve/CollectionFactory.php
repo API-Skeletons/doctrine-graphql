@@ -3,6 +3,8 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
 use GraphQL\Type\Definition\ResolveInfo;
 
@@ -15,18 +17,15 @@ class CollectionFactory
         $this->driver = $driver;
     }
 
-    public function __invoke(): \Closure
+    public function __invoke(Entity $entity): \Closure
     {
-        return function ($source, $args, $context, ResolveInfo $resolveInfo) {
+        return function ($source, $args, $context, ResolveInfo $resolveInfo) use ($entity) {
             $fieldResolver = $this->driver->getFieldResolver();
             $collection = $fieldResolver($source, $args, $context, $resolveInfo);
             $criteria = Criteria::create();
             $orderBy = [];
 
             $filter = $args['filter'] ?? [];
-            $filterArray = [];
-            $orderByArray = [];
-            $skip = 0;
             $limit = $this->driver->getConfig()->getLimit();
 
             foreach ($filter as $field => $value) {
@@ -87,7 +86,20 @@ class CollectionFactory
             }
             $criteria->orderBy($orderBy);
 
-            return $collection->matching($criteria);
+            // Convert result to extracted array
+            $results = $collection->matching($criteria);
+            $resultCollection = new ArrayCollection();
+            $hydrator = $entity->getHydrator();
+
+            foreach ($results as $result) {
+                if (is_array($result)) {
+                    $resultCollection->add($result);
+                } else {
+                    $resultCollection->add($hydrator->extract($result));
+                }
+            }
+
+            return $resultCollection->toArray();
         };
     }
 }

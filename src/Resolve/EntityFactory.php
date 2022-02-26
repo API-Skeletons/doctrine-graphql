@@ -5,6 +5,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
+use Doctrine\Common\Collections\ArrayCollection;
 use GraphQL\Type\Definition\ResolveInfo;
 
 class EntityFactory
@@ -18,9 +19,8 @@ class EntityFactory
 
     public function __invoke(Entity $entity): \Closure
     {
-        $entityClass = $entity->getEntityClass();
-
-        return function($obj, $args, $context, ResolveInfo $info) use ($entityClass) {
+        return function($obj, $args, $context, ResolveInfo $info) use ($entity) {
+            $entityClass = $entity->getEntityClass();
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
@@ -115,8 +115,20 @@ class EntityFactory
                 $queryBuilder->setMaxResults($limit);
             }
 
-            // Fetch from Query Builder
-            return $queryBuilder->getQuery()->getResult();
+            // Convert result to extracted array
+            $results = $queryBuilder->getQuery()->getResult();
+            $resultCollection = new ArrayCollection();
+            $hydrator = $entity->getHydrator();
+
+            foreach ($results as $result) {
+                if (is_array($result)) {
+                    $resultCollection->add($result);
+                } else {
+                    $resultCollection->add($hydrator->extract($result));
+                }
+            }
+
+            return $resultCollection->toArray();
         };
     }
 }

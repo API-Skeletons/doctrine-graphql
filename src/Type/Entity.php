@@ -112,7 +112,7 @@ class Entity
                                 'args' => [
                                     'filter' => $this->driver->filter($entity->getEntityClass()),
                                 ],
-                                'resolve' => $collectionResolve(),
+                                'resolve' => $collectionResolve($entity),
                             ];
                         };
 

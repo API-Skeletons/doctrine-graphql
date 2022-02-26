@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit colors="true" bootstrap="./test/Bootstrap.php">
-    <testsuites>
-        <testsuite name="GraphQL">
-            <directory>./test</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./src</directory>
-            <directory suffix=".php">./config</directory>
-            <exclude>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
-    <php>
-        <ini name="memory_limit" value="-1" />
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage>
+    <include>
+      <directory suffix=".php">./src</directory>
+      <directory suffix=".php">./config</directory>
+    </include>
+    <exclude>
+      <directory>./vendor</directory>
+    </exclude>
+  </coverage>
+  <testsuites>
+    <testsuite name="GraphQL">
+      <directory>./test</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <ini name="memory_limit" value="-1"/>
+  </php>
 </phpunit>
