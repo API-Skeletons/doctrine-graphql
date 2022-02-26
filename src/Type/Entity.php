@@ -7,7 +7,8 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
+
+ use GraphQL\Type\Definition\Type;
 use Laminas\Hydrator\HydratorInterface;
 
 class Entity
@@ -104,15 +105,14 @@ class Entity
                         $graphQLFields[$associationName] = function () use ($targetEntity) {
 
                             $entity = $this->driver->getMetadata()->getEntity($targetEntity);
+                            $collectionResolve = new CollectionFactory($this->driver);
 
                             return [
                                 'type' => Type::listOf($entity->getGraphQLType()),
                                 'args' => [
                                     'filter' => $this->driver->filter($entity->getEntityClass()),
                                 ],
-                                'resolve' => function () use ($entity) {
-                                    return $this->resolveCollection($entity);
-                                },
+                                'resolve' => $collectionResolve(),
                             ];
                         };
 
@@ -128,18 +128,7 @@ class Entity
             'fields' => function () use ($graphQLFields) {
                 return $graphQLFields;
             },
+            'resolveField' => $this->driver->getFieldResolver(),
         ]);
-    }
-
-
-    protected function resolveCollection(Entity $entity): \Closure
-    {
-        static $resolve;
-
-        if (! $resolve) {
-            $resolve = new CollectionFactory($this->driver);
-        }
-
-        return $resolve($entity);
     }
 }

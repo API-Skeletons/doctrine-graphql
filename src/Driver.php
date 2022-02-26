@@ -8,6 +8,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
 use Doctrine\ORM\EntityManager;
+use GraphQL\GraphQL;
 use Psr\Container\ContainerInterface;
 
 class Driver
@@ -65,6 +66,10 @@ class Driver
 
         $this->criteria = new CriteriaFactory($this);
         $this->resolve = new ResolveEntityFactory($this);
+        $this->fieldResolver = new FieldResolver($this);
+
+        // Field resolve is done per type
+//        GraphQL::setDefaultFieldResolver($this->fieldResolver);
     }
 
     public function getFieldResolver(): FieldResolver

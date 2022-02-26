@@ -200,6 +200,7 @@ class Factory
                 }
             }
 
+            /*
             if (in_array('memberof', $allowedFilters)) {
                 $fields[$fieldName . '_memberof'] = [
                     'name' => $fieldName . '_memberof',
@@ -207,6 +208,7 @@ class Factory
                     'description' => 'Matches a value in an array field.',
                 ];
             }
+            */
         }
 
         $fields['_skip'] = [
