@@ -1,20 +1,15 @@
 <?php
-
-/**
- * Copied from GraphQLTests\Doctrine\Blog\Types\DateTimeType
- */
-
 declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
-use DateTime;
+use DateTime as PHPDateTime;
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\ScalarType;
 
-final class DateTimeType extends ScalarType
+final class DateTime extends ScalarType
 {
     /**
      * @var string
@@ -28,8 +23,6 @@ The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
      */
     public function parseLiteral(Node $valueNode, ?array $variables = null)
     {
-        // Note: throwing GraphQL\Error\Error vs \UnexpectedValueException to benefit from GraphQL
-        // error location in query:
         if (! $valueNode instanceof StringValueNode) {
             throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, $valueNode);
         }
@@ -40,15 +33,15 @@ The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
     public function parseValue($value)
     {
         if (! is_string($value)) {
-            throw new \UnexpectedValueException('Date is not a string: ' . $stringValue);
+            throw new \UnexpectedValueException('Date is not a string: ' . $value);
         }
 
-        return DateTime::createFromFormat('Y-m-d\TH:i:sP', $value);
+        return PHPDateTime::createFromFormat('c', $value);
     }
 
     public function serialize($value)
     {
-        if ($value instanceof DateTime) {
+        if ($value instanceof PHPDateTime) {
             $value = $value->format('c');
         }
 

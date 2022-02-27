@@ -11,6 +11,10 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
+use GraphQL\GraphQL;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
 use Psr\Container\ContainerInterface;
 
 class DriverTest extends AbstractTest
@@ -41,5 +45,31 @@ class DriverTest extends AbstractTest
 
         $this->assertInstanceOf(Driver::class, $driver);
         $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
+    }
+
+    public function testBuildGraphQLSchema(): void
+    {
+        $driver = new Driver($this->getEntityManager());
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Artist::class),
+                        ],
+                        'resolve' => $driver->resolve(Artist::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query = "{ artist { id name } }";
+
+        $result = GraphQL::executeQuery($schema, $query);
+        $output = $result->toArray();
+
     }
 }

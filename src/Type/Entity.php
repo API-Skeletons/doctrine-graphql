@@ -32,6 +32,11 @@ class Entity
         return $hydratorFactory($this);
     }
 
+    public function getTypeName(): string
+    {
+        return $this->metadataConfig['typeName'];
+    }
+
     public function getDocs(): string
     {
         return $this->metadataConfig['documentation']['_entity'];
@@ -67,7 +72,6 @@ class Entity
             if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
                 $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
                 $graphQLType = $this->mapFieldType($fieldMetadata['type']);
-                assert($graphQLType, 'GraphQL Type not found for field ' . $fieldName);
 
                 $graphQLFields[$fieldName] = [
                     'type' => $graphQLType,
@@ -77,8 +81,8 @@ class Entity
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
-                $associationMetadata = $classMetadata->getFieldMapping($associationName);
+            if (in_array($associationName, array_keys($this->metadataConfig['strategies']))) {
+                $associationMetadata = $classMetadata->getAssociationMapping($associationName);
 
                 switch ($associationMetadata['type']) {
                     case ClassMetadataInfo::ONE_TO_ONE:
@@ -122,7 +126,7 @@ class Entity
         }
 
         return new ObjectType([
-            'name' => $this->getTypeName(),
+            'name' => $this->metadataConfig['typeName'],
             'description' => $this->getDocs(),
             'fields' => function () use ($graphQLFields) {
                 return $graphQLFields;

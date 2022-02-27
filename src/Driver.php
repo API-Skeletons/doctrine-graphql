@@ -9,6 +9,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
 use Doctrine\ORM\EntityManager;
 use GraphQL\GraphQL;
+use GraphQL\Type\Definition\ObjectType;
 use Psr\Container\ContainerInterface;
 
 class Driver
@@ -69,7 +70,7 @@ class Driver
         $this->metadata = $metadataFactory->getMetadata();
 
         $this->criteria = new CriteriaFactory($this);
-        $this->resolve = new ResolveEntityFactory($this);
+        $this->resolveEntityFactory = new ResolveEntityFactory($this);
         $this->fieldResolver = new FieldResolver($this);
     }
 
@@ -78,7 +79,7 @@ class Driver
         return $this->fieldResolver;
     }
 
-    public function type(string $entityClass): object
+    public function type(string $entityClass): ObjectType
     {
         $entity = $this->metadata->getEntity($entityClass);
 

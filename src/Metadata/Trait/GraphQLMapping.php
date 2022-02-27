@@ -2,13 +2,19 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 
+use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\Type;
 
 trait GraphQLMapping
 {
     protected function mapFieldType(string $fieldType)
     {
-        $graphQLType = null;
+        static $dateTime;
+
+        if (! $dateTime) {
+            $dateTime = new DateTime();
+        }
 
         switch ($fieldType) {
             case 'tinyint':
@@ -32,10 +38,12 @@ trait GraphQLMapping
             case 'array':
                 $graphQLType = Type::listOf(Type::string());
                 break;
-            default:
-
-                // FIXME:  Add datetime
+            case 'datetime':
+                $graphQLType = Type::string();
+//                $graphQLType = $dateTime;
                 break;
+            default:
+                throw new Error('GraphQL Type not found for type ' . $fieldType);
         }
 
         return $graphQLType;

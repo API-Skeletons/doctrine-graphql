@@ -42,7 +42,7 @@ class Factory
             'startswith',
             'endswith',
             'contains',
-            'memberof',
+//            'memberof',
         ];
 
         // Limit filters
@@ -223,7 +223,7 @@ class Factory
         ];
 
         return new InputObjectType([
-            'name' => 'Filter',
+            'name' => $entity->getTypeName() . '_Filter',
             'fields' => function () use ($fields) {
                 return $fields;
             },
