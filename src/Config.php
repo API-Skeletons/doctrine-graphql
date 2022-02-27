@@ -37,21 +37,12 @@ class Config
      */
     private bool $usePartials;
 
-    /**
-     * @var string[] A list of entities to allow with default, non-attribute
-     *               configuration.  '*' is accepted for all entities.  You
-     *               can still configure entities in the list with attributes
-     *               but entities not in this list will be excluded.
-     */
-    private array $allowList = [];
-
     public function __construct(array $config)
     {
-        $this->group = (string)$config['group'] ?? 'default';
-        $this->useHydratorCache = (bool)$config['useHydratorCache'] ?? false;
-        $this->limit = (int)$config['limit'] ?? 1000;
-        $this->usePartials = (bool)$config['usePartials'] ?? false;
-        $this->allowList = $config['allowList'] ?? [];
+        $this->group = $config['group'] ?? 'default';
+        $this->useHydratorCache = $config['useHydratorCache'] ?? false;
+        $this->limit = $config['limit'] ?? 1000;
+        $this->usePartials = $config['usePartials'] ?? false;
     }
 
     public function getGroup(): string
@@ -72,10 +63,5 @@ class Config
     public function getUsePartials(): bool
     {
         return $this->usePartials;
-    }
-
-    public function getAllowList(): array
-    {
-        return $this->allowList;
     }
 }

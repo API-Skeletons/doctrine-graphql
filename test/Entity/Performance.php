@@ -2,44 +2,54 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+
 /**
  * Performance
  */
+#[GraphQL\Entity(typeName: 'Performance', docs: 'Performances', group: 'default')]
 class Performance
 {
     /**
      * @var string|null
      */
+    #[GraphQL\Field(docs: 'Venue name', group: 'default')]
     private $venue;
 
     /**
      * @var string|null
      */
+    #[GraphQL\Field(docs: 'City name', group: 'default')]
     private $city;
 
     /**
      * @var string|null
      */
+    #[GraphQL\Field(docs: 'State name', group: 'default')]
     private $state;
 
     /**
      * @var \DateTime
      */
+    #[GraphQL\Field(docs: 'Performance date', group: 'default')]
     private $performanceDate;
 
     /**
      * @var int
      */
+    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    #[GraphQL\Association(docs: 'Recordings by artist', group: 'default')]
     private $recordings;
 
     /**
      * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist
      */
+    #[GraphQL\Association(docs: 'Artist entity', group: 'default')]
     private $artist;
 
     /**

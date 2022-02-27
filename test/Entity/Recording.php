@@ -2,29 +2,36 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+
 /**
  * Recording
  */
+#[GraphQL\Entity(typeName: 'Recording', docs: 'Performance recordings', group: 'default')]
 class Recording
 {
     /**
      * @var string
      */
+    #[GraphQL\Field(docs: 'Source', group: 'default')]
     private $source;
 
     /**
      * @var int
      */
+    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
     private $id;
 
     /**
      * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance
      */
+    #[GraphQL\Association(docs: 'Performance entity', group: 'default')]
     private $performance;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    #[GraphQL\Association(docs: 'Users', group: 'default')]
     private $users;
 
     /**

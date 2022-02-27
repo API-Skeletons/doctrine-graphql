@@ -7,25 +7,25 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Artist
  */
-#[GraphQL\Entity(typeName: 'Artist', docs: 'Artists')]
+#[GraphQL\Entity(typeName: 'Artist', docs: 'Artists', group: 'default')]
 class Artist
 {
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'Artist name')]
+    #[GraphQL\Field(docs: 'Artist name', group: 'default')]
     private $name;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key')]
+    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(docs: 'Performances')]
+    #[GraphQL\Association(docs: 'Performances', group: 'default')]
     private $performances;
 
     /**

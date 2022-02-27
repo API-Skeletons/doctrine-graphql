@@ -7,31 +7,38 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * User
  */
-#[GraphQL\Entity(docs: 'User', typeName: 'User')]
+#[GraphQL\Entity(docs: 'User', typeName: 'User', group: 'default')]
+#[GraphQL\Entity(docs: 'User', typeName: 'User', group: 'test1')]
 class User
 {
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'User name')]
+    #[GraphQL\Field(docs: 'User name', group: 'default')]
+    #[GraphQL\Field(docs: 'User name', group: 'test1')]
     private $name;
 
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'User email')]
+    #[GraphQL\Field(docs: 'User email', group: 'default')]
     private $email;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key')]
+    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
+    #[GraphQL\Field(docs: 'Primary key', group: 'test1')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(docs: 'Recordings', strategy: 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault')]
+    #[GraphQL\Association(
+        docs: 'Recordings',
+        strategy: 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault',
+        group: 'default'
+    )]
     private $recordings;
 
     /**

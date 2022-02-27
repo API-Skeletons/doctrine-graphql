@@ -200,11 +200,6 @@ class Factory
 
         $this->metadata = new Metadata($this->driver, $this->metadataConfig);
 
-
-
-
-        print_r($this->metadataConfig);
-
         return $this->getMetadata();
     }
 }
