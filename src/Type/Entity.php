@@ -20,17 +20,20 @@ class Entity
 
     protected array $metadataConfig;
 
+    protected CollectionFactory $collectionFactory;
+
     public function __construct(Driver $driver, array $metadataConfig)
     {
         $this->driver = $driver;
         $this->metadataConfig = $metadataConfig;
+        $this->collectionFactory = new CollectionFactory($this->driver);
     }
 
     public function getHydrator(): HydratorInterface
     {
         $hydratorFactory = new HydratorFactory($this->driver);
 
-        return $hydratorFactory($this);
+        return $hydratorFactory->get($this);
     }
 
     public function getTypeName(): string
@@ -70,16 +73,14 @@ class Entity
 
         $classMetadata = $this->driver->getEntityManager()
             ->getClassMetadata($this->getEntityClass());
-
         $graphQLFields = [];
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
-                $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-                $graphQLType = $this->mapFieldType($fieldMetadata['type']);
-
                 $graphQLFields[$fieldName] = [
-                    'type' => $graphQLType,
+                    'type' => $this->mapFieldType(
+                        $classMetadata->getFieldMapping($fieldName)['type']
+                    ),
                     'description' => $this->metadataConfig['documentation'][$fieldName],
                 ];
             }
@@ -95,9 +96,6 @@ class Entity
                     case ClassMetadataInfo::TO_ONE:
                         $targetEntity = $associationMetadata['targetEntity'];
                         $graphQLFields[$associationName] = function () use ($targetEntity) {
-
-                            // getGraphQLType should use a type manager/service provider?
-
                             $entity = $this->driver->getMetadata()->getEntity($targetEntity);
 
                             return [
@@ -111,16 +109,14 @@ class Entity
                     case ClassMetadataInfo::TO_MANY:
                         $targetEntity = $associationMetadata['targetEntity'];
                         $graphQLFields[$associationName] = function () use ($targetEntity) {
-
                             $entity = $this->driver->getMetadata()->getEntity($targetEntity);
-                            $collectionResolve = new CollectionFactory($this->driver);
 
                             return [
                                 'type' => Type::listOf($entity->getGraphQLType()),
                                 'args' => [
                                     'filter' => $this->driver->filter($entity->getEntityClass()),
                                 ],
-                                'resolve' => $collectionResolve($entity),
+                                'resolve' => $this->collectionFactory->get($entity),
                             ];
                         };
 
@@ -131,7 +127,7 @@ class Entity
         }
 
         $objectType = new ObjectType([
-            'name' => $this->metadataConfig['typeName'],
+            'name' => $this->getTypeName(),
             'description' => $this->getDocs(),
             'fields' => function () use ($graphQLFields) {
                 return $graphQLFields;

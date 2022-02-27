@@ -4,12 +4,13 @@ namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Laminas\Hydrator\Strategy\StrategyInterface;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Take no action on an association.  This class exists to
  * differentiate associations inside generated config.
  */
-class AssociationDefault implements
+class AssociationDefault extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {

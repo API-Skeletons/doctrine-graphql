@@ -99,9 +99,7 @@ class Driver
 
     public function resolve(string $entityClass): \Closure
     {
-        $resolve = $this->resolveEntityFactory;
-
-        return $resolve($this->metadata->getEntity($entityClass));
+        return $this->resolveEntityFactory->get($this->metadata->getEntity($entityClass));
     }
 
     public  function getConfig(): Config

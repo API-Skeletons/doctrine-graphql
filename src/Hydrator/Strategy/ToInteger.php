@@ -3,6 +3,7 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
 /**
@@ -10,7 +11,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
  *
  * @returns integer
  */
-class ToInteger implements
+class ToInteger extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {

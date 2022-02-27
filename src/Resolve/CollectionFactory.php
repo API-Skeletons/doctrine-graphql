@@ -17,7 +17,7 @@ class CollectionFactory
         $this->driver = $driver;
     }
 
-    public function __invoke(Entity $entity): \Closure
+    public function get(Entity $entity): \Closure
     {
         return function ($source, $args, $context, ResolveInfo $resolveInfo) use ($entity) {
             $fieldResolver = $this->driver->getFieldResolver();

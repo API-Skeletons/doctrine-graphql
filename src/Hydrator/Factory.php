@@ -28,18 +28,18 @@ class Factory
         $this->driver = $driver;
     }
 
-    public function __invoke(Entity $entity): HydratorInterface
+    public function get(Entity $entity): HydratorInterface
     {
         $config = $entity->getMetadataConfig();
         $hydratorClass = $config['hydrator'];
 
-        assert(in_array(HydratorInterface::class, class_implements($hydratorClass)),
-            'Hydrator must implement ' . HydratorInterface::class
-        );
-
         if ($hydratorClass === 'default') {
             $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
         } else {
+            assert(in_array(HydratorInterface::class, class_implements($hydratorClass)),
+                'Hydrator must implement ' . HydratorInterface::class
+            );
+
             // FIXME:  How can this be improved?  Would like to pass the config to the container :\
             // It may be that each entity must have a unique hydrator?
             $hydrator = $this->get($hydratorClass);
@@ -52,7 +52,7 @@ class Factory
                     'Strategy must implement ' . StrategyInterface::class
                 );
 
-                $hydrator->addStrategy($fieldName, $this->get($strategyClass));
+                $hydrator->addStrategy($fieldName, $this->getInvokable($strategyClass));
             }
         }
 
@@ -78,7 +78,7 @@ class Factory
                 'Naming Strategy must implement ' . NamingStrategyInterface::class
             );
 
-            $hydrator->setNamingStrategy($this->get($namingStrategyClass));
+            $hydrator->setNamingStrategy($this->getInvokable($namingStrategyClass));
         }
 
         return $hydrator;
@@ -93,7 +93,7 @@ class Factory
      * @param $className
      * @return mixed
      */
-    protected function get($className)
+    protected function getInvokable($className)
     {
         if (in_array(Invokable::class, class_implements($className))) {
             $class = new $className();

@@ -28,7 +28,7 @@ class FieldResolver
         $this->driver = $driver;
     }
 
-    public function __invoke($source, $args, Context $context, ResolveInfo $info): mixed
+    public function __invoke($source, $args, $context, ResolveInfo $info): mixed
     {
         if (is_array($source)) {
             return $source[$info->fieldName];

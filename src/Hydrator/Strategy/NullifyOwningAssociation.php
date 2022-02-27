@@ -3,6 +3,7 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
 /**
@@ -28,7 +29,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
  * field is not queryable at all.  This strategy exists as a patch for generating
  * a configuration skeleton.
  */
-class NullifyOwningAssociation implements
+class NullifyOwningAssociation extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {

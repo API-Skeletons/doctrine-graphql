@@ -17,7 +17,7 @@ class EntityFactory
         $this->driver = $driver;
     }
 
-    public function __invoke(Entity $entity): \Closure
+    public function get(Entity $entity): \Closure
     {
         return function($obj, $args, $context, ResolveInfo $info) use ($entity) {
             $entityClass = $entity->getEntityClass();
@@ -76,8 +76,8 @@ class EntityFactory
                 }
             }
 
-            $queryBuilderFilter = new Applicator($this->driver->getEntityManager(), $entityClass);
-            $queryBuilderFilter->setEntityAlias('entity');
+            $queryBuilderFilter = (new Applicator($this->driver->getEntityManager(), $entityClass))
+                ->setEntityAlias('entity');
             $queryBuilder = $queryBuilderFilter($filterArray);
 
             if ($this->driver->getConfig()->getUsePartials()) {
@@ -98,13 +98,11 @@ class EntityFactory
 
                 // Build query builder from Query Provider
                 $queryBuilder
-                    ->select('partial entity.{' . $fieldList . '}')
-                    ->from($entityClass, 'entity');
+                    ->select('partial entity.{' . $fieldList . '}');
             } else {
                 // Build query builder from Query Provider
                 $queryBuilder
-                    ->select('entity')
-                    ->from($entityClass, 'entity');
+                    ->select('entity');
             }
 
             if ($skip) {
