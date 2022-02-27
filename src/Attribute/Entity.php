@@ -4,7 +4,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_CLASS & Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class Entity
 {
     /**
@@ -71,12 +71,12 @@ final class Entity
         return $this->hydrator;
     }
 
-    public function getDocs(): string
+    public function getDocs(): ?string
     {
         return $this->docs;
     }
 
-    public function getTypeName(): string
+    public function getTypeName(): ?string
     {
         return $this->typeName;
     }

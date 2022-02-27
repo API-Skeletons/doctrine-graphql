@@ -10,11 +10,19 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class Factory
 {
     protected Driver $driver;
+    protected ?Metadata $metadata;
+    protected ?array $metadataConfig;
 
-    public function __construct(Driver $driver)
+    public function __construct(Driver $driver, ?array $metadataConfig)
     {
         $this->driver = $driver;
-        $this->metadata = $driver->getMetadata();
+        $this->metadataConfig = $metadataConfig;
+
+        if ($metadataConfig) {
+            $this->metadata = new Metadata($driver, $metadataConfig);
+        } else {
+            $this->metadata = null;
+        }
     }
 
     public function getMetadata(): Metadata
@@ -61,7 +69,7 @@ class Factory
                 $entityInstance = $instance;
 
                 // Save entity-level metadata
-                $this->metadata[$entityClass] = [
+                $this->metadataConfig[$entityClass] = [
                     'entityClass' => $entityClass,
                     'byValue' => $instance->getByValue(),
                     'hydrator' => $instance->getHydrator(),
@@ -74,7 +82,7 @@ class Factory
                 ];
 
                 // Save documentation
-                $this->metadata[$entityClass]['documentation']['_entity'] = $instance->getDocs();
+                $this->metadataConfig[$entityClass]['documentation']['_entity'] = $instance->getDocs();
             }
 
             // Fetch attributes for fields
@@ -103,7 +111,7 @@ class Factory
                     $fieldInstance = $instance;
 
                     // Save documentation
-                    $this->metadata[$entityClass]['documentation'][$fieldName] = $instance->getDocs();
+                    $this->metadataConfig[$entityClass]['documentation'][$fieldName] = $instance->getDocs();
 
                     if ($instance->getStrategy()) {
                         $fields[$fieldName] = $instance->getStrategy();
@@ -144,9 +152,10 @@ class Factory
 
             foreach ($associationNames as $associationName) {
                 $associationInstance = null;
-                $reflectionAssociation = $reflectionClass->getProperty($fieldName);
+                $reflectionAssociation = $reflectionClass->getProperty($associationName);
 
                 foreach ($reflectionAssociation->getAttributes(Attribute\Association::class) as $attribute) {
+
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
@@ -162,8 +171,7 @@ class Factory
                     $fieldInstance = $instance;
 
                     // Save documentation
-                    // No documentation for associations - graphql thing maybe?
-                    // $this->metadata[$entityClass]['documentation'][$associationName] = $instance->getDocs();
+                    $this->metadataConfig[$entityClass]['documentation'][$associationName] = $instance->getDocs();
 
                     if ($instance->getStrategy()) {
                         $fields[$associationName] = $instance->getStrategy();
@@ -185,9 +193,18 @@ class Factory
                 }
             }
 
-            $this->metadata[$entityClass]['strategies'] = $fields;
+            if ($fields) {
+                $this->metadataConfig[$entityClass]['strategies'] = $fields;
+            }
         }
 
-        return $this->metadata;
+        $this->metadata = new Metadata($this->driver, $this->metadataConfig);
+
+
+
+
+        print_r($this->metadataConfig);
+
+        return $this->getMetadata();
     }
 }

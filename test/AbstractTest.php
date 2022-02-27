@@ -34,6 +34,11 @@ abstract class AbstractTest extends TestCase
         $this->populateData();
     }
 
+    protected function getEntityManager(): EntityManager
+    {
+        return $this->entityManager;
+    }
+
     protected function populateData()
     {
         $artists = [

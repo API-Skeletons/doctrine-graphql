@@ -2,24 +2,30 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+
 /**
  * Artist
  */
+#[GraphQL\Entity(typeName: 'Artist', docs: 'Artists')]
 class Artist
 {
     /**
      * @var string
      */
+    #[GraphQL\Field(docs: 'Artist name')]
     private $name;
 
     /**
      * @var int
      */
+    #[GraphQL\Field(docs: 'Primary key')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    #[GraphQL\Association(docs: 'Performances')]
     private $performances;
 
     /**

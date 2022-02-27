@@ -54,22 +54,19 @@ class Driver
      * @param Config $config required
      * @param Metadata|null $metadata optional so cached metadata can be loaded
      */
-    public function __construct(ContainerInterface $container, EntityManager $entityManager, Config $config, ?Metadata $metadata = null)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager, Config $config, ?array $metadataConfig = null)
     {
         $this->container = $container;
         $this->entityManager = $entityManager;
         $this->config = $config;
 
         // Build the metadata from factory
-        $metadataFactory = new MetadataFactory($this);
+        $metadataFactory = new MetadataFactory($this, $metadataConfig);
         $this->metadata = $metadataFactory->getMetadata();
 
         $this->criteria = new CriteriaFactory($this);
         $this->resolve = new ResolveEntityFactory($this);
         $this->fieldResolver = new FieldResolver($this);
-
-        // Field resolve is done per type
-//        GraphQL::setDefaultFieldResolver($this->fieldResolver);
     }
 
     public function getFieldResolver(): FieldResolver
@@ -105,7 +102,7 @@ class Driver
 
     public  function getEntityManager(): EntityManager
     {
-        return $this->entityManager);
+        return $this->entityManager;
     }
 
     public function getMetadata(): Metadata

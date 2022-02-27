@@ -2,29 +2,36 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+
 /**
  * User
  */
+#[GraphQL\Entity(docs: 'User', typeName: 'User')]
 class User
 {
     /**
      * @var string
      */
+    #[GraphQL\Field(docs: 'User name')]
     private $name;
 
     /**
      * @var string
      */
+    #[GraphQL\Field(docs: 'User email')]
     private $email;
 
     /**
      * @var int
      */
+    #[GraphQL\Field(docs: 'Primary key')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    #[GraphQL\Association(docs: 'Recordings', strategy: 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault')]
     private $recordings;
 
     /**
