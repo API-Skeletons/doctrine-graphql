@@ -2,53 +2,52 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
+use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\ObjectType;
-
- use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\Type;
 use Laminas\Hydrator\HydratorInterface;
 
 class Entity
 {
-    use Trait\Constructor;
     use Trait\GraphQLMapping;
+
+    protected Driver $driver;
+
+    protected array $metadataConfig;
+
+    public function __construct(Driver $driver, array $metadataConfig)
+    {
+        $this->driver = $driver;
+        $this->metadataConfig = $metadataConfig;
+    }
+
+    public function getHydrator(): HydratorInterface
+    {
+        $hydratorFactory = new HydratorFactory($this->driver);
+
+        return $hydratorFactory($this);
+    }
 
     public function getDocs(): string
     {
-        return $this->metadata['docs'];
+        return $this->metadataConfig['documentation']['_entity'];
     }
 
     /**
-     * Build a hydrator for this entity
-     *
-     * @return HydratorInterface
-     */
-    public function getHydrator(): HydratorInterface
-    {
-        return (new HydratorFactory())($this->driver->getContainer(), $this->driver->getEntityManager(), $this);
-    }
-
-    /**
-     * Return the raw data from the metadata.
-     *
      * @return mixed
      */
-    public function getMetadataContent(): array
+    public function getMetadataConfig(): array
     {
-        return $this->metadata;
-    }
-
-    public function getTypeName(): string
-    {
-        return $this->metadata['typeName'];
+        return $this->metadataConfig;
     }
 
     public function getEntityClass(): string
     {
-        return $this->metadata['entityClass'];
+        return $this->metadataConfig['entityClass'];
     }
 
     /**
@@ -65,20 +64,20 @@ class Entity
         $graphQLFields = [];
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            if (in_array($fieldName, array_keys($this->metadata['strategies']))) {
+            if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
                 $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
                 $graphQLType = $this->mapFieldType($fieldMetadata['type']);
                 assert($graphQLType, 'GraphQL Type not found for field ' . $fieldName);
 
                 $graphQLFields[$fieldName] = [
                     'type' => $graphQLType,
-                    'description' => $this->metadata['documentation'][$fieldName],
+                    'description' => $this->metadataConfig['documentation'][$fieldName],
                 ];
             }
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (in_array($fieldName, array_keys($this->metadata['strategies']))) {
+            if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
                 $associationMetadata = $classMetadata->getFieldMapping($associationName);
 
                 switch ($associationMetadata['type']) {

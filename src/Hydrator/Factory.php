@@ -1,15 +1,11 @@
 <?php
 
-/**
- * This class is an edit of phpro/zf-doctrine-hydrator-module
- */
-
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
+use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
-use Doctrine\ORM\EntityManager;
 use Laminas\Hydrator\Filter\FilterComposite;
 use Laminas\Hydrator\Filter\FilterEnabledInterface;
 use Laminas\Hydrator\Filter\FilterInterface;
@@ -18,7 +14,6 @@ use Laminas\Hydrator\NamingStrategy\NamingStrategyEnabledInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Hydrator\Strategy\StrategyEnabledInterface;
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use Psr\Container\ContainerInterface;
 
 /**
  * This factory is used in the Metadata\Entity class to create a hydrator
@@ -26,13 +21,16 @@ use Psr\Container\ContainerInterface;
  */
 class Factory
 {
-    protected ContainerInterface $container;
+    protected Driver $driver;
 
-    public function __invoke(ContainerInterface $container, EntityManager $entityManager, Entity $entity): HydratorInterface
+    public function __construct(Driver $driver)
     {
-        $this->container = $container;
-        $config = $entity->getMetadataContent();
+        $this->driver = $driver;
+    }
 
+    public function __invoke(Entity $entity): HydratorInterface
+    {
+        $config = $entity->getMetadataConfig();
         $hydratorClass = $config['hydrator'];
 
         assert(in_array(HydratorInterface::class, class_implements($hydratorClass)),
@@ -40,10 +38,10 @@ class Factory
         );
 
         if ($hydratorClass === 'default') {
-            $hydrator = new DoctrineObject($entityManager, $config['byValue']);
+            $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
         } else {
             // FIXME:  How can this be improved?  Would like to pass the config to the container :\
-            // It may be that each entity must have a unique hydrator
+            // It may be that each entity must have a unique hydrator?
             $hydrator = $this->get($hydratorClass);
         }
 
@@ -100,7 +98,7 @@ class Factory
         if (in_array(Invokable::class, class_implements($className))) {
             $class = new $className();
         } else {
-            $class = $this->container->get($className);
+            $class = $this->driver->getContainer()->get($className);
         }
 
         return $class;

@@ -25,7 +25,7 @@ class Factory
         $filters = [];
         $classMetadata = $this->driver->getEntityManager()
             ->getClassMetadata($entity->getEntityClass());
-        $graphQLMetadata = $entity->getMetadataContent();
+        $graphQLMetadata = $entity->getMetadataConfig();
 
         $allFilters = [
             'sort',

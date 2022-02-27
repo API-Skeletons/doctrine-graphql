@@ -15,7 +15,6 @@ class MetadataTest extends AbstractTest
 {
     public function testNonDefaultGroup(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
         $config = new Config([
             'group' => 'test1',
             'useHydratorCache' => true,
@@ -23,7 +22,7 @@ class MetadataTest extends AbstractTest
             'usePartials' => true,
         ]);
 
-        $driver = new Driver($container, $this->getEntityManager(), $config);
+        $driver = new Driver($this->getEntityManager(), $config);
         $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(User::class));
 
         $this->expectException(UnmappedEntityMetadata::class);
@@ -32,7 +31,6 @@ class MetadataTest extends AbstractTest
 
     public function testCreateDriverWithStaticMetadata(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
         $config = new Config([
             'group' => 'default',
             'useHydratorCache' => true,
@@ -64,7 +62,7 @@ class MetadataTest extends AbstractTest
             ]
         ];
 
-        $driver = new Driver($container, $this->getEntityManager(), $config, $metadataConfig);
+        $driver = new Driver($this->getEntityManager(), $config, $metadataConfig);
         $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(User::class));
 
         $this->expectException(UnmappedEntityMetadata::class);

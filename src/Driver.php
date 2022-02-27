@@ -15,9 +15,9 @@ class Driver
 {
     /**
      * @var ContainerInterface In order to allow for custom hydrators, a
-     *                         container is necessary.
+     *                         container is available.
      */
-    protected ContainerInterface $container;
+    protected ?ContainerInterface $container;
 
     /**
      * @var EntityManager
@@ -54,8 +54,12 @@ class Driver
      * @param Config $config required
      * @param Metadata|null $metadata optional so cached metadata can be loaded
      */
-    public function __construct(ContainerInterface $container, EntityManager $entityManager, Config $config, ?array $metadataConfig = null)
+    public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null, ContainerInterface $container = null)
     {
+        if (! $config) {
+            $config = new Config();
+        }
+
         $this->container = $container;
         $this->entityManager = $entityManager;
         $this->config = $config;

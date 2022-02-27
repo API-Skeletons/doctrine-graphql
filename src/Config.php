@@ -37,7 +37,7 @@ class Config
      */
     private bool $usePartials;
 
-    public function __construct(array $config)
+    public function __construct(array $config = [])
     {
         $this->group = $config['group'] ?? 'default';
         $this->useHydratorCache = $config['useHydratorCache'] ?? false;
