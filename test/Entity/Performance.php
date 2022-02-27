@@ -7,7 +7,7 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Performance
  */
-#[GraphQL\Entity(typeName: 'Performance', docs: 'Performances', group: 'default')]
+#[GraphQL\Entity(typeName: 'performance', docs: 'Performances', group: 'default')]
 class Performance
 {
     /**

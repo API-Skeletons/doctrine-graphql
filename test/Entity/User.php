@@ -7,8 +7,8 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * User
  */
-#[GraphQL\Entity(docs: 'User', typeName: 'User', group: 'default')]
-#[GraphQL\Entity(docs: 'User', typeName: 'User', group: 'test1')]
+#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'default')]
+#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'test1')]
 class User
 {
     /**

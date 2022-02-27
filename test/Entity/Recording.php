@@ -7,8 +7,8 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Recording
  */
-#[GraphQL\Entity(typeName: 'Recording', docs: 'Performance recordings', group: 'default')]
-#[GraphQL\Entity(typeName: 'EntityTestRecording', docs: 'Entity Test Recordings', group: 'entityTest')]
+#[GraphQL\Entity(typeName: 'recording', docs: 'Performance recordings', group: 'default')]
+#[GraphQL\Entity(typeName: 'entitytestrecording', docs: 'Entity Test Recordings', group: 'entityTest')]
 class Recording
 {
     /**

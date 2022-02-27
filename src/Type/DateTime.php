@@ -21,7 +21,7 @@ The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
     /**
      * @codeCoverageIgnore
      */
-    public function parseLiteral(Node $valueNode, ?array $variables = null)
+    public function parseLiteral(Node $valueNode, ?array $variables = null): string
     {
         if (! $valueNode instanceof StringValueNode) {
             throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, $valueNode);
@@ -30,7 +30,7 @@ The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
         return $valueNode->value;
     }
 
-    public function parseValue($value)
+    public function parseValue($value): PHPDateTime
     {
         if (! is_string($value)) {
             throw new \UnexpectedValueException('Date is not a string: ' . $value);
@@ -39,7 +39,7 @@ The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
         return PHPDateTime::createFromFormat('c', $value);
     }
 
-    public function serialize($value)
+    public function serialize($value): ?string
     {
         if ($value instanceof PHPDateTime) {
             $value = $value->format('c');

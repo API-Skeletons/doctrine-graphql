@@ -6,6 +6,7 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
+use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -63,6 +64,10 @@ class Entity
      */
     public function getGraphQLType(): ObjectType
     {
+        if (TypeManager::has($this->getTypeName())) {
+            return TypeManager::get($this->getTypeName());
+        }
+
         $classMetadata = $this->driver->getEntityManager()
             ->getClassMetadata($this->getEntityClass());
 
@@ -125,7 +130,7 @@ class Entity
             }
         }
 
-        return new ObjectType([
+        $objectType = new ObjectType([
             'name' => $this->metadataConfig['typeName'],
             'description' => $this->getDocs(),
             'fields' => function () use ($graphQLFields) {
@@ -133,5 +138,9 @@ class Entity
             },
             'resolveField' => $this->driver->getFieldResolver(),
         ]);
+
+        TypeManager::set($this->getTypeName(), $objectType);
+
+        return $objectType;
     }
 }

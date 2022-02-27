@@ -3,7 +3,7 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
-use GraphQL\Error\Error;
+use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\Type;
 
 trait GraphQLMapping
@@ -38,12 +38,8 @@ trait GraphQLMapping
             case 'array':
                 $graphQLType = Type::listOf(Type::string());
                 break;
-            case 'datetime':
-                $graphQLType = Type::string();
-//                $graphQLType = $dateTime;
-                break;
             default:
-                throw new Error('GraphQL Type not found for type ' . $fieldType);
+                return TypeManager::get($fieldType);
         }
 
         return $graphQLType;

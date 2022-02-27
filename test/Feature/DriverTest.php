@@ -6,6 +6,7 @@ use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\Manager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
@@ -70,6 +71,10 @@ class DriverTest extends AbstractTest
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
+
+//        Manager::show();
+
+        print_r($output);
 
     }
 }

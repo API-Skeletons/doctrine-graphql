@@ -7,7 +7,7 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Artist
  */
-#[GraphQL\Entity(typeName: 'Artist', docs: 'Artists', group: 'default')]
+#[GraphQL\Entity(typeName: 'artist', docs: 'Artists', group: 'default')]
 class Artist
 {
     /**

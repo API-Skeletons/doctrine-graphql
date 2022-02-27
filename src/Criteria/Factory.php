@@ -6,6 +6,7 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait\GraphQLMapping;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -22,6 +23,10 @@ class Factory
 
     public function __invoke(Entity $entity): InputObjectType
     {
+        if (TypeManager::has($entity->getTypeName() . '_Filter')) {
+            return TypeManager::get($entity->getTypeName() . '_Filter');
+        }
+
         $filters = [];
         $classMetadata = $this->driver->getEntityManager()
             ->getClassMetadata($entity->getEntityClass());
@@ -222,11 +227,15 @@ class Factory
             'documentation' => 'Limit the number of results.',
         ];
 
-        return new InputObjectType([
+        $inputObject = new InputObjectType([
             'name' => $entity->getTypeName() . '_Filter',
             'fields' => function () use ($fields) {
                 return $fields;
             },
         ]);
+
+        TypeManager::set($entity->getTypeName() . '_Filter', $inputObject);
+
+        return $inputObject;
     }
 }

@@ -7,8 +7,9 @@ use ApiSkeletons\Doctrine\GraphQL\Field\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
+use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
+use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Doctrine\ORM\EntityManager;
-use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use Psr\Container\ContainerInterface;
 
@@ -72,6 +73,9 @@ class Driver
         $this->criteria = new CriteriaFactory($this);
         $this->resolveEntityFactory = new ResolveEntityFactory($this);
         $this->fieldResolver = new FieldResolver($this);
+
+        // Set static types
+        TypeManager::set('datetime', new DateTime());
     }
 
     public function getFieldResolver(): FieldResolver
