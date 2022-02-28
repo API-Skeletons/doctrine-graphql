@@ -14,13 +14,11 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
-use ApiSkeletons\Doctrine\GraphQL\Invokable;
-use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
+use GraphQL\Error\Error;
 use Laminas\Hydrator\Filter\FilterComposite;
 use Laminas\Hydrator\Filter\FilterEnabledInterface;
 use Laminas\Hydrator\Filter\FilterInterface;
-use Laminas\Hydrator\HydratorInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyEnabledInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Hydrator\Strategy\StrategyEnabledInterface;
@@ -51,16 +49,13 @@ class Factory extends AbstractContainer
             ->set(ToFloat::class, new ToFloat())
             ->set(ToInteger::class, new ToInteger())
             ->set(ToJson::class, new ToJson())
-            ->set(Password::class, new Password())
-            ;
+            ->set(Password::class, new Password());
     }
 
     /**
-     * @param string $id
-     * @return mixed
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         // Custom hydrators should already be registered
         if ($this->has($id)) {

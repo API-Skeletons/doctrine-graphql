@@ -32,7 +32,7 @@ class Resolver
     }
 
     /**
-     * @throws UnmappedEntityMetadata
+     * @throws \GraphQL\Error\Error
      */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {

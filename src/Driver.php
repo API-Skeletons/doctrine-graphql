@@ -10,12 +10,10 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
-use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ObjectType;
-use Psr\Container\ContainerInterface;
 
 class Driver
 {

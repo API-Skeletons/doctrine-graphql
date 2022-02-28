@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL;
 
 use GraphQL\Error\Error;
 use Psr\Container\ContainerInterface;
 
+use function strtolower;
+
 abstract class AbstractContainer implements ContainerInterface
 {
-    /**
-     * @var mixed[]
-     */
+    /** @var mixed[] */
     protected array $register = [];
 
     public function has(string $id): bool
@@ -18,10 +20,9 @@ abstract class AbstractContainer implements ContainerInterface
     }
 
     /**
-     * @return mixed
      * @throws Error
      */
-    public function get(string $id)
+    public function get(string $id): mixed
     {
         $id = strtolower($id);
 
@@ -34,7 +35,7 @@ abstract class AbstractContainer implements ContainerInterface
 
     public function set(string $id, mixed $value): self
     {
-        $id  = strtolower($id);
+        $id = strtolower($id);
 
         if ($this->has($id)) {
             throw new Error($id . ' is already registered');
