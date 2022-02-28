@@ -42,9 +42,7 @@ class Factory
             return $this->metadata;
         }
 
-        $this->buildMetadata();
-
-        return $this->metadata;
+        return $this->buildMetadata();
     }
 
     protected function buildMetadata(): Metadata
@@ -215,6 +213,6 @@ class Factory
 
         $this->metadata = new Metadata($this->driver, $this->metadataConfig);
 
-        return $this->getMetadata();
+        return $this->metadata;
     }
 }

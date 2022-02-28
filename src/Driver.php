@@ -107,7 +107,7 @@ class Driver
         return $this->metadata;
     }
 
-    public function getContainer(): ContainerInterface
+    public function getContainer(): ?ContainerInterface
     {
         return $this->container;
     }

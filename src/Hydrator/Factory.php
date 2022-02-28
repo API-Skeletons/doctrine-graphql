@@ -28,7 +28,7 @@ use function in_array;
 class Factory
 {
     protected Driver $driver;
-    /** @var string[] */
+    /** @var HydratorInterface[] */
     protected array $registeredHydrators;
 
     public function __construct(Driver $driver)

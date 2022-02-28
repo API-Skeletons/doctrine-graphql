@@ -21,6 +21,8 @@ final class Entity
     /** @var string|null Documentation for the entity within GraphQL */
     private ?string $docs = null;
 
+    private ?string $typeName;
+
     /**
      * @var mixed[] An array of filters as
      * [
