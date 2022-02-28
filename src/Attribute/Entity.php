@@ -31,13 +31,11 @@ final class Entity
 
     private ?string $namingStrategy;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private array $excludeCriteria;
 
     /**
-     * @param mixed[] $filters
+     * @param mixed[]  $filters
      * @param string[] $excludeCriteria
      */
     public function __construct(
@@ -49,12 +47,12 @@ final class Entity
         ?string $namingStrategy = null,
         array $excludeCriteria = [],
     ) {
-        $this->group          = $group;
-        $this->byValue        = $byValue;
-        $this->description    = $description;
-        $this->typeName       = $typeName;
-        $this->filters        = $filters;
-        $this->namingStrategy = $namingStrategy;
+        $this->group           = $group;
+        $this->byValue         = $byValue;
+        $this->description     = $description;
+        $this->typeName        = $typeName;
+        $this->filters         = $filters;
+        $this->namingStrategy  = $namingStrategy;
         $this->excludeCriteria = $excludeCriteria;
     }
 
@@ -91,6 +89,9 @@ final class Entity
         return $this->namingStrategy;
     }
 
+    /**
+     * @return string[]
+     */
     public function getExcludeCriteria(): array
     {
         return $this->excludeCriteria;

@@ -15,9 +15,7 @@ class Association
 
     protected ?string $description;
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected array $excludeCriteria;
 
     /**
@@ -29,9 +27,9 @@ class Association
         ?string $description = null,
         array $excludeCriteria = []
     ) {
-        $this->group    = $group;
-        $this->strategy = $strategy;
-        $this->description = $description;
+        $this->group           = $group;
+        $this->strategy        = $strategy;
+        $this->description     = $description;
         $this->excludeCriteria = $excludeCriteria;
     }
 

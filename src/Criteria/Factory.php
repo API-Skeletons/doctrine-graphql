@@ -10,7 +10,9 @@ use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
+use function array_filter;
 use function array_keys;
+use function assert;
 use function in_array;
 
 class Factory
@@ -29,8 +31,7 @@ class Factory
         Entity $entity,
         ?string $associationName = null,
         ?array $associationMetadata = null
-    ): InputObjectType
-    {
+    ): InputObjectType {
         $typeName = $entity->getTypeName() . '_' . $associationName . '_Filter';
 
         if ($this->driver->getTypeManager()->has($typeName)) {
@@ -65,7 +66,7 @@ class Factory
         // Limit entity filters
         if ($graphQLMetadata['excludeCriteria']) {
             $excludeCriteria = $graphQLMetadata['excludeCriteria'];
-            $allowedFilters = array_filter($allowedFilters, function($value) use ($excludeCriteria) {
+            $allowedFilters  = array_filter($allowedFilters, static function ($value) use ($excludeCriteria) {
                 return ! in_array($value, $excludeCriteria);
             });
         }
@@ -73,7 +74,7 @@ class Factory
         // Limit association filters
         if ($associationName) {
             $excludeCriteria = $associationMetadata['excludeCriteria'];
-            $allowedFilters = array_filter($allowedFilters, function($value) use ($excludeCriteria) {
+            $allowedFilters  = array_filter($allowedFilters, static function ($value) use ($excludeCriteria) {
                 return ! in_array($value, $excludeCriteria);
             });
         }

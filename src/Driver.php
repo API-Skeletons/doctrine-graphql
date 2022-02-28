@@ -78,8 +78,7 @@ class Driver
         string $entityClass,
         ?string $associationName = null,
         ?array $associationMetadata = null
-    ): object
-    {
+    ): object {
         $criteria = $this->criteria;
 
         return $criteria($this->metadata->get($entityClass), $associationName, $associationMetadata);

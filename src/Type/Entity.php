@@ -116,8 +116,7 @@ class Entity
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function ()
-                        use ($targetEntity, $associationName) {
-
+ use ($targetEntity, $associationName) {
                         $entity = $this->driver->getMetadata()->get($targetEntity);
 
                         return [

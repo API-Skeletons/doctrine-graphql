@@ -8,6 +8,7 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
 use function array_merge;
+use function uniqid;
 
 class Between extends InputObjectType
 {

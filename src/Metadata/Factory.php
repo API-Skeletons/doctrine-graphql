@@ -185,7 +185,7 @@ class Factory
                     );
                     $associationInstance = $instance;
 
-                    $this->metadataConfig[$entityClass]['fields'][$associationName]['description'] = $instance->getDescription();
+                    $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $instance->getDescription();
                     $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = $instance->getExcludeCriteria();
 
                     if ($instance->getStrategy()) {
