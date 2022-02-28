@@ -83,22 +83,19 @@ class Factory
                     'entityClass' => $entityClass,
                     'byValue' => $instance->getByValue(),
                     'namingStrategy' => $instance->getNamingStrategy(),
-                    'strategies' => [],
+                    'fields' => [],
                     'filters' => $instance->getFilters(),
-                    'documentation' => [],
+                    'excludeCriteria' => $instance->getExcludeCriteria(),
+                    'description' => $instance->getDescription(),
                     'typeName' => $instance->getTypeName()
                         ?: str_replace('\\', '_', $entityClass),
                 ];
-
-                // Save documentation
-                $this->metadataConfig[$entityClass]['documentation']['_entity'] = $instance->getDocs();
             }
 
             // Fetch attributes for fields
             $entityClassMetadata = $this->driver->getEntityManager()
                 ->getMetadataFactory()->getMetadataFor($entityClass);
             $fieldNames          = $entityClassMetadata->getFieldNames();
-            $fields              = [];
 
             foreach ($fieldNames as $fieldName) {
                 $fieldInstance   = null;
@@ -120,16 +117,17 @@ class Factory
                     );
                     $fieldInstance = $instance;
 
-                    // Save documentation
-                    $this->metadataConfig[$entityClass]['documentation'][$fieldName] = $instance->getDocs();
+                    $this->metadataConfig[$entityClass]['fields'][$fieldName]['description'] =
+                        $instance->getDescription();
 
                     if ($instance->getStrategy()) {
-                        $fields[$fieldName] = $instance->getStrategy();
+                        $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                            $instance->getStrategy();
 
                         continue;
                     }
 
-                    // Set default strategies based on field type
+                    // Set default strategy based on field type
                     /**
                      * @psalm-suppress UndefinedDocblockClass
                      */
@@ -139,21 +137,25 @@ class Factory
                         case 'smallint':
                         case 'integer':
                         case 'int':
-                            $fields[$fieldName] = Strategy\ToInteger::class;
+                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                                Strategy\ToInteger::class;
                             break;
                         case 'boolean':
-                            $fields[$fieldName] = Strategy\ToBoolean::class;
+                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                                Strategy\ToBoolean::class;
                             break;
                         case 'decimal':
                         case 'float':
-                            $fields[$fieldName] = Strategy\ToFloat::class;
+                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                                Strategy\ToFloat::class;
                             break;
                         case 'bigint':  // bigint is handled as a string internal to php
                         case 'string':
                         case 'text':
                         case 'datetime':
                         default:
-                            $fields[$fieldName] = Strategy\FieldDefault::class;
+                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                                Strategy\FieldDefault::class;
                             break;
                     }
                 }
@@ -181,36 +183,29 @@ class Factory
                         'Duplicate attribute found for association '
                         . $associationName . ', group ' . $instance->getGroup()
                     );
-                    $fieldInstance = $instance;
+                    $associationInstance = $instance;
 
-                    // Save documentation
-                    $this->metadataConfig[$entityClass]['documentation'][$associationName] = $instance->getDocs();
+                    $this->metadataConfig[$entityClass]['fields'][$associationName]['description'] = $instance->getDescription();
+                    $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = $instance->getExcludeCriteria();
 
                     if ($instance->getStrategy()) {
-                        $fields[$associationName] = $instance->getStrategy();
+                        $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] = $instance->getStrategy();
 
                         continue;
                     }
 
-                    // Set default strategies based on association type
-                    foreach ($associationNames as $associationName) {
-                        $mapping = $entityClassMetadata->getAssociationMapping($associationName);
+                    $mapping = $entityClassMetadata->getAssociationMapping($associationName);
 
-                        // See comment on NullifyOwningAssociation for details of why this is done
-                        if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
-                            $fields[$associationName] = Strategy\NullifyOwningAssociation::class;
-                        } else {
-                            $fields[$associationName] = Strategy\AssociationDefault::class;
-                        }
+                    // See comment on NullifyOwningAssociation for details of why this is done
+                    if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
+                        $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
+                            Strategy\NullifyOwningAssociation::class;
+                    } else {
+                        $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
+                            Strategy\AssociationDefault::class;
                     }
                 }
             }
-
-            if (! $fields) {
-                continue;
-            }
-
-            $this->metadataConfig[$entityClass]['strategies'] = $fields;
         }
 
         $this->metadata = new Metadata($this->driver, $this->metadataConfig);

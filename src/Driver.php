@@ -74,11 +74,15 @@ class Driver
         return $entity->getGraphQLType();
     }
 
-    public function filter(string $entityClass): object
+    public function filter(
+        string $entityClass,
+        ?string $associationName = null,
+        ?array $associationMetadata = null
+    ): object
     {
         $criteria = $this->criteria;
 
-        return $criteria($this->metadata->get($entityClass));
+        return $criteria($this->metadata->get($entityClass), $associationName, $associationMetadata);
     }
 
     public function resolve(string $entityClass): Closure

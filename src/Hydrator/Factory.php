@@ -66,15 +66,15 @@ class Factory extends AbstractContainer
         $config   = $entity->getMetadataConfig();
         $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
 
-        // Create strategies and assign to hydrator
+        // Create field strategy and assign to hydrator
         if ($hydrator instanceof StrategyEnabledInterface) {
-            foreach ($config['strategies'] as $fieldName => $strategyClass) {
+            foreach ($config['fields'] as $fieldName => $fieldMetadata) {
                 assert(
-                    in_array(StrategyInterface::class, class_implements($strategyClass)),
+                    in_array(StrategyInterface::class, class_implements($fieldMetadata['strategy'])),
                     'Strategy must implement ' . StrategyInterface::class
                 );
 
-                $hydrator->addStrategy($fieldName, $this->get($strategyClass));
+                $hydrator->addStrategy($fieldName, $this->get($fieldMetadata['strategy']));
             }
         }
 
@@ -95,7 +95,7 @@ class Factory extends AbstractContainer
 
         // Create naming strategy and assign to hydrator
         if ($hydrator instanceof NamingStrategyEnabledInterface && $config['namingStrategy']) {
-            $namingStrategyClass = $config['naming_strategy'];
+            $namingStrategyClass = $config['namingStrategy'];
 
             assert(
                 in_array(NamingStrategyInterface::class, class_implements($namingStrategyClass)),

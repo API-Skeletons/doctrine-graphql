@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
 use function array_merge;
 
-class Between extends AbstractFilterType
+class Between extends InputObjectType
 {
     /**
      * @param mixed[] $config
@@ -36,6 +37,7 @@ class Between extends AbstractFilterType
 
         $config['fields'] = array_merge($config['fields'], $defaultFieldConfig);
 
+        $config['name'] = 'fc' . uniqid();
         parent::__construct($config);
     }
 }

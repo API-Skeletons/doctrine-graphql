@@ -7,49 +7,51 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Performance
  */
-#[GraphQL\Entity(typeName: 'performance', docs: 'Performances', group: 'default')]
+#[GraphQL\Entity(typeName: 'performance', description: 'Performances', group: 'default')]
+#[GraphQL\Entity(group: 'ExcludeCriteriaTest', excludeCriteria: ['contains'])]
 class Performance
 {
     /**
      * @var string|null
      */
-    #[GraphQL\Field(docs: 'Venue name', group: 'default')]
+    #[GraphQL\Field(description: 'Venue name', group: 'default')]
+    #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
     private $venue;
 
     /**
      * @var string|null
      */
-    #[GraphQL\Field(docs: 'City name', group: 'default')]
+    #[GraphQL\Field(description: 'City name', group: 'default')]
     private $city;
 
     /**
      * @var string|null
      */
-    #[GraphQL\Field(docs: 'State name', group: 'default')]
+    #[GraphQL\Field(description: 'State name', group: 'default')]
     private $state;
 
     /**
      * @var \DateTime
      */
-    #[GraphQL\Field(docs: 'Performance date', group: 'default')]
+    #[GraphQL\Field(description: 'Performance date', group: 'default')]
     private $performanceDate;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
+    #[GraphQL\Field(description: 'Primary key', group: 'default')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(docs: 'Recordings by artist', group: 'default')]
+    #[GraphQL\Association(description: 'Recordings by artist', group: 'default')]
     private $recordings;
 
     /**
      * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist
      */
-    #[GraphQL\Association(docs: 'Artist entity', group: 'default')]
+    #[GraphQL\Association(description: 'Artist entity', group: 'default')]
     private $artist;
 
     /**

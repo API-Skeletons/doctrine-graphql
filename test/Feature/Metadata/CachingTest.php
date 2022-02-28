@@ -20,6 +20,8 @@ class CachingTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), null, $metadataConfig);
         $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(User::class));
+
+        print_r($driver->getMetadata()->getMetadataConfig());
     }
 
     public function testStaticMetadata(): void
@@ -27,8 +29,22 @@ class CachingTest extends AbstractTest
         $metadataConfig = [
             'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User' => [
                 'entityClass' => 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User',
+                'documentation' => '',
                 'byValue' => 1,
                 'namingStrategy' => null,
+                'fields' => [
+                    'name' => [
+                        'strategy' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault',
+                        'documentation' => '',
+                    ],
+                    'recordings' => [
+                        'strategy' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault',
+                        'excludeCriteria' => ['eq'],
+                        'documentation' => '',
+                    ]
+                ],
+
+
                 'strategies' => [
                     'name' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault',
                     'email' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault',
@@ -36,13 +52,6 @@ class CachingTest extends AbstractTest
                     'recordings' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault',
                 ],
                 'filters' => [],
-                'documentation' => [
-                    '_entity' => 'User',
-                    'name' => 'User name',
-                    'email' => 'User email',
-                    'id' => 'Primary key',
-                    'recordings' => 'Recordings',
-                ],
                 'typeName' => 'User',
             ]
         ];

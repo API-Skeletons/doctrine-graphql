@@ -22,10 +22,19 @@ class Factory
         $this->driver = $driver;
     }
 
-    public function __invoke(Entity $entity): InputObjectType
+    /**
+     * @param mixed[]|null $associationMetadata
+     */
+    public function __invoke(
+        Entity $entity,
+        ?string $associationName = null,
+        ?array $associationMetadata = null
+    ): InputObjectType
     {
-        if ($this->driver->getTypeManager()->has($entity->getTypeName() . '_Filter')) {
-            return $this->driver->getTypeManager()->get($entity->getTypeName() . '_Filter');
+        $typeName = $entity->getTypeName() . '_' . $associationName . '_Filter';
+
+        if ($this->driver->getTypeManager()->has($typeName)) {
+            return $this->driver->getTypeManager()->get($typeName);
         }
 
         $filters         = [];
@@ -51,30 +60,29 @@ class Factory
 //            'memberof',
         ];
 
-        // Limit filters
-        if (! $graphQLMetadata['filters'] || $graphQLMetadata['filters'] === ['*']) {
-            $allowedFilters = $allFilters;
-        } else {
-            $allowedFilters = $graphQLMetadata['filters'];
+        $allowedFilters = $allFilters;
+
+        // Limit entity filters
+        if ($graphQLMetadata['excludeCriteria']) {
+            $excludeCriteria = $graphQLMetadata['excludeCriteria'];
+            $allowedFilters = array_filter($allowedFilters, function($value) use ($excludeCriteria) {
+                return ! in_array($value, $excludeCriteria);
+            });
+        }
+
+        // Limit association filters
+        if ($associationName) {
+            $excludeCriteria = $associationMetadata['excludeCriteria'];
+            $allowedFilters = array_filter($allowedFilters, function($value) use ($excludeCriteria) {
+                return ! in_array($value, $excludeCriteria);
+            });
         }
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             $graphQLType = null;
 
-            /**
-             * If there are no filters return empty type
-             */
-            if ($graphQLMetadata['filters'] === ['none']) {
-                return new InputObjectType([
-                    'name' => 'Filter',
-                    'fields' => static function () {
-                        return [];
-                    },
-                ]);
-            }
-
             // Only process fields which are in the graphql metadata
-            if (! in_array($fieldName, array_keys($graphQLMetadata['strategies']))) {
+            if (! in_array($fieldName, array_keys($graphQLMetadata['fields']))) {
                 continue;
             }
 
@@ -84,19 +92,11 @@ class Factory
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
             $graphQLType   = $this->driver->getTypeManager()->get($fieldMetadata['type']);
 
-            if ($fieldMetadata['type'] === 'array') {
-                $graphQLType = Type::string();
-            }
-
             if ($graphQLType && $classMetadata->isIdentifier($fieldName)) {
                 $graphQLType = Type::id();
             }
 
-            // FIXME: Send event to allow overriding a field type
-
-            if (! $graphQLType) {
-                continue;
-            }
+            assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
             // Step through all criteria and create filter fields
             $descriptions = [
@@ -194,7 +194,7 @@ class Factory
                     ];
                 }
 
-                if (in_array('endwith', $allowedFilters)) {
+                if (in_array('endswith', $allowedFilters)) {
                     $fields[$fieldName . '_endswith'] = [
                         'name' => $fieldName . '_endswith',
                         'type' => $graphQLType,
@@ -241,7 +241,7 @@ class Factory
             },
         ]);
 
-        $this->driver->getTypeManager()->set($entity->getTypeName() . '_Filter', $inputObject);
+        $this->driver->getTypeManager()->set($typeName, $inputObject);
 
         return $inputObject;
     }
