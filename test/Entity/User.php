@@ -4,6 +4,7 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrategy;
@@ -52,7 +53,7 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(description: 'Recordings')]
+    #[GraphQL\Association(description: 'Recordings', strategy: AssociationDefault::class)]
     private $recordings;
 
     /**
