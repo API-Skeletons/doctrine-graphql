@@ -12,21 +12,21 @@ $partialContext->setUsePartials(true);
 class Config
 {
     /**
-     * @var string[] The GraphQL group. This allows multiple GraphQL
+     * @var string The GraphQL group. This allows multiple GraphQL
      *               configurations within the same application or
      *               even within the same group of entities and Object Manager.
      */
-    private string $group;
+    protected string $group;
 
     /**
      * @var bool When set to true hydrator results will be cached for the
      *           duration of the request thereby saving multiple extracts for
      *           the same entity.
      */
-    private bool $useHydratorCache;
+    protected bool $useHydratorCache;
 
     /** @var int A hard limit for fetching any collection within the schema */
-    private int $limit;
+    protected int $limit;
 
     /**
      * @var bool Instead of fetching entire entities enabling this will use
@@ -34,7 +34,7 @@ class Config
      *           defaulted to false. Before enabling this be sure to
      *           understand Doctrine Partial Objects
      */
-    private bool $usePartials;
+    protected bool $usePartials;
 
     /**
      * @param mixed[] $config

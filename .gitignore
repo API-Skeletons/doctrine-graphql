@@ -1,7 +1,7 @@
 .DS_Store
-phpcs.xml
-phpunit.xml
-composer.lock
-vendor/
-coverage/
+/phpcs.xml.dist
+/phpunit.xml.dist
+/composer.lock
+/vendor/
+/coverage/
 /.idea/

@@ -82,6 +82,9 @@ class Factory
                 continue;
             }
 
+            /**
+             * @psalm-suppress UndefinedDocblockClass
+             */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
             $graphQLType   = $this->mapFieldType($fieldMetadata['type']);
 

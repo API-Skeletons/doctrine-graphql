@@ -42,9 +42,7 @@ class Factory
             return $this->metadata;
         }
 
-        $this->buildMetadata();
-
-        return $this->metadata;
+        return $this->buildMetadata();
     }
 
     protected function buildMetadata(): Metadata
@@ -133,6 +131,9 @@ class Factory
                     }
 
                     // Set default strategies based on field type
+                    /**
+                     * @psalm-suppress UndefinedDocblockClass
+                     */
                     $fieldMetadata = $entityClassMetadata->getFieldMapping($fieldName);
                     switch ($fieldMetadata['type']) {
                         case 'tinyint':
@@ -215,6 +216,6 @@ class Factory
 
         $this->metadata = new Metadata($this->driver, $this->metadataConfig);
 
-        return $this->getMetadata();
+        return $this->metadata;
     }
 }
