@@ -87,7 +87,7 @@ class Entity
             /**
              * @psalm-suppress UndefinedDocblockClass
              */
-            $fieldMapping = $classMetadata->getFieldMapping($fieldName);
+            $fieldMapping              = $classMetadata->getFieldMapping($fieldName);
             $graphQLFields[$fieldName] = [
                 'type' => $this->mapFieldType(
                     $fieldMapping['type']
