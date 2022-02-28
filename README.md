@@ -132,7 +132,7 @@ The available filters are:
 * gt - Greater than
 * gte - Greater than or equal to
 * isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
-* between - Between.  Identical to using gte & lte on the same field.
+* between - Between.  Identical to using gte & lte on the same field.  Give values as `low,high`
 * in - Exists within a list of comma-delimited values.
 * notin - Does not exist within a list of comma-delimited values.
 * startwith - A like query with a wildcard on the right side of the value.
