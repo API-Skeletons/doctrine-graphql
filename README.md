@@ -1,69 +1,85 @@
 GraphQL for Doctrine Using Attributes
 =====================================
 
-[![Build Status](https://travis-ci.org/API-Skeletons/doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/doctrine-graphql)
-[![Coverage](https://coveralls.io/repos/github/API-Skeletons/doctrine-graphql/badge.svg?branch=master&124)](https://coveralls.io/repos/github/API-Skeletons/doctrine-graphql/badge.svg?branch=master&124)
-[![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
-[![Gitter](https://badges.gitter.im/api-skeletons/open-source.svg)](https://gitter.im/api-skeletons/open-source)
-[![Patreon](https://img.shields.io/badge/patreon-donate-yellow.svg)](https://www.patreon.com/apiskeletons)
-[![Total Downloads](https://poser.pugx.org/api-skeletons/doctrine-graphql/downloads)](https://packagist.org/packages/api-skeletons/doctrine-graphql)
+[![Build Status](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml?query=branch%3Amain)
+[![Code Coverage](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main/graphs/badge.svg)](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main)
+[![PHP Version](https://img.shields.io/badge/PHP-8.0%2b-blue)](https://img.shields.io/badge/PHP-8.0%2b-blue)
+[![Total Downloads](https://poser.pugx.org/api-skeletons/doctrine-graphql/downloads)](//packagist.org/packages/api-skeletons/doctrine-graphql)
+[![License](https://poser.pugx.org/api-skeletons/doctrine-graphql/license)](//packagist.org/packages/api-skeletons/doctrine-graphql)
 
-This library is framework agnostic.  Using PHP 8 attributes on your entities, this library will create a driver
-for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).
+
+This library is framework agnostic.  Using PHP 8 attributes on your entities, this library will create a 
+Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  The goal of this library
+is to enable GraphQL on Doctrine data with a minimum amount of configuration.  
 
 Quick Start
 -----------
 
-Adding attributes to your entities will take time and is covered in the documentation.
-Once your entities are properly attributed the following code will create an `artist`
-entry point in GraphQL with full deep traversal of related entities and collections.
+Add attributes to your Doctrine entities (Doctrine metadata not listed)
 
 ```php
-$graphQLDriver = new DoctrineGraphQLDriver($entityManager, $config);
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+
+#[GraphQL\Entity]
+class Artist 
+{
+    #[GraphQL\Field]
+    public $id;
+    
+    #[GraphQL\Field]
+    public $name;
+    
+    #[GraphQL\Association]
+    public $performances;
+}
+
+#[GraphQL\Entity]
+class Performance
+{
+    #[GraphQL\Field]
+    public $id;
+    
+    #[GraphQL\Field]
+    public $venue;
+}
+```
+
+Create the driver and GraphQL schema
+
+```php
+use ApiSkeletons\Doctrine\GraphQL\Driver;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Schema;
+
+$driver = new Driver($entityManager);
 
 $schema = new Schema([
     'query' => new ObjectType([
         'name' => 'query',
         'fields' => [
             'artist' => [
-                'type' => Type::listOf($graphQLDriver->type(Entity\Artist::class),
+                'type' => Type::listOf($driver->type(Artist::class),
                 'args' => [
-                    'filter' => $graphQLDriver->filter(Entity\Artist::class),
+                    'filter' => $driver->filter(Artist::class),
                 ],
-                'resolve' => $graphQLDriver->resolve(Entity\Artist::class),
+                'resolve' => $driver->resolve(Artist::class),
             ],
         ],
     ]),
 ]);
-
 ```
 
-
-Attributes
-----------
-
+Run GraphQL queries
 
 ```php
-namespace App\ORM\Entity;
+use use GraphQL\GraphQL;
 
-use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
-use App\ORM\Hydrator\CustomHydrator;
+$query = '{ artist { id name performances { venue } } }';
 
-#[GraphQL\Entity(group: 'default', hydrator: CustomHydrator::class)]
-class User
-{
-    #[GraphQL\Field]
-    private string $id;  // bigint = string
-
-    #[GraphQL\Field]
-    private string $name;
-
-    private string $password; // no attribute = not returned in graphql
-}
+$result = GraphQL::executeQuery($schema, $query);
+$output = $result->toArray();
 ```
 
-
-
 [Read the Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
-==========================================================
-
+for more information.
