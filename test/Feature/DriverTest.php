@@ -48,14 +48,13 @@ class DriverTest extends AbstractTest
         $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
     }
 
+    /**
+     * This tests much of the whole system.  Each part is tested in detail
+     * elsewhere.
+     */
     public function testBuildGraphQLSchema(): void
     {
-        $config = new Config([
-            'usePartials' => true,
-            'useHydratorCache' => true,
-        ]);
-
-        $driver = new Driver($this->getEntityManager(), $config);
+        $driver = new Driver($this->getEntityManager());
 
         $schema = new Schema([
             'query' => new ObjectType([
@@ -68,27 +67,18 @@ class DriverTest extends AbstractTest
                         ],
                         'resolve' => $driver->resolve(Artist::class),
                     ],
-                    'user' => [
-                        'type' => Type::listOf($driver->type(User::class)),
-                        'args' => [
-                            'filter' => $driver->filter(User::class),
-                        ],
-                        'resolve' => $driver->resolve(User::class),
-                    ],
                 ],
             ]),
         ]);
 
         $query = '{
-            one: artist (filter: { name_contains: "dead" })
+            artist (filter: { name_contains: "dead" })
                 { id name performances { venue recordings { source } } }
-            two: user { name email password }
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        print_r($output);
-
+        $this->assertEquals('Grateful Dead', $output['data']['artist'][0]['name']);
     }
 }

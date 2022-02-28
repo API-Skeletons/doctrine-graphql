@@ -41,7 +41,7 @@ trait GraphQLMapping
                 $graphQLType = Type::listOf(Type::string());
                 break;
             default:
-                return TypeManager::get($fieldType);
+                return $this->driver->getTypeManager()->get($fieldType);
         }
 
         return $graphQLType;

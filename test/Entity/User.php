@@ -10,7 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
  */
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'default')]
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'test1')]
-#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testPasswordFilter', filters: [['filter' => Password::class]])]
+#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testPasswordFilter', filters: ['password' => ['filter' => Password::class]])]
 class User
 {
     /**
