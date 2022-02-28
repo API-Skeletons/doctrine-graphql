@@ -12,6 +12,8 @@ This library is framework agnostic.  Using PHP 8 attributes on your entities, th
 Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  The goal of this library
 is to enable GraphQL on Doctrine data with a minimum amount of configuration.  
 
+This REAMDE file describes how to start.   [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
+is also available.
 
 Installation
 ------------
@@ -135,6 +137,3 @@ The available filters are:
 * contains - A like query.
 
 You may exclude certain filters from all fields on an entity or by individual field.
-
-[Read the Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
-for more information.
