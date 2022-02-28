@@ -73,7 +73,7 @@ $schema = new Schema([
 Run GraphQL queries
 
 ```php
-use use GraphQL\GraphQL;
+use GraphQL\GraphQL;
 
 $query = '{ artist { id name performances { venue } } }';
 
