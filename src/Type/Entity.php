@@ -13,7 +13,7 @@ use Laminas\Hydrator\HydratorInterface;
 
 class Entity
 {
-    use Trait\GraphQLMapping;
+    use \ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 
     protected Driver $driver;
     protected array $metadataConfig;

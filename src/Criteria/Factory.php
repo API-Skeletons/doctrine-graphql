@@ -4,7 +4,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait\GraphQLMapping;
+use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\InputObjectType;

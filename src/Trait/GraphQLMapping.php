@@ -1,6 +1,6 @@
 <?php
 
-namespace ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
+namespace ApiSkeletons\Doctrine\GraphQL\Trait;
 
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
