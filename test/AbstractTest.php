@@ -2,450 +2,146 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
-use Datetime;
-use Laminas\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use DateTime;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
-use DbTest\Entity;
+use Doctrine\ORM\Tools\Setup;
+use PHPUnit\Framework\TestCase;
 
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Schema;
-use GraphQL\Type\Definition\Type;
-use ApiSkeletons\Doctrine\GraphQL\Type\Loader as TypeLoader;
-use ApiSkeletons\Doctrine\GraphQL\Filter\Loader as FilterLoader;
-use ApiSkeletons\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
-use ApiSkeletons\Doctrine\GraphQL\Context;
+require_once __DIR__ . '/../vendor/autoload.php';
 
-abstract class AbstractTest extends AbstractHttpControllerTestCase
+abstract class AbstractTest extends TestCase
 {
-    public function setUp()
+    protected EntityManager $entityManager;
+
+    public function setUp(): void
     {
-        $this->setApplicationConfig(
-            include __DIR__ . '/config/test.config.php'
+        // Create a simple "default" Doctrine ORM configuration for Annotations
+        $isDevMode = true;
+        $config = Setup::createXMLMetadataConfiguration(array(__DIR__ . "/config"), $isDevMode);
+
+        // database configuration parameters
+        $conn = array(
+            'driver' => 'pdo_sqlite',
+            'memory' => true,
         );
-        parent::setUp();
 
-        $serviceManager = $this->getApplication()->getServiceManager();
-        $objectManager = $serviceManager->get('doctrine.entitymanager.orm_default');
-        $config = $serviceManager->get('config');
+        // obtaining the entity manager
+        $this->entityManager = EntityManager::create($conn, $config);
+        $tool = new SchemaTool($this->entityManager);
+        $res = $tool->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
 
-        // Create Default Database
-        $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
-        $schemaTool = new SchemaTool($objectManager);
-        $sql = $schemaTool->getCreateSchemaSql($metadata);
-
-        foreach ($sql as $command) {
-            $objectManager->getConnection()->exec($command);
-        }
-
-        // Add fixtures
-        $artist1 = new Entity\Artist();
-        $artist1->name = 'artist1';
-        $artist1->createdAt = new DateTime('2010-02-01');
-        $artist1->alias = ['a1', 'a2', 'a3'];
-        $objectManager->persist($artist1);
-
-        $performance1 = new Entity\Performance();
-        $performance1->artist = $artist1;
-        $performance1->performanceDate = '2011-01-01';
-        $performance1->venue = 'venue1';
-        $performance1->attendance = 1000;
-        $performance1->isTradable = true;
-        $performance1->ticketPrice = 10.01;
-        $objectManager->persist($performance1);
-        $artist1->performance->add($performance1);
-
-        $performance2 = new Entity\Performance();
-        $performance2->artist = $artist1;
-        $performance2->performanceDate = '2011-01-02';
-        $performance2->venue = 'venue2';
-        $performance2->attendance = 2000;
-        $performance2->isTradable = null;
-        $performance2->ticketPrice = 20.01;
-        $objectManager->persist($performance2);
-        $artist1->performance->add($performance2);
-
-        $performance3 = new Entity\Performance();
-        $performance3->artist = $artist1;
-        $performance3->performanceDate = '2011-01-03';
-        $performance3->venue = 'venue3';
-        $performance3->attendance = 2000;
-        $performance3->isTradable = false;
-        $performance3->ticketPrice = 30.01;
-        $objectManager->persist($performance3);
-        $artist1->performance->add($performance3);
-
-        $performance4 = new Entity\Performance();
-        $performance4->artist = $artist1;
-        $performance4->performanceDate = '2011-01-04';
-        $performance4->venue = 'venue4';
-        $performance4->attendance = 4000;
-        $performance4->isTradable = false;
-        $performance4->ticketPrice = 40.01;
-        $objectManager->persist($performance4);
-        $artist1->performance->add($performance4);
-
-        $performance5 = new Entity\Performance();
-        $performance5->artist = $artist1;
-        $performance5->performanceDate = '2011-01-05';
-        $performance5->venue = 'venue5';
-        $performance5->attendance = 5000;
-        $performance5->isTradable = true;
-        $performance5->ticketPrice = 50.01;
-        $objectManager->persist($performance5);
-        $artist1->performance->add($performance5);
-
-        $artist2 = new Entity\Artist();
-        $artist2->name = 'artist2';
-        $artist2->createdAt = new DateTime('2010-02-02');
-        $artist2->alias = ['b1', 'b2', 'b3'];
-        $objectManager->persist($artist2);
-
-        $artist3 = new Entity\Artist();
-        $artist3->name = 'artist3';
-        $artist3->createdAt = new DateTime('2010-02-03');
-        $artist3->alias = ['c1', 'c2', 'c3'];
-        $objectManager->persist($artist3);
-
-        $artist4 = new Entity\Artist();
-        $artist4->name = 'artist4';
-        $artist4->createdAt = new DateTime('2010-02-04');
-        $artist4->alias = ['d1', 'd2', 'd3'];
-        $objectManager->persist($artist4);
-
-        $artist5 = new Entity\Artist();
-        $artist5->name = 'artist5';
-        $artist5->createdAt = new DateTime('2010-02-05');
-        $artist5->alias = ['e1', 'e2', 'e3'];
-        $objectManager->persist($artist5);
-
-
-        $user1 = new Entity\User();
-        $user1->name = 'test1';
-        $user1->password = 'secret';
-        $user1->createdAt = new DateTime('2010-01-01');
-
-        $address = new Entity\Address();
-        $address->user= $user1;
-        $address->address = 'address1';
-        $user1->address = $address;
-
-        $objectManager->persist($address);
-        $objectManager->persist($user1);
-
-        $user = new Entity\User();
-        $user->name = 'test2';
-        $user->password = 'secret';
-        $user->createdAt = new DateTime('2010-01-02');
-
-        $address = new Entity\Address();
-        $address->user= $user;
-        $address->address = 'address2';
-        $user->address = $address;
-
-        $objectManager->persist($address);
-        $objectManager->persist($user);
-
-        $user = new Entity\User();
-        $user->name = 'test3';
-        $user->password = 'secret';
-        $user->createdAt = new DateTime('2010-01-03');
-
-        $address = new Entity\Address();
-        $address->user= $user;
-        $address->address = 'address3';
-        $user->address = $address;
-
-        $objectManager->persist($address);
-        $objectManager->persist($user);
-
-        $user = new Entity\User();
-        $user->name = 'test4';
-        $user->password = 'secret';
-        $user->createdAt = new DateTime('2010-01-04');
-
-        $address = new Entity\Address();
-        $address->user= $user;
-        $address->address = 'address4';
-        $user->address = $address;
-
-        $objectManager->persist($address);
-        $objectManager->persist($user);
-
-        $user = new Entity\User();
-        $user->name = 'test5';
-        $user->password = 'secret';
-        $user->createdAt = new DateTime('2010-01-05');
-
-        $address = new Entity\Address();
-        $address->user= $user;
-        $address->address = 'address5';
-        $user->address = $address;
-
-        $objectManager->persist($address);
-        $objectManager->persist($user);
-
-        $user1->artist->add($artist1);
-        $artist1->user->add($user1);
-        $user1->artist->add($artist2);
-        $artist2->user->add($user1);
-        $user1->artist->add($artist3);
-        $artist3->user->add($user1);
-        $user1->artist->add($artist4);
-        $artist4->user->add($user1);
-        $user1->artist->add($artist5);
-        $artist5->user->add($user1);
-
-        $objectManager->flush();
-        $objectManager->clear();
+        $this->populateData();
     }
 
-    protected function getObjectManager()
+    protected function getEntityManager(): EntityManager
     {
-        return $this->getApplication()
-            ->getServiceManager()
-            ->get('doctrine.entitymanager.orm_default')
-            ;
+        return $this->entityManager;
     }
 
-    public function schemaDataProvider() {
-        $testContext = new Context();
-        $testContext->setHydratorSection('test');
-        $testContext->setUseHydratorCache(true);
-        $testContext->setLimit(1000);
-
-        $partialContext = new Context();
-        $partialContext->setHydratorSection('test');
-        $partialContext->setUseHydratorCache(true);
-        $partialContext->setLimit(1000);
-        $partialContext->setUsePartials(true);
-
-        $providers = [
+    protected function populateData()
+    {
+        $users = [
             [
-                'schemaName' => 'default',
-                'context' => new Context(),
+                'name' => 'User one',
+                'email' => 'userOne@gmail.com',
+                'password' => 'asdf',
             ],
             [
-                'schemaName' => 'partials',
-                'context' => $partialContext,
-            ],
-            [
-                'schemaName' => 'test',
-                'context' => $testContext,
+                'name' => 'User two',
+                'email' => 'userTwo@gmail.com',
+                'password' => 'fdsa'
             ],
         ];
 
-        return $providers;
-    }
-
-    public function eventDataProvider() {
-        $eventContext = new Context();
-        $eventContext->setHydratorSection('event');
-        $eventContext->setUseHydratorCache(false);
-        $eventContext->setLimit(1000);
-        $eventContext->setUsePartials(false);
-
-        $providers = [
-            [
-                'schemaName' => 'event',
-                'context' => $eventContext,
+        $artists = [
+            'Grateful Dead' => [
+                '1995-02-21' => [
+                    'venue' => 'Delta Center',
+                    'city' => 'Salt Lake City',
+                    'state' => 'Utah',
+                    'recordings' => [
+                        'SBD> D> CD-R> EAC> SHN; via Jay Serafin, Brian '
+                          . 'Walker; see info file and pub comments for notes; '
+                          . 'possibly "click track" audible on a couple tracks',
+                        'DSBD > 1C > DAT; Seeded to etree by Dan Stephens',
+                    ]
+                ],
+                '1969-11-08' => [
+                    'venue' => 'Fillmore Auditorium',
+                    'city' => 'San Francisco',
+                    'state' => 'California',
+                ],
+                '1977-05-08' => [
+                  'venue' => 'Barton Hall, Cornell University',
+                  'city' => 'Ithaca',
+                  'state' => 'New York',
+                ],
+                '1995-07-09' => [
+                  'venue' => 'Soldier Field',
+                  'city' => 'Chicago',
+                  'state' => 'Illinois',
+                ],
+            ],
+            'Phish' => [
+                '1998-11-02' => [
+                    'venue' => 'E Center',
+                    'city' => 'West Valley City',
+                    'state' => 'Utah',
+                    'recordings' => [
+                        'AKG480 > Aerco preamp > SBM-1',
+                    ],
+                ],
+                '1999-12-31' => [
+                    'venue' => null,
+                    'city' => 'Big Cypress',
+                    'state' => 'Florida',
+                ],
+            ],
+            'String Cheese Incident' => [
+                '2002-06-21' => [
+                    'venue' => 'Bonnaroo',
+                    'city' => 'Manchester',
+                    'state' => 'Tennessee',
+                ],
             ],
         ];
 
-        return $providers;
-    }
-
-    protected function getSchema($schemaName)
-    {
-        switch ($schemaName) {
-            case 'default':
-                return $this->getDefaultSchema();
-            case 'partials':
-                return $this->getPartialsSchema();
-            case 'test':
-                return $this->getTestSchema();
-            case 'event':
-                return $this->getEventSchema();
+        foreach ($users as $userData) {
+            $user = new Entity\User();
+            $this->entityManager->persist($user);
+            $user->setName($userData['name']);
+            $user->setEmail($userData['email']);
+            $user->setPassword($userData['password']);
         }
-    }
 
-    protected function getDefaultSchema()
-    {
-        $serviceManager = $this->getApplication()->getServiceManager();
-        $typeLoader = $serviceManager->get(TypeLoader::class);
-        $filterLoader = $serviceManager->get(FilterLoader::class);
-        $resolveLoader = $serviceManager->get(ResolveLoader::class);
+        foreach ($artists as $name => $performances) {
+            $artist = (new Entity\Artist())
+                ->setName($name);
+            $this->entityManager->persist($artist);
 
-        $context = new Context();
+            foreach ($performances as $performanceDate => $location) {
+                $performance = (new Entity\Performance())
+                    ->setPerformanceDate(DateTime::createFromFormat('Y-m-d H:i:s', $performanceDate . ' 00:00:00'))
+                    ->setVenue($location['venue'])
+                    ->setCity($location['city'])
+                    ->setState($location['state'])
+                    ->setArtist($artist);
+                $this->entityManager->persist($performance);
 
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
-                    ],
-                    'performance' => [
-                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Performance::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
-                    ],
-                    'user' => [
-                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\User::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\User::class, $context),
-                    ],
-                    'address' => [
-                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Address::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Address::class, $context),
-                    ],
-                ],
-            ]),
-        ]);
+                if (isset($location['recordings'])) {
+                    foreach ($location['recordings'] as $source) {
+                        $recording = (new Entity\Recording())
+                            ->setSource($source)
+                            ->setPerformance($performance);
+                        $this->entityManager->persist($recording);
+                    }
 
-        return $schema;
-    }
+                }
+            }
+        }
 
-    protected function getPartialsSchema()
-    {
-        $serviceManager = $this->getApplication()->getServiceManager();
-        $typeLoader = $serviceManager->get(TypeLoader::class);
-        $filterLoader = $serviceManager->get(FilterLoader::class);
-        $resolveLoader = $serviceManager->get(ResolveLoader::class);
-
-        $context = new Context();
-        $context->setHydratorSection('partials');
-        $context->setUseHydratorCache(true);
-        $context->setLimit(1000);
-        $context->setUsePartials(true);
-
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
-                    ],
-                    'performance' => [
-                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Performance::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
-                    ],
-                    'user' => [
-                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\User::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\User::class, $context),
-                    ],
-                    'address' => [
-                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Address::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Address::class, $context),
-                    ],
-                ],
-            ]),
-        ]);
-
-        return $schema;
-    }
-
-    protected function getTestSchema()
-    {
-        $serviceManager = $this->getApplication()->getServiceManager();
-        $typeLoader = $serviceManager->get(TypeLoader::class);
-        $filterLoader = $serviceManager->get(FilterLoader::class);
-        $resolveLoader = $serviceManager->get(ResolveLoader::class);
-
-        $context = new Context();
-        $context->setHydratorSection('test');
-        $context->setUseHydratorCache(false);
-        $context->setUsePartials(false);
-
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
-                    ],
-                    'performance' => [
-                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Performance::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
-                    ],
-                    'user' => [
-                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\User::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\User::class, $context),
-                    ],
-                    'address' => [
-                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Address::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Address::class, $context),
-                    ],
-                ],
-            ]),
-        ]);
-
-        return $schema;
-    }
-
-    protected function getEventSchema()
-    {
-        $serviceManager = $this->getApplication()->getServiceManager();
-        $typeLoader = $serviceManager->get(TypeLoader::class);
-        $filterLoader = $serviceManager->get(FilterLoader::class);
-        $resolveLoader = $serviceManager->get(ResolveLoader::class);
-
-        $context = new Context();
-        $context->setHydratorSection('event');
-        $context->setUseHydratorCache(false);
-        $context->setUsePartials(false);
-
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class, $context),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
-                    ],
-                ],
-            ]),
-        ]);
-
-        return $schema;
+        $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 }

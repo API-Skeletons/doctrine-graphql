@@ -2,8 +2,9 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
+use ApiSkeletons\Doctrine\GraphQL\Invokable;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Transform a value into a php native boolean
@@ -11,9 +12,10 @@ use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
  * @returns float
  */
 class ToBoolean extends AbstractCollectionStrategy implements
-    StrategyInterface
+    StrategyInterface,
+    Invokable
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         if (is_null($value)) {
             return $value;
@@ -25,7 +27,7 @@ class ToBoolean extends AbstractCollectionStrategy implements
     /**
      * @codeCoverageIgnore
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         if (is_null($value)) {
             return $value;

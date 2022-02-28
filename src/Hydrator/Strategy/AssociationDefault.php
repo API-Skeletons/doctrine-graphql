@@ -2,17 +2,19 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
+use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Take no action on an association.  This class exists to
  * differentiate associations inside generated config.
  */
 class AssociationDefault extends AbstractCollectionStrategy implements
-    StrategyInterface
+    StrategyInterface,
+    Invokable
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         return $value;
     }
@@ -20,7 +22,7 @@ class AssociationDefault extends AbstractCollectionStrategy implements
     /**
      * @codeCoverageIgnore
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         return $value;
     }

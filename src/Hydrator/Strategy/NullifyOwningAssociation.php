@@ -2,8 +2,9 @@
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
+use ApiSkeletons\Doctrine\GraphQL\Invokable;
+use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
-use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
 
 /**
  * Nullify an association.
@@ -29,9 +30,10 @@ use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
  * a configuration skeleton.
  */
 class NullifyOwningAssociation extends AbstractCollectionStrategy implements
-    StrategyInterface
+    StrategyInterface,
+    Invokable
 {
-    public function extract($value)
+    public function extract($value, ?object $object = null)
     {
         return null;
     }
@@ -39,7 +41,7 @@ class NullifyOwningAssociation extends AbstractCollectionStrategy implements
     /**
      * @codeCoverageIgnore
      */
-    public function hydrate($value)
+    public function hydrate($value, ?array $data)
     {
         return null;
     }
