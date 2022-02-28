@@ -6,7 +6,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
@@ -16,8 +15,6 @@ use function in_array;
 
 class Factory
 {
-    use GraphQLMapping;
-
     protected Driver $driver;
 
     public function __construct(Driver $driver)
@@ -85,7 +82,7 @@ class Factory
              * @psalm-suppress UndefinedDocblockClass
              */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-            $graphQLType   = $this->mapFieldType($fieldMetadata['type']);
+            $graphQLType   = $this->driver->getTypeManager()->get($fieldMetadata['type']);
 
             if ($fieldMetadata['type'] === 'array') {
                 $graphQLType = Type::string();
