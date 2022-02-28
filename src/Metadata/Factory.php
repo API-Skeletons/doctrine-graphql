@@ -131,6 +131,9 @@ class Factory
                     }
 
                     // Set default strategies based on field type
+                    /**
+                     * @psalm-suppress UndefinedDocblockClass
+                     */
                     $fieldMetadata = $entityClassMetadata->getFieldMapping($fieldName);
                     switch ($fieldMetadata['type']) {
                         case 'tinyint':
