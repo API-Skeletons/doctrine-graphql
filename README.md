@@ -118,7 +118,23 @@ Example
 }
 ```
 
+Filters are named after their field and followed by an underscore and the filter name.
+The available filters are:
+* eq - Equals.  May be shorthanded as `field: "value"` or longhanded as `field_eq: "value"`
+* neq - Not equals
+* lt - Less than
+* lte - Less than or equal to
+* gt - Greater than
+* gte - Greater than or equal to
+* isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
+* between - Between.  Identical to using gte & lte on the same field.
+* in - Exists within a list of comma-delimited values.
+* notin - Does not exist within a list of comma-delimited values.
+* startwith - A like query with a wildcard on the right side of the value.
+* endswith - A like query with a wildcard on the left side of the value.
+* contains - A like query.
 
+You may exclude certain filters from all fields on an entity or by individual field.
 
 [Read the Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
 for more information.
