@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
+use Closure;
 use GraphQL\Type\Definition\ResolveInfo;
+
+use function array_keys;
+use function implode;
+use function strrpos;
+use function substr;
 
 class EntityFactory
 {
@@ -16,27 +24,28 @@ class EntityFactory
         $this->driver = $driver;
     }
 
-    public function get(Entity $entity): \Closure
+    public function get(Entity $entity): Closure
     {
-        return function($obj, $args, $context, ResolveInfo $info) use ($entity) {
+        return function ($obj, $args, $context, ResolveInfo $info) use ($entity) {
             $entityClass = $entity->getEntityClass();
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
-            $skip = 0;
-            $limit = $this->driver->getConfig()->getLimit();
+            $skip        = 0;
+            $limit       = $this->driver->getConfig()->getLimit();
 
             foreach ($filterTypes as $field => $value) {
                 // Parse command filters first
-                if ($field == '_skip') {
+                if ($field === '_skip') {
                     $skip = $value;
                     continue;
                 }
 
-                if ($field == '_limit') {
+                if ($field === '_limit') {
                     if ($value <= $limit) {
                         $limit = $value;
                     }
+
                     continue;
                 }
 
@@ -67,6 +76,7 @@ class EntityFactory
                             } else {
                                 $filterArray[$field . '|isnotnull'] = true;
                             }
+
                             break;
                         default:
                             $filterArray[$field . '|' . $filter] = $value;
@@ -77,22 +87,25 @@ class EntityFactory
 
             $queryBuilderFilter = (new Applicator($this->driver->getEntityManager(), $entityClass))
                 ->setEntityAlias('entity');
-            $queryBuilder = $queryBuilderFilter($filterArray);
+            $queryBuilder       = $queryBuilderFilter($filterArray);
 
             if ($this->driver->getConfig()->getUsePartials()) {
                 // Select only the fields being queried
                 $fieldArray = $info->getFieldSelection();
 
                 // Add primary key of this entity; required for partials
-                $classMetadata = $this->driver->getEntityManager()->getClassMetadata($entityClass);
+                $classMetadata                                              = $this->driver->getEntityManager()->getClassMetadata($entityClass);
                 $fieldArray[$classMetadata->getSingleIdentifierFieldName()] = 1;
 
                 // Verify all fields exist and only query for scalar values, not associations
                 foreach ($fieldArray as $fieldName => $value) {
-                    if ($classMetadata->hasAssociation($fieldName)) {
-                        unset($fieldArray[$fieldName]);
+                    if (! $classMetadata->hasAssociation($fieldName)) {
+                        continue;
                     }
+
+                    unset($fieldArray[$fieldName]);
                 }
+
                 $fieldList = implode(',', array_keys($fieldArray));
 
                 // Build query builder from Query Provider

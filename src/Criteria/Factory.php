@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
@@ -9,6 +11,9 @@ use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
+
+use function array_keys;
+use function in_array;
 
 class Factory
 {
@@ -27,8 +32,8 @@ class Factory
             return TypeManager::get($entity->getTypeName() . '_Filter');
         }
 
-        $filters = [];
-        $classMetadata = $this->driver->getEntityManager()
+        $filters         = [];
+        $classMetadata   = $this->driver->getEntityManager()
             ->getClassMetadata($entity->getEntityClass());
         $graphQLMetadata = $entity->getMetadataConfig();
 
@@ -51,7 +56,7 @@ class Factory
         ];
 
         // Limit filters
-        if (!$graphQLMetadata['filters'] || $graphQLMetadata['filters'] === ['*']) {
+        if (! $graphQLMetadata['filters'] || $graphQLMetadata['filters'] === ['*']) {
             $allowedFilters = $allFilters;
         } else {
             $allowedFilters = $graphQLMetadata['filters'];
@@ -66,19 +71,19 @@ class Factory
             if ($graphQLMetadata['filters'] === ['none']) {
                 return new InputObjectType([
                     'name' => 'Filter',
-                    'fields' => function () {
+                    'fields' => static function () {
                         return [];
                     },
                 ]);
             }
 
             // Only process fields which are in the graphql metadata
-            if (!in_array($fieldName, array_keys($graphQLMetadata['strategies']))) {
+            if (! in_array($fieldName, array_keys($graphQLMetadata['strategies']))) {
                 continue;
             }
 
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
+            $graphQLType   = $this->mapFieldType($fieldMetadata['type']);
 
             if ($fieldMetadata['type'] === 'array') {
                 $graphQLType = Type::string();
@@ -90,7 +95,7 @@ class Factory
 
             // FIXME: Send event to allow overriding a field type
 
-            if (!$graphQLType) {
+            if (! $graphQLType) {
                 continue;
             }
 
@@ -106,13 +111,15 @@ class Factory
 
             // Build simple filters
             foreach ($descriptions as $filter => $docs) {
-                if (in_array($filter, $allowedFilters)) {
-                    $filters[$fieldName] = [
-                        'name' => $fieldName . '_' . $filter,
-                        'type' => $graphQLType,
-                        'description' => $docs,
-                    ];
+                if (! in_array($filter, $allowedFilters)) {
+                    continue;
                 }
+
+                $filters[$fieldName] = [
+                    'name' => $fieldName . '_' . $filter,
+                    'type' => $graphQLType,
+                    'description' => $docs,
+                ];
             }
 
             // This eq filter is for field:value instead of field_eq:value
@@ -147,16 +154,17 @@ class Factory
                 $fields[$fieldName . '_between'] = [
                     'name' => $fieldName . '_between',
                     'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
-                    'type' => new Between(['fields' => [
-                        'from' => [
-                            'name' => 'from',
-                            'type' => Type::nonNull($graphQLType),
+                    'type' => new Between([
+                        'fields' => [
+                            'from' => [
+                                'name' => 'from',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                            'to' => [
+                                'name' => 'to',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
                         ],
-                        'to' => [
-                            'name' => 'to',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]
                     ]),
                 ];
             }
@@ -177,7 +185,7 @@ class Factory
                 ];
             }
 
-            if ($graphQLType == Type::string()) {
+            if ($graphQLType === Type::string()) {
                 if (in_array('startswith', $allowedFilters)) {
                     $fields[$fieldName . '_startswith'] = [
                         'name' => $fieldName . '_startswith',
@@ -216,7 +224,7 @@ class Factory
             */
         }
 
-        $fields['_skip'] = [
+        $fields['_skip']  = [
             'name' => '_skip',
             'type' => Type::int(),
             'documentation' => 'Skip x records from beginning of data set.',
@@ -229,7 +237,7 @@ class Factory
 
         $inputObject = new InputObjectType([
             'name' => $entity->getTypeName() . '_Filter',
-            'fields' => function () use ($fields) {
+            'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]);

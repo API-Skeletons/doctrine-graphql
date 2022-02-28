@@ -1,14 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
 use GraphQL\Type\Definition\Type;
 
+use function array_merge;
+
 class Between extends AbstractFilterType
 {
+    /**
+     * @param mixed[] $config
+     */
     public function __construct(array $config = [])
     {
-        $config['fields'] = $config['fields'] ?? [];
+        $config['fields'] ??= [];
 
         $defaultFieldConfig = [
             'field' => [

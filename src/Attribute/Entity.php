@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
 use Attribute;
@@ -7,28 +9,20 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class Entity
 {
-    /**
-     * @var string The GraphQL group
-     */
+    /** @var string The GraphQL group */
     private string $group;
 
-    /**
-     * @var bool Extract by value: true, or by reference: false
-     */
+    /** @var bool Extract by value: true, or by reference: false */
     private bool $byValue;
 
-    /**
-     * @var string The hydrator classname to used extract the entity
-     */
+    /** @var string The hydrator classname to used extract the entity */
     private string $hydrator;
 
-    /**
-     * @var string|null Documentation for the entity within GraphQL
-     */
+    /** @var string|null Documentation for the entity within GraphQL */
     private ?string $docs = null;
 
     /**
-     * @var array[string[]] An array of filters as
+     * @var mixed[] An array of filters as
      * [
      *   'condition' => FilterComposite::CONDITION_AND,
      *   'filter' => 'Filter\ClassName',
@@ -38,6 +32,9 @@ final class Entity
 
     private ?string $namingStrategy;
 
+    /**
+     * @param mixed[] $filters
+     */
     public function __construct(
         string $group = 'default',
         bool $byValue = true,
@@ -47,12 +44,12 @@ final class Entity
         array $filters = [],
         ?string $namingStrategy = null,
     ) {
-        $this->group = $group;
-        $this->byValue = $byValue;
-        $this->hydrator = $hydrator;
-        $this->docs = $docs;
-        $this->typeName = $typeName;
-        $this->filters = $filters;
+        $this->group          = $group;
+        $this->byValue        = $byValue;
+        $this->hydrator       = $hydrator;
+        $this->docs           = $docs;
+        $this->typeName       = $typeName;
+        $this->filters        = $filters;
         $this->namingStrategy = $namingStrategy;
     }
 
@@ -81,6 +78,9 @@ final class Entity
         return $this->typeName;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getFilters(): array
     {
         return $this->filters;

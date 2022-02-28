@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
@@ -33,15 +35,20 @@ class NullifyOwningAssociation extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {
-    public function extract($value, ?object $object = null)
+    /**
+     * @return null
+     */
+    public function extract(mixed $value, ?object $object = null)
     {
         return null;
     }
 
     /**
-     * @codeCoverageIgnore
+     * @param mixed[]|null $data
+     *
+     * @return null
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate(mixed $value, ?array $data)
     {
         return null;
     }

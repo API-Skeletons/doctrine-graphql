@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
+
+use function json_decode;
+use function json_encode;
+
+use const JSON_UNESCAPED_SLASHES;
 
 /**
  * Transform a value to JSON
@@ -15,9 +22,9 @@ class ToJson extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {
-    public function extract($value, ?object $object = null)
+    public function extract(mixed $value, ?object $object = null): mixed
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $value;
         }
 
@@ -25,11 +32,11 @@ class ToJson extends AbstractCollectionStrategy implements
     }
 
     /**
-     * @codeCoverageIgnore
+     * @param mixed[]|null $data
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate(mixed $value, ?array $data): mixed
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $value;
         }
 

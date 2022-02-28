@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
 use Attribute;
@@ -18,9 +20,9 @@ class Association
         ?string $strategy = null,
         ?string $docs = null
     ) {
-        $this->group = $group;
+        $this->group    = $group;
         $this->strategy = $strategy;
-        $this->docs = $docs;
+        $this->docs     = $docs;
     }
 
     public function getGroup(): string

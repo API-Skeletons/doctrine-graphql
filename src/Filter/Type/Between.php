@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
+use function array_merge;
+
 class Between extends AbstractFilterType
 {
+    /**
+     * @param mixed[] $config
+     */
     public function __construct(array $config = [])
     {
         $defaultFieldConfig = [

@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Field;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Exception\UnmappedEntityMetadata;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Type\Definition\ResolveInfo;
-use ApiSkeletons\Doctrine\GraphQL\Context;
+
+use function is_array;
+use function spl_object_hash;
 
 /**
  * A field resolver that uses the Doctrine Laminas hydrator.
  */
-class FieldResolver
+class Resolver
 {
     /**
      * Cache all hydrator extract operations based on spl object hash
      *
-     * @var array
+     * @var mixed[]
      */
-    private $extractValues = [];
+    private array $extractValues = [];
 
     protected Driver $driver;
 
@@ -28,13 +31,16 @@ class FieldResolver
         $this->driver = $driver;
     }
 
-    public function __invoke($source, $args, $context, ResolveInfo $info): mixed
+    /**
+     * @throws UnmappedEntityMetadata
+     */
+    public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
         if (is_array($source)) {
             return $source[$info->fieldName];
         }
 
-        $entityClass = ClassUtils::getRealClass(get_class($source));
+        $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
 
         $hydrator = $this->driver->getMetadata()->getEntity($entityClass)->getHydrator();

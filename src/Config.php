@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL;
 
 /**
  * This class is used for parameter differentiation when creating the driver
 $partialContext->setLimit(1000);
 $partialContext->setUsePartials(true);
-
  */
 class Config
 {
@@ -24,9 +25,7 @@ class Config
      */
     private bool $useHydratorCache;
 
-    /**
-     * @var int A hard limit for fetching any collection within the schema
-     */
+    /** @var int A hard limit for fetching any collection within the schema */
     private int $limit;
 
     /**
@@ -37,12 +36,15 @@ class Config
      */
     private bool $usePartials;
 
+    /**
+     * @param mixed[] $config
+     */
     public function __construct(array $config = [])
     {
-        $this->group = $config['group'] ?? 'default';
+        $this->group            = $config['group'] ?? 'default';
         $this->useHydratorCache = $config['useHydratorCache'] ?? false;
-        $this->limit = $config['limit'] ?? 1000;
-        $this->usePartials = $config['usePartials'] ?? false;
+        $this->limit            = $config['limit'] ?? 1000;
+        $this->usePartials      = $config['usePartials'] ?? false;
     }
 
     public function getGroup(): string

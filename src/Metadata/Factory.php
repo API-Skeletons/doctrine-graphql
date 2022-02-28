@@ -1,21 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use ReflectionClass;
+
+use function assert;
+use function str_replace;
 
 class Factory
 {
     protected Driver $driver;
     protected ?Metadata $metadata;
+
+    /** @var array|mixed[]|null */
     protected ?array $metadataConfig;
 
+    /**
+     * @param mixed|null $metadataConfig
+     */
     public function __construct(Driver $driver, ?array $metadataConfig)
     {
-        $this->driver = $driver;
+        $this->driver         = $driver;
         $this->metadataConfig = $metadataConfig;
 
         if ($metadataConfig) {
@@ -36,7 +47,7 @@ class Factory
         return $this->metadata;
     }
 
-    protected function buildMetadata()
+    protected function buildMetadata(): Metadata
     {
         // Get all entity classes
         $allMetadata = $this->driver->getEntityManager()
@@ -48,8 +59,8 @@ class Factory
         }
 
         foreach ($entityClasses as $entityClass) {
-            $entityInstance = null;
-            $reflectionClass = new \ReflectionClass($entityClass);
+            $entityInstance  = null;
+            $reflectionClass = new ReflectionClass($entityClass);
 
             // Fetch attributes for the entity class filterd by Attribute\Entity
             foreach ($reflectionClass->getAttributes(Attribute\Entity::class) as $attribute) {
@@ -61,7 +72,8 @@ class Factory
                 }
 
                 // Only one matching instance per group is allowed
-                assert(! $entityInstance,
+                assert(
+                    ! $entityInstance,
                     'Duplicate attribute found for entity '
                     . $entityClass . ', group ' . $instance->getGroup()
                 );
@@ -78,7 +90,7 @@ class Factory
                     'filters' => $instance->getFilters(),
                     'documentation' => [],
                     'typeName' => $instance->getTypeName()
-                        ?: str_replace('\\', '_', $entityClass)
+                        ?: str_replace('\\', '_', $entityClass),
                 ];
 
                 // Save documentation
@@ -88,11 +100,11 @@ class Factory
             // Fetch attributes for fields
             $entityClassMetadata = $this->driver->getEntityManager()
                 ->getMetadataFactory()->getMetadataFor($entityClass);
-            $fieldNames = $entityClassMetadata->getFieldNames();
-            $fields = [];
+            $fieldNames          = $entityClassMetadata->getFieldNames();
+            $fields              = [];
 
             foreach ($fieldNames as $fieldName) {
-                $fieldInstance = null;
+                $fieldInstance   = null;
                 $reflectionField = $reflectionClass->getProperty($fieldName);
 
                 foreach ($reflectionField->getAttributes(Attribute\Field::class) as $attribute) {
@@ -104,7 +116,8 @@ class Factory
                     }
 
                     // Only one matching instance per group is allowed
-                    assert(! $fieldInstance,
+                    assert(
+                        ! $fieldInstance,
                         'Duplicate attribute found for field '
                         . $fieldName . ', group ' . $instance->getGroup()
                     );
@@ -151,11 +164,10 @@ class Factory
                 ->getMetadataFor($entityClass)->getAssociationNames();
 
             foreach ($associationNames as $associationName) {
-                $associationInstance = null;
+                $associationInstance   = null;
                 $reflectionAssociation = $reflectionClass->getProperty($associationName);
 
                 foreach ($reflectionAssociation->getAttributes(Attribute\Association::class) as $attribute) {
-
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
@@ -164,7 +176,8 @@ class Factory
                     }
 
                     // Only one matching instance per group is allowed
-                    assert(! $associationInstance,
+                    assert(
+                        ! $associationInstance,
                         'Duplicate attribute found for association '
                         . $associationName . ', group ' . $instance->getGroup()
                     );
@@ -184,7 +197,7 @@ class Factory
                         $mapping = $entityClassMetadata->getAssociationMapping($associationName);
 
                         // See comment on NullifyOwningAssociation for details of why this is done
-                        if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
+                        if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
                             $fields[$associationName] = Strategy\NullifyOwningAssociation::class;
                         } else {
                             $fields[$associationName] = Strategy\AssociationDefault::class;
@@ -193,9 +206,11 @@ class Factory
                 }
             }
 
-            if ($fields) {
-                $this->metadataConfig[$entityClass]['strategies'] = $fields;
+            if (! $fields) {
+                continue;
             }
+
+            $this->metadataConfig[$entityClass]['strategies'] = $fields;
         }
 
         $this->metadata = new Metadata($this->driver, $this->metadataConfig);
