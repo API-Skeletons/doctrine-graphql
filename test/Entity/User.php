@@ -9,7 +9,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
  * User
  */
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'default')]
-#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'test1')]
+#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testNonDefaultGroup')]
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testPasswordFilter', filters: ['password' => ['filter' => Password::class]])]
 class User
 {
@@ -17,7 +17,7 @@ class User
      * @var string
      */
     #[GraphQL\Field(docs: 'User name', group: 'default')]
-    #[GraphQL\Field(docs: 'User name', group: 'test1')]
+    #[GraphQL\Field(docs: 'User name', group: 'testNonDefaultGroup')]
     #[GraphQL\Field(docs: 'User name', group: 'testPasswordFilter')]
     private $name;
 
@@ -38,7 +38,7 @@ class User
      * @var int
      */
     #[GraphQL\Field(docs: 'Primary key', group: 'default')]
-    #[GraphQL\Field(docs: 'Primary key', group: 'test1')]
+    #[GraphQL\Field(docs: 'Primary key', group: 'testNonDefaultGroup')]
     private $id;
 
     /**

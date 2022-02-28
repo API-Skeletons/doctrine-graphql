@@ -82,7 +82,6 @@ class Factory
                 $this->metadataConfig[$entityClass] = [
                     'entityClass' => $entityClass,
                     'byValue' => $instance->getByValue(),
-                    'hydrator' => $instance->getHydrator(),
                     'namingStrategy' => $instance->getNamingStrategy(),
                     'strategies' => [],
                     'filters' => $instance->getFilters(),

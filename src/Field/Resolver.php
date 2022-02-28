@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Field;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Exception\UnmappedEntityMetadata;
 use Doctrine\Common\Util\ClassUtils;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 
 use function is_array;
@@ -32,7 +32,7 @@ class Resolver
     }
 
     /**
-     * @throws UnmappedEntityMetadata
+     * @throws Error
      */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
@@ -43,7 +43,7 @@ class Resolver
         $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
 
-        $hydrator = $this->driver->getMetadata()->getEntity($entityClass)->getHydrator();
+        $hydrator = $this->driver->getMetadata()->get($entityClass)->getHydrator();
 
         /**
          * For disabled hydrator cache, store only last hydrator result and reuse for consecutive calls

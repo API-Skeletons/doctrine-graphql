@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
-use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
@@ -32,8 +31,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
  * a configuration skeleton.
  */
 class NullifyOwningAssociation extends AbstractCollectionStrategy implements
-    StrategyInterface,
-    Invokable
+    StrategyInterface
 {
     /**
      * @return null

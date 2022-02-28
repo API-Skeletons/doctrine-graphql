@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
-use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
@@ -14,8 +13,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
  * @returns float
  */
 class ToBoolean extends AbstractCollectionStrategy implements
-    StrategyInterface,
-    Invokable
+    StrategyInterface
 {
     public function extract(mixed $value, ?object $object = null): ?bool
     {

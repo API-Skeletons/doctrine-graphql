@@ -4,14 +4,21 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
+use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Invokable;
-use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
+use GraphQL\Error\Error;
 use Laminas\Hydrator\Filter\FilterComposite;
 use Laminas\Hydrator\Filter\FilterEnabledInterface;
 use Laminas\Hydrator\Filter\FilterInterface;
-use Laminas\Hydrator\HydratorInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyEnabledInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Hydrator\Strategy\StrategyEnabledInterface;
@@ -25,39 +32,39 @@ use function in_array;
  * This factory is used in the Metadata\Entity class to create a hydrator
  * for the current entity
  */
-class Factory
+class Factory extends AbstractContainer
 {
     protected Driver $driver;
-    /** @var HydratorInterface[] */
-    protected array $registeredHydrators;
 
     public function __construct(Driver $driver)
     {
-        $this->driver              = $driver;
-        $this->registeredHydrators = [];
+        $this->driver = $driver;
+
+        // Register project defaults
+        $this
+            ->set(AssociationDefault::class, new AssociationDefault())
+            ->set(FieldDefault::class, new FieldDefault())
+            ->set(NullifyOwningAssociation::class, new NullifyOwningAssociation())
+            ->set(ToBoolean::class, new ToBoolean())
+            ->set(ToFloat::class, new ToFloat())
+            ->set(ToInteger::class, new ToInteger())
+            ->set(ToJson::class, new ToJson())
+            ->set(Password::class, new Password());
     }
 
-    public function get(Entity $entity): HydratorInterface
+    /**
+     * @throws Error
+     */
+    public function get(string $id): mixed
     {
-        if (isset($this->registeredHydrators[$entity->getEntityClass()])) {
-            return $this->registeredHydrators[$entity->getEntityClass()];
+        // Custom hydrators should already be registered
+        if ($this->has($id)) {
+            return parent::get($id);
         }
 
-        $config        = $entity->getMetadataConfig();
-        $hydratorClass = $config['hydrator'];
-
-        if ($hydratorClass === 'default') {
-            $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
-        } else {
-            assert(
-                in_array(HydratorInterface::class, class_implements($hydratorClass)),
-                'Hydrator must implement ' . HydratorInterface::class
-            );
-
-            // FIXME:  How can this be improved?  Would like to pass the config to the container :\
-            // It may be that each entity must have a unique hydrator?
-            $hydrator = $this->get($hydratorClass);
-        }
+        $entity   = $this->driver->getMetadata()->get($id);
+        $config   = $entity->getMetadataConfig();
+        $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
 
         // Create strategies and assign to hydrator
         if ($hydrator instanceof StrategyEnabledInterface) {
@@ -67,7 +74,7 @@ class Factory
                     'Strategy must implement ' . StrategyInterface::class
                 );
 
-                $hydrator->addStrategy($fieldName, $this->getInvokable($strategyClass));
+                $hydrator->addStrategy($fieldName, $this->get($strategyClass));
             }
         }
 
@@ -82,7 +89,7 @@ class Factory
                     'Filter must implement ' . StrategyInterface::class
                 );
 
-                $hydrator->addFilter($name, $this->getInvokable($filterClass), $condition);
+                $hydrator->addFilter($name, $this->get($filterClass), $condition);
             }
         }
 
@@ -95,28 +102,11 @@ class Factory
                 'Naming Strategy must implement ' . NamingStrategyInterface::class
             );
 
-            $hydrator->setNamingStrategy($this->getInvokable($namingStrategyClass));
+            $hydrator->setNamingStrategy($this->get($namingStrategyClass));
         }
 
-        $this->registeredHydrators[$entity->getEntityClass()] = $hydrator;
+        $this->set($id, $hydrator);
 
-        return $this->registeredHydrators[$entity->getEntityClass()];
-    }
-
-    /**
-     * Instead of using the container for all objects, such as included filters
-     * and strategies, which should not be required to load into the service
-     * manager (affects some frameworks, not others), an Invokable interface
-     * exists to flag the class to be created directly.
-     */
-    protected function getInvokable(string $className): mixed
-    {
-        if (in_array(Invokable::class, class_implements($className))) {
-            $class = new $className();
-        } else {
-            $class = $this->driver->getContainer()->get($className);
-        }
-
-        return $class;
+         return $hydrator;
     }
 }
