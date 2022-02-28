@@ -33,13 +33,12 @@ abstract class AbstractContainer implements ContainerInterface
         return $this->register[$id];
     }
 
+    /**
+     * This allows for a duplicate id to overwrite an existing registration
+     */
     public function set(string $id, mixed $value): self
     {
         $id = strtolower($id);
-
-        if ($this->has($id)) {
-            throw new Error($id . ' is already registered');
-        }
 
         $this->register[$id] = $value;
 
