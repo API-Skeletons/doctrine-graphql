@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Field;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Exception\UnmappedEntityMetadata;
 use Doctrine\Common\Util\ClassUtils;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 
 use function is_array;
@@ -32,7 +32,7 @@ class Resolver
     }
 
     /**
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
