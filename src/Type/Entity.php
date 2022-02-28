@@ -6,7 +6,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
-use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
@@ -18,8 +17,6 @@ use function in_array;
 
 class Entity
 {
-    use GraphQLMapping;
-
     protected Driver $driver;
     /** @var mixed[] */
     protected array $metadataConfig;
@@ -88,9 +85,7 @@ class Entity
              */
             $fieldMapping              = $classMetadata->getFieldMapping($fieldName);
             $graphQLFields[$fieldName] = [
-                'type' => $this->mapFieldType(
-                    $fieldMapping['type']
-                ),
+                'type' => $this->driver->getTypeManager()->get($fieldMapping['type']),
                 'description' => $this->metadataConfig['documentation'][$fieldName],
             ];
         }
