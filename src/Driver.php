@@ -14,6 +14,7 @@ use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ObjectType;
+use League\Event\EventDispatcher;
 
 class Driver
 {
@@ -33,6 +34,8 @@ class Driver
     protected HydratorFactory $hydratorFactory;
 
     protected TypeManager $typeManager;
+
+    protected EventDispatcher $eventDispatcher;
 
     /**
      * @param string        $entityManagerAlias required
@@ -56,6 +59,7 @@ class Driver
         $this->fieldResolver        = new FieldResolver($this);
         $this->hydratorFactory      = new HydratorFactory($this);
         $this->typeManager          = new TypeManager();
+        $this->eventDispatcher      = new EventDispatcher();
     }
 
     public function getFieldResolver(): FieldResolver
@@ -105,5 +109,10 @@ class Driver
     public function getTypeManager(): TypeManager
     {
         return $this->typeManager;
+    }
+
+    public function getEventDispatcher(): EventDispatcher
+    {
+        return $this->eventDispatcher;
     }
 }
