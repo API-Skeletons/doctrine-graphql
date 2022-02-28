@@ -12,6 +12,17 @@ This library is framework agnostic.  Using PHP 8 attributes on your entities, th
 Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  The goal of this library
 is to enable GraphQL on Doctrine data with a minimum amount of configuration.  
 
+
+Installation
+------------
+
+Run the following to install this library using [Composer](https://getcomposer.org/):
+
+```bash
+composer require api-skeletons/doctrine-graphql
+```
+
+
 Quick Start
 -----------
 
@@ -86,6 +97,28 @@ $query = '{ artist { id name performances { venue } } }';
 $result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
 ```
+
+Filtering
+---------
+
+For every attributed field and every attributed association, filters are available in your
+GraphQL query.
+
+Example
+
+```gql
+{
+  artist (filter: { name_contains: "dead" }) {
+    id
+    name
+    performances (filter: { venue_eq: "The Fillmore" }) {
+      venue
+    }
+  }
+}
+```
+
+
 
 [Read the Documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
 for more information.
