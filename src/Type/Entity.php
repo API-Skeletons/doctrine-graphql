@@ -37,7 +37,7 @@ class Entity
 
     public function getHydrator(): HydratorInterface
     {
-        return $this->driver->getHydratorFactory()->get($this);
+        return $this->driver->getHydratorFactory()->get($this->getEntityClass());
     }
 
     public function getTypeName(): string
@@ -108,7 +108,7 @@ class Entity
                 case ClassMetadataInfo::TO_ONE:
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function () use ($targetEntity) {
-                        $entity = $this->driver->getMetadata()->getEntity($targetEntity);
+                        $entity = $this->driver->getMetadata()->get($targetEntity);
 
                         return [
                             'type' => $entity->getGraphQLType(),
@@ -121,7 +121,7 @@ class Entity
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function () use ($targetEntity) {
-                        $entity = $this->driver->getMetadata()->getEntity($targetEntity);
+                        $entity = $this->driver->getMetadata()->get($targetEntity);
 
                         return [
                             'type' => Type::listOf($entity->getGraphQLType()),

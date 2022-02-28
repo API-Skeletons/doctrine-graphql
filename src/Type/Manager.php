@@ -4,41 +4,12 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
-use GraphQL\Error\Error;
+use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 
-use function strtolower;
-
-class Manager
+class Manager extends AbstractContainer
 {
-    /** @var mixed[] */
-    protected array $registeredTypes = [];
-
-    public function has(string $name): bool
+    public function __construct()
     {
-        $name = strtolower($name);
-
-        return isset($this->registeredTypes[$name]);
-    }
-
-    public function get(string $name): mixed
-    {
-        $name = strtolower($name);
-
-        if (! isset($this->registeredTypes[$name])) {
-            throw new Error($name . ' is not registered in the type manager');
-        }
-
-        return $this->registeredTypes[$name];
-    }
-
-    public function set(string $name, mixed $value): void
-    {
-        $name = strtolower($name);
-
-        if (isset($this->registeredTypes[$name])) {
-            throw new Error($name . ' is already registered in the type manager');
-        }
-
-        $this->registeredTypes[$name] = $value;
+        $this->set('datetime', new DateTime());
     }
 }

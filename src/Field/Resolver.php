@@ -43,7 +43,7 @@ class Resolver
         $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
 
-        $hydrator = $this->driver->getMetadata()->getEntity($entityClass)->getHydrator();
+        $hydrator = $this->driver->getMetadata()->get($entityClass)->getHydrator();
 
         /**
          * For disabled hydrator cache, store only last hydrator result and reuse for consecutive calls

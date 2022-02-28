@@ -32,8 +32,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
  * a configuration skeleton.
  */
 class NullifyOwningAssociation extends AbstractCollectionStrategy implements
-    StrategyInterface,
-    Invokable
+    StrategyInterface
 {
     /**
      * @return null

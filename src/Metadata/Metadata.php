@@ -4,40 +4,45 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
+use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Exception\UnmappedEntityMetadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use GraphQL\Error\Error;
 
-class Metadata
+class Metadata extends AbstractContainer
 {
     protected Driver $driver;
     /** @var mixed[]|null */
     protected ?array $metadataConfig;
-    /** @var mixed[] */
-    protected array $registeredEntities;
 
     public function __construct(Driver $driver, ?array $metadataConfig)
     {
         $this->driver             = $driver;
         $this->metadataConfig     = $metadataConfig;
-        $this->registeredEntities = [];
     }
 
-    public function getEntity(string $entityClass): Entity
+    /**
+     * @return Entity
+     * @throws \GraphQL\Error\Error
+     */
+    public function get(string $id)
     {
-        if (! isset($this->metadataConfig[$entityClass])) {
-            throw new UnmappedEntityMetadata(
-                'Entity ' . $entityClass . ' is not mapped in metadata'
+        if (! isset($this->metadataConfig[$id])) {
+            throw new Error(
+                'Entity ' . $id . ' is not mapped in the metadata'
             );
         }
 
-        if (isset($this->registeredEntities[$entityClass])) {
-            return $this->registeredEntities[$entityClass];
+        if (! $this->has($id)) {
+            $this->set($id, new Entity($this->driver, $this->metadataConfig[$id]));
         }
 
-        $this->registeredEntities[$entityClass] =
-            new Entity($this->driver, $this->metadataConfig[$entityClass]);
+        return parent::get($id);
+    }
 
-        return $this->registeredEntities[$entityClass];
+    public function getMetadataConfig(): mixed
+    {
+        return $this->metadataConfig;
     }
 }

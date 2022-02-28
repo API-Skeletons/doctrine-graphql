@@ -19,12 +19,6 @@ use Psr\Container\ContainerInterface;
 
 class Driver
 {
-    /**
-     * @var ContainerInterface In order to allow for custom hydrators, a
-     *                         container is available.
-     */
-    protected ?ContainerInterface $container;
-
     protected EntityManager $entityManager;
 
     /** @var Config The config must contain a `group` */
@@ -47,28 +41,23 @@ class Driver
      * @param Config        $config             required
      * @param Metadata|null $metadata           optional so cached metadata can be loaded
      */
-    public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null, ?ContainerInterface $container = null)
+    public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null)
     {
         if (! $config) {
             $config = new Config();
         }
 
-        $this->container     = $container;
+        $metadataFactory = new MetadataFactory($this, $metadataConfig);
+
         $this->entityManager = $entityManager;
         $this->config        = $config;
-
-        // Build the metadata from factory
-        $metadataFactory = new MetadataFactory($this, $metadataConfig);
-        $this->metadata  = $metadataFactory->getMetadata();
+        $this->metadata      = $metadataFactory->getMetadata();
 
         $this->criteria             = new CriteriaFactory($this);
         $this->resolveEntityFactory = new ResolveEntityFactory($this);
         $this->fieldResolver        = new Resolver($this);
         $this->hydratorFactory      = new HydratorFactory($this);
         $this->typeManager          = new TypeManager();
-
-        // Set static types
-        $this->typeManager->set('datetime', new DateTime());
     }
 
     public function getFieldResolver(): Resolver
@@ -78,7 +67,7 @@ class Driver
 
     public function type(string $entityClass): ObjectType
     {
-        $entity = $this->metadata->getEntity($entityClass);
+        $entity = $this->metadata->get($entityClass);
 
         return $entity->getGraphQLType();
     }
@@ -87,12 +76,12 @@ class Driver
     {
         $criteria = $this->criteria;
 
-        return $criteria($this->metadata->getEntity($entityClass));
+        return $criteria($this->metadata->get($entityClass));
     }
 
     public function resolve(string $entityClass): Closure
     {
-        return $this->resolveEntityFactory->get($this->metadata->getEntity($entityClass));
+        return $this->resolveEntityFactory->get($this->metadata->get($entityClass));
     }
 
     public function getConfig(): Config
@@ -108,11 +97,6 @@ class Driver
     public function getMetadata(): Metadata
     {
         return $this->metadata;
-    }
-
-    public function getContainer(): ?ContainerInterface
-    {
-        return $this->container;
     }
 
     public function getHydratorFactory(): HydratorFactory

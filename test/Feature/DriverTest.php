@@ -6,12 +6,12 @@ use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
-use ApiSkeletons\Doctrine\GraphQL\Type\Manager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
+use GraphQL\Error\Error;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -26,10 +26,10 @@ class DriverTest extends AbstractTest
 
         $this->assertInstanceOf(Driver::class, $driver);
         $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(User::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(Artist::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(Performance::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->getEntity(Recording::class));
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(User::class));
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Artist::class));
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Performance::class));
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Recording::class));
     }
 
     public function testCreateDriverWithConfig(): void
@@ -46,6 +46,22 @@ class DriverTest extends AbstractTest
 
         $this->assertInstanceOf(Driver::class, $driver);
         $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
+    }
+
+    public function testNonDefaultGroup(): void
+    {
+        $config = new Config([
+            'group' => 'testNonDefaultGroup',
+            'useHydratorCache' => true,
+            'limit' => 1000,
+            'usePartials' => true,
+        ]);
+
+        $driver = new Driver($this->getEntityManager(), $config);
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(User::class));
+
+        $this->expectException(Error::class);
+        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Artist::class));
     }
 
     /**

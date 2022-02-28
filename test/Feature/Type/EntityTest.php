@@ -22,7 +22,7 @@ class EntityTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'entityTest']));
 
-        $entity = $driver->getMetadata()->getEntity(Recording::class);
+        $entity = $driver->getMetadata()->get(Recording::class);
 
         $this->assertInstanceOf(Entity::class, $entity);
         $this->assertEquals(Recording::class, $entity->getEntityClass());
@@ -31,7 +31,6 @@ class EntityTest extends AbstractTest
         $metadataConfig = $entity->getMetadataConfig();
 
         $this->assertEquals(1, $metadataConfig['byValue']);
-        $this->assertEquals('default', $metadataConfig['hydrator']);
         $this->assertEquals(null, $metadataConfig['namingStrategy']);
 
         $this->assertEquals(ToInteger::class, $metadataConfig['strategies']['id']);
