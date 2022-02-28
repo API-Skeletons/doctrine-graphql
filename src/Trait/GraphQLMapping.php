@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Trait;
 
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
-use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\Type;
 
 trait GraphQLMapping
