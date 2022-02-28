@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
 use Closure;
@@ -122,6 +123,10 @@ class EntityFactory
             if ($limit) {
                 $queryBuilder->setMaxResults($limit);
             }
+
+            $this->driver->getEventDispatcher()->dispatch(
+                new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap())
+            );
 
             // Return array of entities
             return $queryBuilder->getQuery()->getResult();
