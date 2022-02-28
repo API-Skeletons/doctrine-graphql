@@ -3,12 +3,14 @@
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
 
 /**
  * User
  */
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'default')]
 #[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'test1')]
+#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testPasswordFilter', filters: [['filter' => Password::class]])]
 class User
 {
     /**
@@ -16,6 +18,7 @@ class User
      */
     #[GraphQL\Field(docs: 'User name', group: 'default')]
     #[GraphQL\Field(docs: 'User name', group: 'test1')]
+    #[GraphQL\Field(docs: 'User name', group: 'testPasswordFilter')]
     private $name;
 
     /**
@@ -23,6 +26,13 @@ class User
      */
     #[GraphQL\Field(docs: 'User email', group: 'default')]
     private $email;
+
+    /**
+     * @var string
+     */
+    #[GraphQL\Field(docs: 'User password', group: 'default')]
+    #[GraphQL\Field(docs: 'User password', group: 'testPasswordFilter')]
+    private $password;
 
     /**
      * @var int
@@ -95,6 +105,30 @@ class User
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * Set password.
+     *
+     * @param string $password
+     *
+     * @return User
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * Get password.
+     *
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**

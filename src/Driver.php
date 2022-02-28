@@ -7,6 +7,7 @@ use ApiSkeletons\Doctrine\GraphQL\Field\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Doctrine\ORM\EntityManager;
@@ -51,6 +52,8 @@ class Driver
      */
     protected FieldResolver $fieldResolver;
 
+    protected HydratorFactory $hydratorFactory;
+
     /**
      * @param string $entityManagerAlias required
      * @param Config $config required
@@ -73,6 +76,7 @@ class Driver
         $this->criteria = new CriteriaFactory($this);
         $this->resolveEntityFactory = new ResolveEntityFactory($this);
         $this->fieldResolver = new FieldResolver($this);
+        $this->hydratorFactory = new HydratorFactory($this);
 
         // Set static types
         TypeManager::set('datetime', new DateTime());
@@ -120,5 +124,10 @@ class Driver
     public function getContainer(): ContainerInterface
     {
         return $this->container;
+    }
+
+    public function getHydratorFactory(): HydratorFactory
+    {
+        return $this->hydratorFactory;
     }
 }

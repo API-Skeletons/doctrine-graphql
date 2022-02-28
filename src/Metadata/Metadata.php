@@ -10,11 +10,13 @@ class Metadata
 {
     protected Driver $driver;
     protected ?array $metadataConfig;
+    protected array $registeredEntities;
 
     public function __construct(Driver $driver, ?array $metadataConfig)
     {
         $this->driver = $driver;
         $this->metadataConfig = $metadataConfig;
+        $this->registeredEntities = [];
     }
 
     public function getEntity($entityClass): Entity
@@ -24,6 +26,13 @@ class Metadata
                 'Entity ' . $entityClass . ' is not mapped in metadata');
         }
 
-        return new Entity($this->driver, $this->metadataConfig[$entityClass]);
+        if (isset($this->registeredEntities[$entityClass])) {
+            return $this->registeredEntities[$entityClass];
+        }
+
+        $this->registeredEntities[$entityClass] =
+            new Entity($this->driver, $this->metadataConfig[$entityClass]);
+
+        return $this->registeredEntities[$entityClass];
     }
 }

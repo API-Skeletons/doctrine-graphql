@@ -22,14 +22,20 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class Factory
 {
     protected Driver $driver;
+    protected array $registeredHydrators;
 
     public function __construct(Driver $driver)
     {
         $this->driver = $driver;
+        $this->registeredHydrators = [];
     }
 
     public function get(Entity $entity): HydratorInterface
     {
+        if (isset($this->registeredHydrators[$entity->getEntityClass()])) {
+            return $this->registeredHydrators[$entity->getEntityClass()];
+        }
+
         $config = $entity->getMetadataConfig();
         $hydratorClass = $config['hydrator'];
 
@@ -66,7 +72,7 @@ class Factory
                     'Filter must implement ' . StrategyInterface::class
                 );
 
-                $hydrator->addFilter($name, $this->get($filterClass), $condition);
+                $hydrator->addFilter($name, $this->getInvokable($filterClass), $condition);
             }
         }
 
@@ -81,7 +87,9 @@ class Factory
             $hydrator->setNamingStrategy($this->getInvokable($namingStrategyClass));
         }
 
-        return $hydrator;
+        $this->registeredHydrators[$entity->getEntityClass()] = $hydrator;
+
+        return $this->registeredHydrators[$entity->getEntityClass()];
     }
 
     /**

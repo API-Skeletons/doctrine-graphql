@@ -5,7 +5,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
-use Doctrine\Common\Collections\ArrayCollection;
 use GraphQL\Type\Definition\ResolveInfo;
 
 class EntityFactory
@@ -97,12 +96,10 @@ class EntityFactory
                 $fieldList = implode(',', array_keys($fieldArray));
 
                 // Build query builder from Query Provider
-                $queryBuilder
-                    ->select('partial entity.{' . $fieldList . '}');
+                $queryBuilder->select('partial entity.{' . $fieldList . '}');
             } else {
                 // Build query builder from Query Provider
-                $queryBuilder
-                    ->select('entity');
+                $queryBuilder->select('entity');
             }
 
             if ($skip) {
@@ -113,20 +110,8 @@ class EntityFactory
                 $queryBuilder->setMaxResults($limit);
             }
 
-            // Convert result to extracted array
-            $results = $queryBuilder->getQuery()->getResult();
-            $resultCollection = new ArrayCollection();
-            $hydrator = $entity->getHydrator();
-
-            foreach ($results as $result) {
-                if (is_array($result)) {
-                    $resultCollection->add($result);
-                } else {
-                    $resultCollection->add($hydrator->extract($result));
-                }
-            }
-
-            return $resultCollection->toArray();
+            // Return array of entities
+            return $queryBuilder->getQuery()->getResult();
         };
     }
 }

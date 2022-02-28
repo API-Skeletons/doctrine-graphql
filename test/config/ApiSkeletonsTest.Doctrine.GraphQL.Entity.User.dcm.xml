@@ -6,6 +6,7 @@
     </id>
     <field name="name" type="string" nullable="false"/>
     <field name="email" type="string" nullable="false"/>
+    <field name="password" type="string" nullable="false"/>
     <many-to-many field="recordings" target-entity="ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording" inversed-by="users">
       <join-table name="RecordingToUser">
         <join-columns>

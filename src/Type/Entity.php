@@ -3,7 +3,6 @@
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
@@ -17,9 +16,7 @@ class Entity
     use Trait\GraphQLMapping;
 
     protected Driver $driver;
-
     protected array $metadataConfig;
-
     protected CollectionFactory $collectionFactory;
 
     public function __construct(Driver $driver, array $metadataConfig)
@@ -31,9 +28,7 @@ class Entity
 
     public function getHydrator(): HydratorInterface
     {
-        $hydratorFactory = new HydratorFactory($this->driver);
-
-        return $hydratorFactory->get($this);
+        return $this->driver->getHydratorFactory()->get($this);
     }
 
     public function getTypeName(): string

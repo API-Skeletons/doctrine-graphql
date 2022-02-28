@@ -50,7 +50,12 @@ class DriverTest extends AbstractTest
 
     public function testBuildGraphQLSchema(): void
     {
-        $driver = new Driver($this->getEntityManager());
+        $config = new Config([
+            'usePartials' => true,
+            'useHydratorCache' => true,
+        ]);
+
+        $driver = new Driver($this->getEntityManager(), $config);
 
         $schema = new Schema([
             'query' => new ObjectType([
@@ -63,16 +68,25 @@ class DriverTest extends AbstractTest
                         ],
                         'resolve' => $driver->resolve(Artist::class),
                     ],
+                    'user' => [
+                        'type' => Type::listOf($driver->type(User::class)),
+                        'args' => [
+                            'filter' => $driver->filter(User::class),
+                        ],
+                        'resolve' => $driver->resolve(User::class),
+                    ],
                 ],
             ]),
         ]);
 
-        $query = "{ artist { id name } }";
+        $query = '{
+            one: artist (filter: { name_contains: "dead" })
+                { id name performances { venue recordings { source } } }
+            two: user { name email password }
+        }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
-
-//        Manager::show();
 
         print_r($output);
 

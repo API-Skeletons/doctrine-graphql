@@ -41,6 +41,19 @@ abstract class AbstractTest extends TestCase
 
     protected function populateData()
     {
+        $users = [
+            [
+                'name' => 'User one',
+                'email' => 'userOne@gmail.com',
+                'password' => 'asdf',
+            ],
+            [
+                'name' => 'User two',
+                'email' => 'userTwo@gmail.com',
+                'password' => 'fdsa'
+            ],
+        ];
+
         $artists = [
             'Grateful Dead' => [
                 '1995-02-21' => [
@@ -93,6 +106,15 @@ abstract class AbstractTest extends TestCase
                 ],
             ],
         ];
+
+        foreach ($users as $userData) {
+            $user = new Entity\User();
+            $this->entityManager->persist($user);
+            $user->setName($userData['name']);
+            $user->setEmail($userData['email']);
+            $user->setPassword($userData['password']);
+        }
+
         foreach ($artists as $name => $performances) {
             $artist = (new Entity\Artist())
                 ->setName($name);
@@ -120,5 +142,6 @@ abstract class AbstractTest extends TestCase
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 }
