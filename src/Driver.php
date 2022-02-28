@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Factory as CriteriaFactory;
-use ApiSkeletons\Doctrine\GraphQL\Field\Resolver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
@@ -28,7 +28,7 @@ class Driver
 
     protected ResolveEntityFactory $resolveEntityFactory;
 
-    protected Resolver $fieldResolver;
+    protected FieldResolver $fieldResolver;
 
     protected HydratorFactory $hydratorFactory;
 
@@ -53,12 +53,12 @@ class Driver
 
         $this->criteria             = new CriteriaFactory($this);
         $this->resolveEntityFactory = new ResolveEntityFactory($this);
-        $this->fieldResolver        = new Resolver($this);
+        $this->fieldResolver        = new FieldResolver($this);
         $this->hydratorFactory      = new HydratorFactory($this);
         $this->typeManager          = new TypeManager();
     }
 
-    public function getFieldResolver(): Resolver
+    public function getFieldResolver(): FieldResolver
     {
         return $this->fieldResolver;
     }

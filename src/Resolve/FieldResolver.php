@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ApiSkeletons\Doctrine\GraphQL\Field;
+namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use Doctrine\Common\Util\ClassUtils;
@@ -15,7 +15,7 @@ use function spl_object_hash;
 /**
  * A field resolver that uses the Doctrine Laminas hydrator.
  */
-class Resolver
+class FieldResolver
 {
     /**
      * Cache all hydrator extract operations based on spl object hash
