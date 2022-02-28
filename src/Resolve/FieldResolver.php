@@ -8,6 +8,7 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
+
 use function is_array;
 use function spl_object_hash;
 
