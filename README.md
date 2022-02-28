@@ -124,7 +124,7 @@ Example
 ```
 
 Filters are named after their field and followed by an underscore and the filter name.
-The available filters are:
+
 * eq - Equals.  May be shorthanded as `field: "value"` or longhanded as `field_eq: "value"`
 * neq - Not equals
 * lt - Less than
@@ -139,4 +139,9 @@ The available filters are:
 * endswith - A like query with a wildcard on the left side of the value.
 * contains - A like query.
 
-You may exclude certain filters from all fields on an entity or by individual field.
+
+Further Reading
+---------------
+
+[Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
+is available.
