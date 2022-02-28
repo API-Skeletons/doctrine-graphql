@@ -41,6 +41,12 @@ class Performance
     
     #[GraphQL\Field]
     public $venue;
+    
+    /**
+     * Not all fields need attributes.
+     * Only add attribues to fields you want available in GraphQL
+     */
+    public $city;
 }
 ```
 
