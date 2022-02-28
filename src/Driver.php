@@ -40,6 +40,8 @@ class Driver
 
     protected HydratorFactory $hydratorFactory;
 
+    protected TypeManager $typeManager;
+
     /**
      * @param string        $entityManagerAlias required
      * @param Config        $config             required
@@ -63,9 +65,10 @@ class Driver
         $this->resolveEntityFactory = new ResolveEntityFactory($this);
         $this->fieldResolver        = new Resolver($this);
         $this->hydratorFactory      = new HydratorFactory($this);
+        $this->typeManager          = new TypeManager();
 
         // Set static types
-        TypeManager::set('datetime', new DateTime());
+        $this->typeManager->set('datetime', new DateTime());
     }
 
     public function getFieldResolver(): Resolver
@@ -115,5 +118,10 @@ class Driver
     public function getHydratorFactory(): HydratorFactory
     {
         return $this->hydratorFactory;
+    }
+
+    public function getTypeManager(): TypeManager
+    {
+        return $this->typeManager;
     }
 }

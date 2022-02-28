@@ -8,7 +8,6 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
-use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -28,8 +27,8 @@ class Factory
 
     public function __invoke(Entity $entity): InputObjectType
     {
-        if (TypeManager::has($entity->getTypeName() . '_Filter')) {
-            return TypeManager::get($entity->getTypeName() . '_Filter');
+        if ($this->driver->getTypeManager()->has($entity->getTypeName() . '_Filter')) {
+            return $this->driver->getTypeManager()->get($entity->getTypeName() . '_Filter');
         }
 
         $filters         = [];
@@ -245,7 +244,7 @@ class Factory
             },
         ]);
 
-        TypeManager::set($entity->getTypeName() . '_Filter', $inputObject);
+        $this->driver->getTypeManager()->set($entity->getTypeName() . '_Filter', $inputObject);
 
         return $inputObject;
     }

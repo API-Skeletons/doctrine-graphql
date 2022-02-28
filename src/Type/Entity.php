@@ -7,7 +7,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
 use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
-use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
@@ -71,8 +70,8 @@ class Entity
      */
     public function getGraphQLType(): ObjectType
     {
-        if (TypeManager::has($this->getTypeName())) {
-            return TypeManager::get($this->getTypeName());
+        if ($this->driver->getTypeManager()->has($this->getTypeName())) {
+            return $this->driver->getTypeManager()->get($this->getTypeName());
         }
 
         $classMetadata = $this->driver->getEntityManager()
@@ -148,7 +147,7 @@ class Entity
             'resolveField' => $this->driver->getFieldResolver(),
         ]);
 
-        TypeManager::set($this->getTypeName(), $objectType);
+        $this->driver->getTypeManager()->set($this->getTypeName(), $objectType);
 
         return $objectType;
     }
