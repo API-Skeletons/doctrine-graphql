@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use GraphQL\Error\Error;
 
+use function array_keys;
+use function print_r;
+use function strtolower;
+
 class Manager
 {
-    static protected $registeredTypes = [];
+    /** @var mixed[] */
+    protected static array $registeredTypes = [];
 
     public static function has(string $name): bool
     {
@@ -37,7 +44,7 @@ class Manager
         self::$registeredTypes[$name] = $value;
     }
 
-    public static function show()
+    public static function show(): void
     {
         print_r(array_keys(self::$registeredTypes));
     }

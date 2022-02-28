@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
@@ -15,6 +17,10 @@ use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Hydrator\Strategy\StrategyEnabledInterface;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
+use function assert;
+use function class_implements;
+use function in_array;
+
 /**
  * This factory is used in the Metadata\Entity class to create a hydrator
  * for the current entity
@@ -22,11 +28,12 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class Factory
 {
     protected Driver $driver;
+    /** @var string[] */
     protected array $registeredHydrators;
 
     public function __construct(Driver $driver)
     {
-        $this->driver = $driver;
+        $this->driver              = $driver;
         $this->registeredHydrators = [];
     }
 
@@ -36,13 +43,14 @@ class Factory
             return $this->registeredHydrators[$entity->getEntityClass()];
         }
 
-        $config = $entity->getMetadataConfig();
+        $config        = $entity->getMetadataConfig();
         $hydratorClass = $config['hydrator'];
 
         if ($hydratorClass === 'default') {
             $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
         } else {
-            assert(in_array(HydratorInterface::class, class_implements($hydratorClass)),
+            assert(
+                in_array(HydratorInterface::class, class_implements($hydratorClass)),
                 'Hydrator must implement ' . HydratorInterface::class
             );
 
@@ -54,7 +62,8 @@ class Factory
         // Create strategies and assign to hydrator
         if ($hydrator instanceof StrategyEnabledInterface) {
             foreach ($config['strategies'] as $fieldName => $strategyClass) {
-                assert(in_array(StrategyInterface::class, class_implements($strategyClass)),
+                assert(
+                    in_array(StrategyInterface::class, class_implements($strategyClass)),
                     'Strategy must implement ' . StrategyInterface::class
                 );
 
@@ -66,9 +75,10 @@ class Factory
         if ($hydrator instanceof FilterEnabledInterface) {
             foreach ($config['filters'] as $name => $filterConfig) {
                 // Default filters to AND
-                $condition = $filterConfig['condition'] ?? FilterComposite::CONDITION_AND;
+                $condition   = $filterConfig['condition'] ?? FilterComposite::CONDITION_AND;
                 $filterClass = $filterConfig['filter'];
-                assert(in_array(FilterInterface::class, class_implements($filterClass)),
+                assert(
+                    in_array(FilterInterface::class, class_implements($filterClass)),
                     'Filter must implement ' . StrategyInterface::class
                 );
 
@@ -80,7 +90,8 @@ class Factory
         if ($hydrator instanceof NamingStrategyEnabledInterface && $config['namingStrategy']) {
             $namingStrategyClass = $config['naming_strategy'];
 
-            assert(in_array(NamingStrategyInterface::class, class_implements($namingStrategyClass)),
+            assert(
+                in_array(NamingStrategyInterface::class, class_implements($namingStrategyClass)),
                 'Naming Strategy must implement ' . NamingStrategyInterface::class
             );
 
@@ -97,11 +108,8 @@ class Factory
      * and strategies, which should not be required to load into the service
      * manager (affects some frameworks, not others), an Invokable interface
      * exists to flag the class to be created directly.
-     *
-     * @param $className
-     * @return mixed
      */
-    protected function getInvokable($className)
+    protected function getInvokable(string $className): mixed
     {
         if (in_array(Invokable::class, class_implements($className))) {
             $class = new $className();

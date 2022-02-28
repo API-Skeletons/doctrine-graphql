@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
 use Laminas\Hydrator\Filter\FilterInterface;
+
+use function in_array;
 
 class Password implements
     FilterInterface,
@@ -16,6 +20,6 @@ class Password implements
             'secret',
         ];
 
-        return (! in_array($property, $excludeFields));
+        return ! in_array($property, $excludeFields);
     }
 }

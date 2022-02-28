@@ -1,28 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Trait;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\CollectionFactory;
+use ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
 use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Laminas\Hydrator\HydratorInterface;
 
+use function array_keys;
+use function in_array;
+
 class Entity
 {
-    use \ApiSkeletons\Doctrine\GraphQL\Trait\GraphQLMapping;
+    use GraphQLMapping;
 
     protected Driver $driver;
+    /** @var mixed[] */
     protected array $metadataConfig;
     protected CollectionFactory $collectionFactory;
 
+    /**
+     * @param mixed[] $metadataConfig
+     */
     public function __construct(Driver $driver, array $metadataConfig)
     {
-        $this->driver = $driver;
-        $this->metadataConfig = $metadataConfig;
+        $this->driver            = $driver;
+        $this->metadataConfig    = $metadataConfig;
         $this->collectionFactory = new CollectionFactory($this->driver);
     }
 
@@ -42,7 +52,7 @@ class Entity
     }
 
     /**
-     * @return mixed
+     * @return mixed[]
      */
     public function getMetadataConfig(): array
     {
@@ -57,8 +67,7 @@ class Entity
     /**
      * Build the type for the current entity
      *
-     * @return ObjectType
-     * @throws \Doctrine\ORM\Mapping\MappingException
+     * @throws MappingException
      */
     public function getGraphQLType(): ObjectType
     {
@@ -71,60 +80,65 @@ class Entity
         $graphQLFields = [];
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            if (in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
-                $graphQLFields[$fieldName] = [
-                    'type' => $this->mapFieldType(
-                        $classMetadata->getFieldMapping($fieldName)['type']
-                    ),
-                    'description' => $this->metadataConfig['documentation'][$fieldName],
-                ];
+            if (! in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
+                continue;
             }
+
+            $graphQLFields[$fieldName] = [
+                'type' => $this->mapFieldType(
+                    $classMetadata->getFieldMapping($fieldName)['type']
+                ),
+                'description' => $this->metadataConfig['documentation'][$fieldName],
+            ];
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (in_array($associationName, array_keys($this->metadataConfig['strategies']))) {
-                $associationMetadata = $classMetadata->getAssociationMapping($associationName);
+            if (! in_array($associationName, array_keys($this->metadataConfig['strategies']))) {
+                continue;
+            }
 
-                switch ($associationMetadata['type']) {
-                    case ClassMetadataInfo::ONE_TO_ONE:
-                    case ClassMetadataInfo::MANY_TO_ONE:
-                    case ClassMetadataInfo::TO_ONE:
-                        $targetEntity = $associationMetadata['targetEntity'];
-                        $graphQLFields[$associationName] = function () use ($targetEntity) {
-                            $entity = $this->driver->getMetadata()->getEntity($targetEntity);
+            $associationMetadata = $classMetadata->getAssociationMapping($associationName);
 
-                            return [
-                                'type' => $entity->getGraphQLType(),
-                                'description' => $entity->getDocs(),
-                            ];
-                        };
-                        break;
-                    case ClassMetadataInfo::ONE_TO_MANY:
-                    case ClassMetadataInfo::MANY_TO_MANY:
-                    case ClassMetadataInfo::TO_MANY:
-                        $targetEntity = $associationMetadata['targetEntity'];
-                        $graphQLFields[$associationName] = function () use ($targetEntity) {
-                            $entity = $this->driver->getMetadata()->getEntity($targetEntity);
+            switch ($associationMetadata['type']) {
+                case ClassMetadataInfo::ONE_TO_ONE:
+                case ClassMetadataInfo::MANY_TO_ONE:
+                case ClassMetadataInfo::TO_ONE:
+                    $targetEntity                    = $associationMetadata['targetEntity'];
+                    $graphQLFields[$associationName] = function () use ($targetEntity) {
+                        $entity = $this->driver->getMetadata()->getEntity($targetEntity);
 
-                            return [
-                                'type' => Type::listOf($entity->getGraphQLType()),
-                                'args' => [
-                                    'filter' => $this->driver->filter($entity->getEntityClass()),
-                                ],
-                                'resolve' => $this->collectionFactory->get($entity),
-                            ];
-                        };
+                        return [
+                            'type' => $entity->getGraphQLType(),
+                            'description' => $entity->getDocs(),
+                        ];
+                    };
+                    break;
+                case ClassMetadataInfo::ONE_TO_MANY:
+                case ClassMetadataInfo::MANY_TO_MANY:
+                case ClassMetadataInfo::TO_MANY:
+                    $targetEntity                    = $associationMetadata['targetEntity'];
+                    $graphQLFields[$associationName] = function () use ($targetEntity) {
+                        $entity = $this->driver->getMetadata()->getEntity($targetEntity);
 
-                    default:
-                        break;
-                }
+                        return [
+                            'type' => Type::listOf($entity->getGraphQLType()),
+                            'args' => [
+                                'filter' => $this->driver->filter($entity->getEntityClass()),
+                            ],
+                            'resolve' => $this->collectionFactory->get($entity),
+                        ];
+                    };
+                    break;
+
+                default:
+                    break;
             }
         }
 
         $objectType = new ObjectType([
             'name' => $this->getTypeName(),
             'description' => $this->getDocs(),
-            'fields' => function () use ($graphQLFields) {
+            'fields' => static function () use ($graphQLFields) {
                 return $graphQLFields;
             },
             'resolveField' => $this->driver->getFieldResolver(),

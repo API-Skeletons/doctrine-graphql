@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use ApiSkeletons\Doctrine\GraphQL\Invokable;
@@ -15,24 +17,24 @@ class ToBoolean extends AbstractCollectionStrategy implements
     StrategyInterface,
     Invokable
 {
-    public function extract($value, ?object $object = null)
+    public function extract(mixed $value, ?object $object = null): ?bool
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $value;
         }
 
-        return (bool)$value;
+        return (bool) $value;
     }
 
     /**
-     * @codeCoverageIgnore
+     * @param mixed[]|null $data
      */
-    public function hydrate($value, ?array $data)
+    public function hydrate(mixed $value, ?array $data): ?bool
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $value;
         }
 
-        return (bool)$value;
+        return (bool) $value;
     }
 }

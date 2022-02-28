@@ -1,11 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use Closure;
 use Doctrine\Common\Collections\Criteria;
 use GraphQL\Type\Definition\ResolveInfo;
+
+use function assert;
+use function count;
+use function explode;
+use function strrpos;
+use function substr;
 
 class CollectionFactory
 {
@@ -16,17 +25,17 @@ class CollectionFactory
         $this->driver = $driver;
     }
 
-    public function get(Entity $entity): \Closure
+    public function get(Entity $entity): Closure
     {
-        return function ($source, $args, $context, ResolveInfo $resolveInfo) use ($entity) {
+        return function ($source, $args, $context, ResolveInfo $resolveInfo) {
             $fieldResolver = $this->driver->getFieldResolver();
-            $collection = $fieldResolver($source, $args, $context, $resolveInfo);
+            $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 
             $criteria = Criteria::create();
-            $orderBy = [];
+            $orderBy  = [];
 
             $filter = $args['filter'] ?? [];
-            $limit = $this->driver->getConfig()->getLimit();
+            $limit  = $this->driver->getConfig()->getLimit();
 
             foreach ($filter as $field => $value) {
                 if ($field === '_skip') {
@@ -84,6 +93,7 @@ class CollectionFactory
                     }
                 }
             }
+
             $criteria->orderBy($orderBy);
 
             // Return entities

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletons\Doctrine\GraphQL\Trait;
 
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
@@ -8,7 +10,7 @@ use GraphQL\Type\Definition\Type;
 
 trait GraphQLMapping
 {
-    protected function mapFieldType(string $fieldType)
+    protected function mapFieldType(string $fieldType): mixed
     {
         static $dateTime;
 
