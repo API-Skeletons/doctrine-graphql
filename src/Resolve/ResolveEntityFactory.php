@@ -4,25 +4,34 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
 use Closure;
+use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ResolveInfo;
 
+use League\Event\EventDispatcher;
 use function array_keys;
 use function implode;
 use function strrpos;
 use function substr;
 
-class EntityFactory
+class ResolveEntityFactory
 {
-    protected Driver $driver;
+    protected Config $config;
 
-    public function __construct(Driver $driver)
+    protected EntityManager $entityManager;
+
+    protected EventDispatcher $eventDispatcher;
+
+    public function __construct(Config $config, EntityManager $entityManager, EventDispatcher $eventDispatcher)
     {
-        $this->driver = $driver;
+        $this->config = $config;
+        $this->entityManager = $entityManager;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function get(Entity $entity): Closure
@@ -33,7 +42,7 @@ class EntityFactory
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
             $skip        = 0;
-            $limit       = $this->driver->getConfig()->getLimit();
+            $limit       = $this->config->getLimit();
 
             foreach ($filterTypes as $field => $value) {
                 // Parse command filters first
@@ -86,16 +95,17 @@ class EntityFactory
                 }
             }
 
-            $queryBuilderFilter = (new Applicator($this->driver->getEntityManager(), $entityClass))
+            $queryBuilderFilter = (new Applicator($this->entityManager, $entityClass))
                 ->setEntityAlias('entity');
             $queryBuilder       = $queryBuilderFilter($filterArray);
 
-            if ($this->driver->getConfig()->getUsePartials()) {
+            if ($this->config->getUsePartials()) {
                 // Select only the fields being queried
                 $fieldArray = $info->getFieldSelection();
 
                 // Add primary key of this entity; required for partials
-                $classMetadata                                              = $this->driver->getEntityManager()->getClassMetadata($entityClass);
+                $classMetadata = $this->entityManager->getClassMetadata($entityClass);
+
                 $fieldArray[$classMetadata->getSingleIdentifierFieldName()] = 1;
 
                 // Verify all fields exist and only query for scalar values, not associations
@@ -124,7 +134,7 @@ class EntityFactory
                 $queryBuilder->setMaxResults($limit);
             }
 
-            $this->driver->getEventDispatcher()->dispatch(
+            $this->eventDispatcher->dispatch(
                 new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap())
             );
 

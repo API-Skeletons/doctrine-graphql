@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use Closure;
 use Doctrine\Common\Collections\Criteria;
@@ -16,26 +16,29 @@ use function explode;
 use function strrpos;
 use function substr;
 
-class CollectionFactory
+class ResolveCollectionFactory
 {
-    protected Driver $driver;
+    protected Config $config;
 
-    public function __construct(Driver $driver)
+    protected FieldResolver $fieldResolver;
+
+    public function __construct(Config $config, FieldResolver $fieldResolver)
     {
-        $this->driver = $driver;
+        $this->config = $config;
+        $this->fieldResolver = $fieldResolver;
     }
 
     public function get(Entity $entity): Closure
     {
         return function ($source, $args, $context, ResolveInfo $resolveInfo) {
-            $fieldResolver = $this->driver->getFieldResolver();
+            $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 
             $criteria = Criteria::create();
             $orderBy  = [];
 
             $filter = $args['filter'] ?? [];
-            $limit  = $this->driver->getConfig()->getLimit();
+            $limit  = $this->config->getLimit();
 
             foreach ($filter as $field => $value) {
                 if ($field === '_skip') {

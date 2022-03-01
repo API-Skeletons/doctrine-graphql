@@ -4,39 +4,21 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
-use ApiSkeletons\Doctrine\GraphQL\Criteria\Factory as CriteriaFactory;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Factory as HydratorFactory;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Factory as MetadataFactory;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
-use ApiSkeletons\Doctrine\GraphQL\Resolve\EntityFactory as ResolveEntityFactory;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveEntityFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
-use ApiSkeletons\Doctrine\GraphQL\Type\Manager as TypeManager;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ObjectType;
 use League\Event\EventDispatcher;
 
-class Driver
+class Driver extends AbstractContainer
 {
-    protected EntityManager $entityManager;
-
-    /** @var Config The config must contain a `group` */
-    protected Config $config;
-
-    protected Metadata $metadata;
-
-    protected CriteriaFactory $criteria;
-
-    protected ResolveEntityFactory $resolveEntityFactory;
-
-    protected FieldResolver $fieldResolver;
-
-    protected HydratorFactory $hydratorFactory;
-
-    protected TypeManager $typeManager;
-
-    protected EventDispatcher $eventDispatcher;
-
     /**
      * @param string        $entityManagerAlias required
      * @param Config        $config             required
@@ -48,74 +30,46 @@ class Driver
             $config = new Config();
         }
 
-        $metadataFactory = new MetadataFactory($this, $metadataConfig);
+        $this
+            // Plain classes
+            ->set(EntityManager::class, $entityManager)
+            ->set(Config::class, $config)
+            ->set(EventDispatcher::class, new EventDispatcher())
+            ->set(TypeManager::class, new TypeManager())
+            ->set(Metadata::class, (new MetadataFactory($this, $metadataConfig))->getMetadata())
 
-        $this->entityManager = $entityManager;
-        $this->config        = $config;
-        $this->metadata      = $metadataFactory->getMetadata();
-
-        $this->criteria             = new CriteriaFactory($this);
-        $this->resolveEntityFactory = new ResolveEntityFactory($this);
-        $this->fieldResolver        = new FieldResolver($this);
-        $this->hydratorFactory      = new HydratorFactory($this);
-        $this->typeManager          = new TypeManager();
-        $this->eventDispatcher      = new EventDispatcher();
-    }
-
-    public function getFieldResolver(): FieldResolver
-    {
-        return $this->fieldResolver;
+            // Composed classes
+            ->set(FieldResolver::class,
+                new FieldResolver($this->get(Config::class), $this->get(Metadata::class)))
+            ->set(ResolveCollectionFactory::class,
+                new ResolveCollectionFactory($this->get(Config::class), $this->get(FieldResolver::class)))
+            ->set(ResolveEntityFactory::class,
+                new ResolveEntityFactory(
+                    $this->get(Config::class),
+                    $this->get(EntityManager::class),
+                    $this->get(EventDispatcher::class)
+                ))
+            ->set(CriteriaFactory::class,
+                new CriteriaFactory($this->get(EntityManager::class), $this->get(TypeManager::class)))
+            ->set(HydratorFactory::class,
+                new HydratorFactory($this->get(EntityManager::class), $this->get(Metadata::class)))
+            ;
     }
 
     public function type(string $entityClass): ObjectType
     {
-        $entity = $this->metadata->get($entityClass);
-
-        return $entity->getGraphQLType();
+        return $this->get(Metadata::class)->get($entityClass)->getGraphQLType();
     }
 
-    public function filter(
-        string $entityClass,
-        ?string $associationName = null,
-        ?array $associationMetadata = null
-    ): object {
-        $criteria = $this->criteria;
-
-        return $criteria($this->metadata->get($entityClass), $associationName, $associationMetadata);
+    public function filter(string $entityClass): object
+    {
+        return $this->get(CriteriaFactory::class)
+            ->get($this->get(Metadata::class)->get($entityClass));
     }
 
     public function resolve(string $entityClass): Closure
     {
-        return $this->resolveEntityFactory->get($this->metadata->get($entityClass));
-    }
-
-    public function getConfig(): Config
-    {
-        return $this->config;
-    }
-
-    public function getEntityManager(): EntityManager
-    {
-        return $this->entityManager;
-    }
-
-    public function getMetadata(): Metadata
-    {
-        return $this->metadata;
-    }
-
-    public function getHydratorFactory(): HydratorFactory
-    {
-        return $this->hydratorFactory;
-    }
-
-    public function getTypeManager(): TypeManager
-    {
-        return $this->typeManager;
-    }
-
-    public function getEventDispatcher(): EventDispatcher
-    {
-        return $this->eventDispatcher;
+        return $this->get(ResolveEntityFactory::class)
+            ->get($this->get(Metadata::class)->get($entityClass));
     }
 }

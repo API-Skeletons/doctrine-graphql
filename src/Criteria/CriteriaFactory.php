@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
+use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -15,33 +16,36 @@ use function array_keys;
 use function assert;
 use function in_array;
 
-class Factory
+class CriteriaFactory
 {
-    protected Driver $driver;
+    protected EntityManager $entityManager;
 
-    public function __construct(Driver $driver)
+    protected TypeManager $typeManager;
+
+    public function __construct(EntityManager $entityManager, TypeManager $typeManager)
     {
-        $this->driver = $driver;
+        $this->entityManager = $entityManager;
+        $this->typeManager = $typeManager;
     }
 
     /**
      * @param mixed[]|null $associationMetadata
      */
-    public function __invoke(
-        Entity $entity,
+    public function get(
+        Entity $targetEntity,
+        ?Entity $owningEntity = null,
         ?string $associationName = null,
         ?array $associationMetadata = null
     ): InputObjectType {
-        $typeName = $entity->getTypeName() . '_' . $associationName . '_Filter';
+        $typeName = $targetEntity->getTypeName() . '_' . $associationName . '_Filter';
 
-        if ($this->driver->getTypeManager()->has($typeName)) {
-            return $this->driver->getTypeManager()->get($typeName);
+        if ($this->typeManager->has($typeName)) {
+            return $this->typeManager->get($typeName);
         }
 
         $filters         = [];
-        $classMetadata   = $this->driver->getEntityManager()
-            ->getClassMetadata($entity->getEntityClass());
-        $graphQLMetadata = $entity->getMetadataConfig();
+        $classMetadata   = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
+        $graphQLMetadata = $targetEntity->getMetadataConfig();
 
         $allFilters = [
             'sort',
@@ -91,7 +95,7 @@ class Factory
              * @psalm-suppress UndefinedDocblockClass
              */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-            $graphQLType   = $this->driver->getTypeManager()->get($fieldMetadata['type']);
+            $graphQLType   = $this->typeManager->get($fieldMetadata['type']);
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldName)) {
                 $graphQLType = Type::id();
@@ -122,10 +126,16 @@ class Factory
                 ];
             }
 
-            // This eq filter is for field:value instead of field_eq:value
+            // eq filter is for field:value and field_eq:value
             if (in_array('eq', $allowedFilters)) {
                 $filters[$fieldName] = [
                     'name' => $fieldName,
+                    'type' => $graphQLType,
+                    'description' => 'Equals.  DateTime not supported.',
+                ];
+
+                $filters[$fieldName . '_eq'] = [
+                    'name' => $fieldName . '_eq',
                     'type' => $graphQLType,
                     'description' => 'Equals.  DateTime not supported.',
                 ];
@@ -236,13 +246,13 @@ class Factory
         ];
 
         $inputObject = new InputObjectType([
-            'name' => $entity->getTypeName() . '_Filter',
+            'name' => $typeName,
             'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]);
 
-        $this->driver->getTypeManager()->set($typeName, $inputObject);
+        $this->typeManager->set($typeName, $inputObject);
 
         return $inputObject;
     }
