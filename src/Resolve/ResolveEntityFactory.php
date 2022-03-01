@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
 use Closure;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ResolveInfo;
-
 use League\Event\EventDispatcher;
+
 use function array_keys;
 use function implode;
 use function strrpos;
@@ -29,8 +28,8 @@ class ResolveEntityFactory
 
     public function __construct(Config $config, EntityManager $entityManager, EventDispatcher $eventDispatcher)
     {
-        $this->config = $config;
-        $this->entityManager = $entityManager;
+        $this->config          = $config;
+        $this->entityManager   = $entityManager;
         $this->eventDispatcher = $eventDispatcher;
     }
 

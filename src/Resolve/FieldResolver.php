@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
@@ -32,7 +31,7 @@ class FieldResolver
 
     public function __construct(Config $config, Metadata $metadata)
     {
-        $this->config = $config;
+        $this->config   = $config;
         $this->metadata = $metadata;
     }
 

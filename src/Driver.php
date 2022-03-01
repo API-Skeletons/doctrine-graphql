@@ -6,11 +6,11 @@ namespace ApiSkeletons\Doctrine\GraphQL;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
+use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveEntityFactory;
-use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
@@ -39,21 +39,30 @@ class Driver extends AbstractContainer
             ->set(Metadata::class, (new MetadataFactory($this, $metadataConfig))->getMetadata())
 
             // Composed classes
-            ->set(FieldResolver::class,
-                new FieldResolver($this->get(Config::class), $this->get(Metadata::class)))
-            ->set(ResolveCollectionFactory::class,
-                new ResolveCollectionFactory($this->get(Config::class), $this->get(FieldResolver::class)))
-            ->set(ResolveEntityFactory::class,
+            ->set(
+                FieldResolver::class,
+                new FieldResolver($this->get(Config::class), $this->get(Metadata::class))
+            )
+            ->set(
+                ResolveCollectionFactory::class,
+                new ResolveCollectionFactory($this->get(Config::class), $this->get(FieldResolver::class))
+            )
+            ->set(
+                ResolveEntityFactory::class,
                 new ResolveEntityFactory(
                     $this->get(Config::class),
                     $this->get(EntityManager::class),
                     $this->get(EventDispatcher::class)
-                ))
-            ->set(CriteriaFactory::class,
-                new CriteriaFactory($this->get(EntityManager::class), $this->get(TypeManager::class)))
-            ->set(HydratorFactory::class,
-                new HydratorFactory($this->get(EntityManager::class), $this->get(Metadata::class)))
-            ;
+                )
+            )
+            ->set(
+                CriteriaFactory::class,
+                new CriteriaFactory($this->get(EntityManager::class), $this->get(TypeManager::class))
+            )
+            ->set(
+                HydratorFactory::class,
+                new HydratorFactory($this->get(EntityManager::class), $this->get(Metadata::class))
+            );
     }
 
     public function type(string $entityClass): ObjectType

@@ -10,9 +10,6 @@ use Closure;
 use Doctrine\Common\Collections\Criteria;
 use GraphQL\Type\Definition\ResolveInfo;
 
-use function assert;
-use function count;
-use function explode;
 use function strrpos;
 use function substr;
 
@@ -24,7 +21,7 @@ class ResolveCollectionFactory
 
     public function __construct(Config $config, FieldResolver $fieldResolver)
     {
-        $this->config = $config;
+        $this->config        = $config;
         $this->fieldResolver = $fieldResolver;
     }
 

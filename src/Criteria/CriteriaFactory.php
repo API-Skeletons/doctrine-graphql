@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
-use function Amp\Promise\all;
 use function array_filter;
 use function array_keys;
 use function assert;
@@ -26,7 +25,7 @@ class CriteriaFactory
     public function __construct(EntityManager $entityManager, TypeManager $typeManager)
     {
         $this->entityManager = $entityManager;
-        $this->typeManager = $typeManager;
+        $this->typeManager   = $typeManager;
     }
 
     /**
@@ -38,7 +37,6 @@ class CriteriaFactory
         ?string $associationName = null,
         ?array $associationMetadata = null
     ): InputObjectType {
-
         if ($owningEntity) {
             $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_Filter';
         } else {
@@ -160,7 +158,7 @@ class CriteriaFactory
                 ];
             }
 
-        if (in_array(Filters::BETWEEN, $allowedFilters)) {
+            if (in_array(Filters::BETWEEN, $allowedFilters)) {
                 $fields[$fieldName . '_between'] = [
                     'name' => $fieldName . '_between',
                     'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',

@@ -42,7 +42,7 @@ class HydratorFactory extends AbstractContainer
     public function __construct(EntityManager $entityManager, Metadata $metadata)
     {
         $this->entityManager = $entityManager;
-        $this->metadata = $metadata;
+        $this->metadata      = $metadata;
 
         // Register project defaults
         $this
