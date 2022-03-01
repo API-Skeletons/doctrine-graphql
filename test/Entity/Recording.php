@@ -7,36 +7,36 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Recording
  */
-#[GraphQL\Entity(typeName: 'recording', docs: 'Performance recordings', group: 'default')]
-#[GraphQL\Entity(typeName: 'entitytestrecording', docs: 'Entity Test Recordings', group: 'entityTest')]
+#[GraphQL\Entity(typeName: 'recording', description: 'Performance recordings', group: 'default')]
+#[GraphQL\Entity(typeName: 'entitytestrecording', description: 'Entity Test Recordings', group: 'entityTest')]
 class Recording
 {
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'Source', group: 'default')]
-    #[GraphQL\Field(docs: 'Entity Test Source', group: 'entityTest')]
+    #[GraphQL\Field(description: 'Source', group: 'default')]
+    #[GraphQL\Field(description: 'Entity Test Source', group: 'entityTest')]
     private $source;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
-    #[GraphQL\Field(docs: 'Entity Test ID', group: 'entityTest')]
+    #[GraphQL\Field(description: 'Primary key', group: 'default')]
+    #[GraphQL\Field(description: 'Entity Test ID', group: 'entityTest')]
     private $id;
 
     /**
      * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance
      */
-    #[GraphQL\Association(docs: 'Performance entity', group: 'default')]
-    #[GraphQL\Association(docs: 'Entity Test Performance', group: 'entityTest')]
+    #[GraphQL\Association(description: 'Performance entity', group: 'default')]
+    #[GraphQL\Association(description: 'Entity Test Performance', group: 'entityTest')]
     private $performance;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(docs: 'Users', group: 'default')]
-    #[GraphQL\Association(docs: 'Entity Test Users', group: 'entityTest')]
+    #[GraphQL\Association(description: 'Users', group: 'default')]
+    #[GraphQL\Association(description: 'Entity Test Users', group: 'entityTest')]
     private $users;
 
     /**

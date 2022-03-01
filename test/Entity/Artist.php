@@ -7,25 +7,29 @@ use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 /**
  * Artist
  */
-#[GraphQL\Entity(typeName: 'artist', docs: 'Artists', group: 'default')]
+#[GraphQL\Entity(typeName: 'artist', description: 'Artists', group: 'default')]
+#[GraphQL\Entity(group: 'ExcludeCriteriaTest')]
 class Artist
 {
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'Artist name', group: 'default')]
+    #[GraphQL\Field(description: 'Artist name', group: 'default')]
+    #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     private $name;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
+    #[GraphQL\Field(description: 'Primary key', group: 'default')]
+    #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(docs: 'Performances', group: 'default')]
+    #[GraphQL\Association(description: 'Performances', group: 'default')]
+    #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
     private $performances;
 
     /**

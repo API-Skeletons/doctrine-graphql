@@ -26,25 +26,29 @@ class EntityTest extends AbstractTest
 
         $this->assertInstanceOf(Entity::class, $entity);
         $this->assertEquals(Recording::class, $entity->getEntityClass());
-        $this->assertEquals('Entity Test Recordings', $entity->getDocs());
+        $this->assertEquals('Entity Test Recordings', $entity->getDescription());
 
         $metadataConfig = $entity->getMetadataConfig();
 
         $this->assertEquals(1, $metadataConfig['byValue']);
         $this->assertEquals(null, $metadataConfig['namingStrategy']);
 
-        $this->assertEquals(ToInteger::class, $metadataConfig['strategies']['id']);
-        $this->assertEquals(FieldDefault::class, $metadataConfig['strategies']['source']);
-        $this->assertEquals(AssociationDefault::class, $metadataConfig['strategies']['performance']);
-        $this->assertEquals(AssociationDefault::class, $metadataConfig['strategies']['users']);
+        $this->assertEquals(ToInteger::class,
+            $metadataConfig['fields']['id']['strategy']);
+        $this->assertEquals(FieldDefault::class,
+            $metadataConfig['fields']['source']['strategy']);
+        $this->assertEquals(AssociationDefault::class,
+            $metadataConfig['fields']['performance']['strategy']);
+        $this->assertEquals(AssociationDefault::class,
+            $metadataConfig['fields']['users']['strategy']);
 
         $this->assertEquals([], $metadataConfig['filters']);
 
-        $this->assertEquals('Entity Test Recordings', $metadataConfig['documentation']['_entity']);
-        $this->assertEquals('Entity Test ID', $metadataConfig['documentation']['id']);
-        $this->assertEquals('Entity Test Source', $metadataConfig['documentation']['source']);
-        $this->assertEquals('Entity Test Performance', $metadataConfig['documentation']['performance']);
-        $this->assertEquals('Entity Test Users', $metadataConfig['documentation']['users']);
+        $this->assertEquals('Entity Test Recordings', $metadataConfig['description']);
+        $this->assertEquals('Entity Test ID', $metadataConfig['fields']['id']['description']);
+        $this->assertEquals('Entity Test Source', $metadataConfig['fields']['source']['description']);
+        $this->assertEquals('Entity Test Performance', $metadataConfig['fields']['performance']['description']);
+        $this->assertEquals('Entity Test Users', $metadataConfig['fields']['users']['description']);
 
         $this->assertEquals('entitytestrecording', $metadataConfig['typeName']);
     }

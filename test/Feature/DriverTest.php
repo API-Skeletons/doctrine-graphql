@@ -97,4 +97,38 @@ class DriverTest extends AbstractTest
 
         $this->assertEquals('Grateful Dead', $output['data']['artist'][0]['name']);
     }
+
+    public function testUseHydratorCache(): void
+    {
+        $config = new Config([
+           'useHydratorCache' => true,
+        ]);
+
+        $driver = new Driver($this->getEntityManager(), $config);
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Artist::class),
+                        ],
+                        'resolve' => $driver->resolve(Artist::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query = '{
+            artist (filter: { name_contains: "dead" })
+                { id name performances { venue recordings { source } } }
+        }';
+
+        $result = GraphQL::executeQuery($schema, $query);
+        $output = $result->toArray();
+
+        $this->assertEquals('Grateful Dead', $output['data']['artist'][0]['name']);
+    }
 }

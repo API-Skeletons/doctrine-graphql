@@ -4,51 +4,56 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
+use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrategy;
 
 /**
  * User
  */
-#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'default')]
-#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testNonDefaultGroup')]
-#[GraphQL\Entity(docs: 'User', typeName: 'user', group: 'testPasswordFilter', filters: ['password' => ['filter' => Password::class]])]
+#[GraphQL\Entity(description: 'User', typeName: 'user', group: 'default')]
+#[GraphQL\Entity(description: 'User', typeName: 'user', group: 'testNonDefaultGroup')]
+#[GraphQL\Entity(description: 'User', typeName: 'user', group: 'testPasswordFilter', filters: ['password' => ['filter' => Password::class]])]
+#[GraphQL\Entity(group: 'NamingStrategyTest', namingStrategy: CustomNamingStrategy::class)]
+#[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
 class User
 {
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'User name', group: 'default')]
-    #[GraphQL\Field(docs: 'User name', group: 'testNonDefaultGroup')]
-    #[GraphQL\Field(docs: 'User name', group: 'testPasswordFilter')]
+    #[GraphQL\Field(description: 'User name', group: 'default')]
+    #[GraphQL\Field(description: 'User name', group: 'testNonDefaultGroup')]
+    #[GraphQL\Field(description: 'User name', group: 'testPasswordFilter')]
+    #[GraphQL\Field(group: 'NamingStrategyTest')]
+    #[GraphQL\Field(group: 'CustomFieldStrategyTest', strategy: ToBoolean::class)]
     private $name;
 
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'User email', group: 'default')]
+    #[GraphQL\Field(description: 'User email', group: 'default')]
+    #[GraphQL\Field(group: 'NamingStrategyTest')]
     private $email;
 
     /**
      * @var string
      */
-    #[GraphQL\Field(docs: 'User password', group: 'default')]
-    #[GraphQL\Field(docs: 'User password', group: 'testPasswordFilter')]
+    #[GraphQL\Field(description: 'User password', group: 'default')]
+    #[GraphQL\Field(description: 'User password', group: 'testPasswordFilter')]
     private $password;
 
     /**
      * @var int
      */
-    #[GraphQL\Field(docs: 'Primary key', group: 'default')]
-    #[GraphQL\Field(docs: 'Primary key', group: 'testNonDefaultGroup')]
+    #[GraphQL\Field(description: 'Primary key', group: 'default')]
+    #[GraphQL\Field(description: 'Primary key', group: 'testNonDefaultGroup')]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(
-        docs: 'Recordings',
-        strategy: 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault',
-        group: 'default'
-    )]
+    #[GraphQL\Association(description: 'Recordings', strategy: AssociationDefault::class)]
     private $recordings;
 
     /**

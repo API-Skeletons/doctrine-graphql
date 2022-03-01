@@ -16,7 +16,7 @@ final class Entity
     private bool $byValue;
 
     /** @var string|null Documentation for the entity within GraphQL */
-    private ?string $docs = null;
+    private ?string $description = null;
 
     private ?string $typeName;
 
@@ -31,23 +31,29 @@ final class Entity
 
     private ?string $namingStrategy;
 
+    /** @var string[] */
+    private array $excludeCriteria;
+
     /**
-     * @param mixed[] $filters
+     * @param mixed[]  $filters
+     * @param string[] $excludeCriteria
      */
     public function __construct(
         string $group = 'default',
         bool $byValue = true,
-        ?string $docs = null,
+        ?string $description = null,
         ?string $typeName = null,
         array $filters = [],
         ?string $namingStrategy = null,
+        array $excludeCriteria = [],
     ) {
-        $this->group          = $group;
-        $this->byValue        = $byValue;
-        $this->docs           = $docs;
-        $this->typeName       = $typeName;
-        $this->filters        = $filters;
-        $this->namingStrategy = $namingStrategy;
+        $this->group           = $group;
+        $this->byValue         = $byValue;
+        $this->description     = $description;
+        $this->typeName        = $typeName;
+        $this->filters         = $filters;
+        $this->namingStrategy  = $namingStrategy;
+        $this->excludeCriteria = $excludeCriteria;
     }
 
     public function getGroup(): ?string
@@ -60,9 +66,9 @@ final class Entity
         return $this->byValue;
     }
 
-    public function getDocs(): ?string
+    public function getDescription(): ?string
     {
-        return $this->docs;
+        return $this->description;
     }
 
     public function getTypeName(): ?string
@@ -81,5 +87,13 @@ final class Entity
     public function getNamingStrategy(): ?string
     {
         return $this->namingStrategy;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludeCriteria(): array
+    {
+        return $this->excludeCriteria;
     }
 }

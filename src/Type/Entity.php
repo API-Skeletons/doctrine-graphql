@@ -42,9 +42,9 @@ class Entity
         return $this->metadataConfig['typeName'];
     }
 
-    public function getDocs(): string
+    public function getDescription(): ?string
     {
-        return $this->metadataConfig['documentation']['_entity'];
+        return $this->metadataConfig['description'];
     }
 
     /**
@@ -76,7 +76,7 @@ class Entity
         $graphQLFields = [];
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            if (! in_array($fieldName, array_keys($this->metadataConfig['strategies']))) {
+            if (! in_array($fieldName, array_keys($this->metadataConfig['fields']))) {
                 continue;
             }
 
@@ -86,12 +86,12 @@ class Entity
             $fieldMapping              = $classMetadata->getFieldMapping($fieldName);
             $graphQLFields[$fieldName] = [
                 'type' => $this->driver->getTypeManager()->get($fieldMapping['type']),
-                'description' => $this->metadataConfig['documentation'][$fieldName],
+                'description' => $this->metadataConfig['fields'][$fieldName]['description'],
             ];
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (! in_array($associationName, array_keys($this->metadataConfig['strategies']))) {
+            if (! in_array($associationName, array_keys($this->metadataConfig['fields']))) {
                 continue;
             }
 
@@ -107,7 +107,7 @@ class Entity
 
                         return [
                             'type' => $entity->getGraphQLType(),
-                            'description' => $entity->getDocs(),
+                            'description' => $entity->getDescription(),
                         ];
                     };
                     break;
@@ -115,14 +115,20 @@ class Entity
                 case ClassMetadataInfo::MANY_TO_MANY:
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
-                    $graphQLFields[$associationName] = function () use ($targetEntity) {
+                    $graphQLFields[$associationName] = function ()
+ use ($targetEntity, $associationName) {
                         $entity = $this->driver->getMetadata()->get($targetEntity);
 
                         return [
                             'type' => Type::listOf($entity->getGraphQLType()),
                             'args' => [
-                                'filter' => $this->driver->filter($entity->getEntityClass()),
+                                'filter' => $this->driver->filter(
+                                    $entity->getEntityClass(),
+                                    $associationName,
+                                    $this->metadataConfig['fields'][$associationName],
+                                ),
                             ],
+                            'description' => $this->metadataConfig['fields'][$associationName]['description'],
                             'resolve' => $this->collectionFactory->get($entity),
                         ];
                     };
@@ -135,7 +141,7 @@ class Entity
 
         $objectType = new ObjectType([
             'name' => $this->getTypeName(),
-            'description' => $this->getDocs(),
+            'description' => $this->getDescription(),
             'fields' => static function () use ($graphQLFields) {
                 return $graphQLFields;
             },

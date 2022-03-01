@@ -13,16 +13,16 @@ class Field
 
     protected ?string $strategy;
 
-    protected ?string $docs;
+    protected ?string $description;
 
     public function __construct(
         string $group = 'default',
         ?string $strategy = null,
-        ?string $docs = null
+        ?string $description = null
     ) {
-        $this->group    = $group;
-        $this->strategy = $strategy;
-        $this->docs     = $docs;
+        $this->group       = $group;
+        $this->strategy    = $strategy;
+        $this->description = $description;
     }
 
     public function getGroup(): string
@@ -35,8 +35,8 @@ class Field
         return $this->strategy;
     }
 
-    public function getDocs(): ?string
+    public function getDescription(): ?string
     {
-        return $this->docs;
+        return $this->description;
     }
 }

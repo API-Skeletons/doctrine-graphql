@@ -13,16 +13,24 @@ class Association
 
     protected ?string $strategy;
 
-    protected ?string $docs;
+    protected ?string $description;
 
+    /** @var string[] */
+    protected array $excludeCriteria;
+
+    /**
+     * @param string[] $excludeCriteria
+     */
     public function __construct(
         string $group = 'default',
         ?string $strategy = null,
-        ?string $docs = null
+        ?string $description = null,
+        array $excludeCriteria = []
     ) {
-        $this->group    = $group;
-        $this->strategy = $strategy;
-        $this->docs     = $docs;
+        $this->group           = $group;
+        $this->strategy        = $strategy;
+        $this->description     = $description;
+        $this->excludeCriteria = $excludeCriteria;
     }
 
     public function getGroup(): string
@@ -35,8 +43,16 @@ class Association
         return $this->strategy;
     }
 
-    public function getDocs(): ?string
+    public function getDescription(): ?string
     {
-        return $this->docs;
+        return $this->description;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getExcludeCriteria(): array
+    {
+        return $this->excludeCriteria;
     }
 }
