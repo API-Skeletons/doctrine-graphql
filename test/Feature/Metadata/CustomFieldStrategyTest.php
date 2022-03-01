@@ -40,8 +40,6 @@ class CustomFieldStrategyTest extends AbstractTest
             ]),
         ]);
 
-#        print_r($driver->getMetadata()->getMetadataConfig());die();
-
         $query = '{ user { name } }';
 
         $result = GraphQL::executeQuery($schema, $query);

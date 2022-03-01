@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute;
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use ReflectionClass;
 
 use function assert;
 use function str_replace;
 
-class Factory
+class MetadataFactory
 {
     protected Driver $driver;
     protected ?Metadata $metadata;
@@ -48,7 +50,7 @@ class Factory
     protected function buildMetadata(): Metadata
     {
         // Get all entity classes
-        $allMetadata = $this->driver->getEntityManager()
+        $allMetadata = $this->driver->get(EntityManager::class)
             ->getMetadataFactory()->getAllMetadata();
 
         $entityClasses = [];
@@ -65,7 +67,7 @@ class Factory
                 $instance = $attribute->newInstance();
 
                 // Only process attributes for the same group
-                if ($instance->getGroup() !== $this->driver->getConfig()->getGroup()) {
+                if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
                     continue;
                 }
 
@@ -93,7 +95,7 @@ class Factory
             }
 
             // Fetch attributes for fields
-            $entityClassMetadata = $this->driver->getEntityManager()
+            $entityClassMetadata = $this->driver->get(EntityManager::class)
                 ->getMetadataFactory()->getMetadataFor($entityClass);
             $fieldNames          = $entityClassMetadata->getFieldNames();
 
@@ -105,7 +107,7 @@ class Factory
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
-                    if ($instance->getGroup() !== $this->driver->getConfig()->getGroup()) {
+                    if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
                         continue;
                     }
 
@@ -162,7 +164,7 @@ class Factory
             }
 
             // Fetch attributes for associations
-            $associationNames = $this->driver->getEntityManager()->getMetadataFactory()
+            $associationNames = $this->driver->get(EntityManager::class)->getMetadataFactory()
                 ->getMetadataFor($entityClass)->getAssociationNames();
 
             foreach ($associationNames as $associationName) {
@@ -173,7 +175,7 @@ class Factory
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
-                    if ($instance->getGroup() !== $this->driver->getConfig()->getGroup()) {
+                    if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
                         continue;
                     }
 

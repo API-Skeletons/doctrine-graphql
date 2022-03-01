@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -24,11 +25,14 @@ class FieldResolver
      */
     private array $extractValues = [];
 
-    protected Driver $driver;
+    protected Config $config;
 
-    public function __construct(Driver $driver)
+    protected Metadata $metadata;
+
+    public function __construct(Config $config, Metadata $metadata)
     {
-        $this->driver = $driver;
+        $this->config   = $config;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -43,13 +47,13 @@ class FieldResolver
         $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
 
-        $hydrator = $this->driver->getMetadata()->get($entityClass)->getHydrator();
+        $hydrator = $this->metadata->get($entityClass)->getHydrator();
 
         /**
          * For disabled hydrator cache, store only last hydrator result and reuse for consecutive calls
          * then drop the cache if it doesn't hit.
          */
-        if (! $this->driver->getConfig()->getUseHydratorCache()) {
+        if (! $this->config->getUseHydratorCache()) {
             if (isset($this->extractValues[$splObjectHash])) {
                 return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
             } else {

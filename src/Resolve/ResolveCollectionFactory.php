@@ -4,38 +4,38 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use Closure;
 use Doctrine\Common\Collections\Criteria;
 use GraphQL\Type\Definition\ResolveInfo;
 
-use function assert;
-use function count;
-use function explode;
 use function strrpos;
 use function substr;
 
-class CollectionFactory
+class ResolveCollectionFactory
 {
-    protected Driver $driver;
+    protected Config $config;
 
-    public function __construct(Driver $driver)
+    protected FieldResolver $fieldResolver;
+
+    public function __construct(Config $config, FieldResolver $fieldResolver)
     {
-        $this->driver = $driver;
+        $this->config        = $config;
+        $this->fieldResolver = $fieldResolver;
     }
 
     public function get(Entity $entity): Closure
     {
         return function ($source, $args, $context, ResolveInfo $resolveInfo) {
-            $fieldResolver = $this->driver->getFieldResolver();
+            $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 
             $criteria = Criteria::create();
             $orderBy  = [];
 
             $filter = $args['filter'] ?? [];
-            $limit  = $this->driver->getConfig()->getLimit();
+            $limit  = $this->config->getLimit();
 
             foreach ($filter as $field => $value) {
                 if ($field === '_skip') {
@@ -69,21 +69,19 @@ class CollectionFactory
                         case 'lte':
                         case 'gt':
                         case 'gte':
-                        case 'isnull':
                         case 'contains':
                         case 'startswith':
                         case 'endswith':
-                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
-                            break;
                         case 'in':
                         case 'notin':
-                            $criteria->andWhere($criteria->expr()->$filter($field, explode(',', $value)));
+                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
+                            break;
+                        case 'isnull':
+                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
                             break;
                         case 'between':
-                            $values = explode(',', $value);
-                            assert(count($values) >= 2, 'Two values are required for between filter');
-                            $criteria->andWhere($criteria->expr()->gte($field, $values[0]));
-                            $criteria->andWhere($criteria->expr()->lte($field, $values[1]));
+                            $criteria->andWhere($criteria->expr()->gte($field, $value['from']));
+                            $criteria->andWhere($criteria->expr()->lte($field, $value['to']));
                             break;
                         case 'sort':
                             $orderBy[$field] = $value;

@@ -7,7 +7,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use GraphQL\Type\Definition\Type;
 
-class Manager extends AbstractContainer
+class TypeManager extends AbstractContainer
 {
     public function __construct()
     {

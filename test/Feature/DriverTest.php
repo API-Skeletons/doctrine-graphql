@@ -25,11 +25,11 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager());
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(User::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Artist::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Performance::class));
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Recording::class));
+        $this->assertInstanceOf(Metadata::class, $driver->get(Metadata::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(User::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Artist::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Performance::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Recording::class));
     }
 
     public function testCreateDriverWithConfig(): void
@@ -45,7 +45,7 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager(), $config, null, $container);
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertInstanceOf(Metadata::class, $driver->getMetadata());
+        $this->assertInstanceOf(Metadata::class, $driver->get(Metadata::class));
     }
 
     public function testNonDefaultGroup(): void
@@ -58,10 +58,10 @@ class DriverTest extends AbstractTest
         ]);
 
         $driver = new Driver($this->getEntityManager(), $config);
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(User::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(User::class));
 
         $this->expectException(Error::class);
-        $this->assertInstanceOf(Entity::class, $driver->getMetadata()->get(Artist::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Artist::class));
     }
 
     /**

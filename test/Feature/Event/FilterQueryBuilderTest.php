@@ -11,13 +11,14 @@ use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use League\Event\EventDispatcher;
 
 class FilterQueryBuilderTest extends AbstractTest
 {
     public function testEvent()
     {
         $driver = new Driver($this->getEntityManager());
-        $driver->getEventDispatcher()->subscribeTo('filter.querybuilder',
+        $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
             function(FilterQueryBuilder $event) {
                 $this->assertInstanceOf(QueryBuilder::class, $event->getQueryBuilder());
                 $this->assertEquals([

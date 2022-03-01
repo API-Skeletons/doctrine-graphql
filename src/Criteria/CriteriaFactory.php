@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
+use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -15,33 +16,40 @@ use function array_keys;
 use function assert;
 use function in_array;
 
-class Factory
+class CriteriaFactory
 {
-    protected Driver $driver;
+    protected EntityManager $entityManager;
 
-    public function __construct(Driver $driver)
+    protected TypeManager $typeManager;
+
+    public function __construct(EntityManager $entityManager, TypeManager $typeManager)
     {
-        $this->driver = $driver;
+        $this->entityManager = $entityManager;
+        $this->typeManager   = $typeManager;
     }
 
     /**
      * @param mixed[]|null $associationMetadata
      */
-    public function __invoke(
-        Entity $entity,
+    public function get(
+        Entity $targetEntity,
+        ?Entity $owningEntity = null,
         ?string $associationName = null,
         ?array $associationMetadata = null
     ): InputObjectType {
-        $typeName = $entity->getTypeName() . '_' . $associationName . '_Filter';
-
-        if ($this->driver->getTypeManager()->has($typeName)) {
-            return $this->driver->getTypeManager()->get($typeName);
+        if ($owningEntity) {
+            $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_Filter';
+        } else {
+            $typeName = $targetEntity->getTypeName() . '_Filter';
         }
 
-        $filters         = [];
-        $classMetadata   = $this->driver->getEntityManager()
-            ->getClassMetadata($entity->getEntityClass());
-        $graphQLMetadata = $entity->getMetadataConfig();
+        if ($this->typeManager->has($typeName)) {
+            return $this->typeManager->get($typeName);
+        }
+
+        $fields         = [];
+        $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
+        $entityMetadata = $targetEntity->getMetadataConfig();
 
         $allFilters = [
             'sort',
@@ -64,8 +72,8 @@ class Factory
         $allowedFilters = $allFilters;
 
         // Limit entity filters
-        if ($graphQLMetadata['excludeCriteria']) {
-            $excludeCriteria = $graphQLMetadata['excludeCriteria'];
+        if ($entityMetadata['excludeCriteria']) {
+            $excludeCriteria = $entityMetadata['excludeCriteria'];
             $allowedFilters  = array_filter($allowedFilters, static function ($value) use ($excludeCriteria) {
                 return ! in_array($value, $excludeCriteria);
             });
@@ -83,7 +91,7 @@ class Factory
             $graphQLType = null;
 
             // Only process fields which are in the graphql metadata
-            if (! in_array($fieldName, array_keys($graphQLMetadata['fields']))) {
+            if (! in_array($fieldName, array_keys($entityMetadata['fields']))) {
                 continue;
             }
 
@@ -91,7 +99,7 @@ class Factory
              * @psalm-suppress UndefinedDocblockClass
              */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-            $graphQLType   = $this->driver->getTypeManager()->get($fieldMetadata['type']);
+            $graphQLType   = $this->typeManager->get($fieldMetadata['type']);
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldName)) {
                 $graphQLType = Type::id();
@@ -101,12 +109,12 @@ class Factory
 
             // Step through all criteria and create filter fields
             $descriptions = [
-                'eq' => 'Equals; same as name: value.  DateTime not supported.',
-                'neq' => 'Not Equals',
-                'lt' => 'Less Than',
-                'lte' => 'Less Than or Equals',
-                'gt' => 'Greater Than',
-                'gte' => 'Greater Than or Equals',
+                Filters::EQ  => 'Equals; same as name: value.  DateTime not supported.',
+                Filters::NEQ => 'Not Equals',
+                Filters::LT  => 'Less Than',
+                Filters::LTE => 'Less Than or Equals',
+                Filters::GT  => 'Greater Than',
+                Filters::GTE => 'Greater Than or Equals',
             ];
 
             // Build simple filters
@@ -115,31 +123,31 @@ class Factory
                     continue;
                 }
 
-                $filters[$fieldName] = [
+                $fields[$fieldName . '_' . $filter] = [
                     'name' => $fieldName . '_' . $filter,
                     'type' => $graphQLType,
                     'description' => $docs,
                 ];
             }
 
-            // This eq filter is for field:value instead of field_eq:value
-            if (in_array('eq', $allowedFilters)) {
-                $filters[$fieldName] = [
+            // eq filter is for field:value and field_eq:value
+            if (in_array(Filters::EQ, $allowedFilters)) {
+                $fields[$fieldName] = [
                     'name' => $fieldName,
                     'type' => $graphQLType,
                     'description' => 'Equals.  DateTime not supported.',
                 ];
             }
 
-            if (in_array('sort', $allowedFilters)) {
-                $filters[$fieldName . '_sort'] = [
+            if (in_array(Filters::SORT, $allowedFilters)) {
+                $fields[$fieldName . '_sort'] = [
                     'name' => $fieldName . '_sort',
                     'type' => Type::string(),
                     'description' => 'Sort the result either ASC or DESC',
                 ];
             }
 
-            if (in_array('isnull', $allowedFilters)) {
+            if (in_array(Filters::ISNULL, $allowedFilters)) {
                 $fields[$fieldName . '_isnull'] = [
                     'name' => $fieldName . '_isnull',
                     'type' => Type::boolean(),
@@ -150,7 +158,7 @@ class Factory
                 ];
             }
 
-            if (in_array('between', $allowedFilters)) {
+            if (in_array(Filters::BETWEEN, $allowedFilters)) {
                 $fields[$fieldName . '_between'] = [
                     'name' => $fieldName . '_between',
                     'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
@@ -169,7 +177,7 @@ class Factory
                 ];
             }
 
-            if (in_array('in', $allowedFilters)) {
+            if (in_array(Filters::IN, $allowedFilters)) {
                 $fields[$fieldName . '_in'] = [
                     'name' => $fieldName . '_in',
                     'type' => Type::listOf($graphQLType),
@@ -177,7 +185,7 @@ class Factory
                 ];
             }
 
-            if (in_array('notin', $allowedFilters)) {
+            if (in_array(Filters::NOTIN, $allowedFilters)) {
                 $fields[$fieldName . '_notin'] = [
                     'name' => $fieldName . '_notin',
                     'type' => Type::listOf($graphQLType),
@@ -186,7 +194,7 @@ class Factory
             }
 
             if ($graphQLType === Type::string()) {
-                if (in_array('startswith', $allowedFilters)) {
+                if (in_array(Filters::STARTSWITH, $allowedFilters)) {
                     $fields[$fieldName . '_startswith'] = [
                         'name' => $fieldName . '_startswith',
                         'type' => $graphQLType,
@@ -195,7 +203,7 @@ class Factory
                     ];
                 }
 
-                if (in_array('endswith', $allowedFilters)) {
+                if (in_array(Filters::ENDSWITH, $allowedFilters)) {
                     $fields[$fieldName . '_endswith'] = [
                         'name' => $fieldName . '_endswith',
                         'type' => $graphQLType,
@@ -204,7 +212,7 @@ class Factory
                     ];
                 }
 
-                if (in_array('contains', $allowedFilters)) {
+                if (in_array(Filters::CONTAINS, $allowedFilters)) {
                     $fields[$fieldName . '_contains'] = [
                         'name' => $fieldName . '_contains',
                         'type' => $graphQLType,
@@ -236,13 +244,13 @@ class Factory
         ];
 
         $inputObject = new InputObjectType([
-            'name' => $entity->getTypeName() . '_Filter',
+            'name' => $typeName,
             'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]);
 
-        $this->driver->getTypeManager()->set($typeName, $inputObject);
+        $this->typeManager->set($typeName, $inputObject);
 
         return $inputObject;
     }

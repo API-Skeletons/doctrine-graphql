@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault;
@@ -14,7 +13,9 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
+use Doctrine\ORM\EntityManager;
 use GraphQL\Error\Error;
 use Laminas\Hydrator\Filter\FilterComposite;
 use Laminas\Hydrator\Filter\FilterEnabledInterface;
@@ -32,13 +33,16 @@ use function in_array;
  * This factory is used in the Metadata\Entity class to create a hydrator
  * for the current entity
  */
-class Factory extends AbstractContainer
+class HydratorFactory extends AbstractContainer
 {
-    protected Driver $driver;
+    protected EntityManager $entityManager;
 
-    public function __construct(Driver $driver)
+    protected Metadata $metadata;
+
+    public function __construct(EntityManager $entityManager, Metadata $metadata)
     {
-        $this->driver = $driver;
+        $this->entityManager = $entityManager;
+        $this->metadata      = $metadata;
 
         // Register project defaults
         $this
@@ -62,9 +66,9 @@ class Factory extends AbstractContainer
             return parent::get($id);
         }
 
-        $entity   = $this->driver->getMetadata()->get($id);
+        $entity   = $this->metadata->get($id);
         $config   = $entity->getMetadataConfig();
-        $hydrator = new DoctrineObject($this->driver->getEntityManager(), $config['byValue']);
+        $hydrator = new DoctrineObject($this->entityManager, $config['byValue']);
 
         // Create field strategy and assign to hydrator
         if ($hydrator instanceof StrategyEnabledInterface) {
@@ -107,6 +111,6 @@ class Factory extends AbstractContainer
 
         $this->set($id, $hydrator);
 
-         return $hydrator;
+        return $hydrator;
     }
 }
