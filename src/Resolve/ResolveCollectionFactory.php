@@ -44,7 +44,16 @@ class ResolveCollectionFactory
         $fieldMapping = $metadata->getFieldMapping($field);
         $graphQLType = $this->typeManager->get($fieldMapping['type']);
 
-        return $graphQLType->parseValue($value);
+        return $graphQLType->parseValue($graphQLType->serialize($value));
+    }
+
+    public function parseArrayValue(ClassMetadata $metadata, string $field, array $value): mixed
+    {
+        foreach ($value as $key => $val) {
+            $value[$key] = $this->parseValue($metadata, $field, $val);
+        }
+
+        return $value;
     }
 
     public function get(Entity $entity): Closure
@@ -105,26 +114,25 @@ class ResolveCollectionFactory
                         case 'contains':
                         case 'startswith':
                         case 'endswith':
+                            $value = $this->parseValue($collectionMetadata, $field, $value);
+                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
+                            break;
                         case 'in':
                         case 'notin':
-                            $value = $this->parseValue($collectionMetadata, $field, $value);
+                            $value = $this->parseArrayValue($collectionMetadata, $field, $value);
                             $criteria->andWhere($criteria->expr()->$filter($field, $value));
                             break;
                         case 'isnull':
-                            $value = $this->parseValue($collectionMetadata, $field, $value);
-                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
+                            $criteria->andWhere($criteria->expr()->$filter($field));
                             break;
                         case 'between':
-                            $valueFrom = $this->parseValue($collectionMetadata, $field, $value['from']);
-                            $valueTo = $this->parseValue($collectionMetadata, $field, $value['to']);
+                            $value = $this->parseArrayValue($collectionMetadata, $field, $value);
 
-                            $criteria->andWhere($criteria->expr()->gte($field, $valueFrom));
-                            $criteria->andWhere($criteria->expr()->lte($field, $valueTo));
+                            $criteria->andWhere($criteria->expr()->gte($field, $value['from']));
+                            $criteria->andWhere($criteria->expr()->lte($field, $value['to']));
                             break;
                         case 'sort':
                             $orderBy[$field] = $value;
-                            break;
-                        default:
                             break;
                     }
                 }

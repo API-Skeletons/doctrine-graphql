@@ -78,9 +78,14 @@ abstract class AbstractTest extends TestCase
                   'state' => 'New York',
                 ],
                 '1995-07-09' => [
-                  'venue' => 'Soldier Field',
-                  'city' => 'Chicago',
-                  'state' => 'Illinois',
+                    'venue' => 'Soldier Field',
+                    'city' => 'Chicago',
+                    'state' => 'Illinois',
+                ],
+                '1995-08-09' => [
+                    'venue' => null,
+                    'city' => null,
+                    'state' => null,
                 ],
             ],
             'Phish' => [
