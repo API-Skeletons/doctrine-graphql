@@ -72,21 +72,19 @@ class ResolveCollectionFactory
                         case 'lte':
                         case 'gt':
                         case 'gte':
-                        case 'isnull':
                         case 'contains':
                         case 'startswith':
                         case 'endswith':
-                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
-                            break;
                         case 'in':
                         case 'notin':
-                            $criteria->andWhere($criteria->expr()->$filter($field, explode(',', $value)));
+                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
+                            break;
+                        case 'isnull':
+                            $criteria->andWhere($criteria->expr()->$filter($field, $value));
                             break;
                         case 'between':
-                            $values = explode(',', $value);
-                            assert(count($values) >= 2, 'Two values are required for between filter');
-                            $criteria->andWhere($criteria->expr()->gte($field, $values[0]));
-                            $criteria->andWhere($criteria->expr()->lte($field, $values[1]));
+                            $criteria->andWhere($criteria->expr()->gte($field, $value['from']));
+                            $criteria->andWhere($criteria->expr()->lte($field, $value['to']));
                             break;
                         case 'sort':
                             $orderBy[$field] = $value;

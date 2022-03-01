@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
+use function Amp\Promise\all;
 use function array_filter;
 use function array_keys;
 use function assert;
@@ -37,15 +38,20 @@ class CriteriaFactory
         ?string $associationName = null,
         ?array $associationMetadata = null
     ): InputObjectType {
-        $typeName = $targetEntity->getTypeName() . '_' . $associationName . '_Filter';
+
+        if ($owningEntity) {
+            $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_Filter';
+        } else {
+            $typeName = $targetEntity->getTypeName() . '_Filter';
+        }
 
         if ($this->typeManager->has($typeName)) {
             return $this->typeManager->get($typeName);
         }
 
-        $filters         = [];
-        $classMetadata   = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
-        $graphQLMetadata = $targetEntity->getMetadataConfig();
+        $fields         = [];
+        $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
+        $entityMetadata = $targetEntity->getMetadataConfig();
 
         $allFilters = [
             'sort',
@@ -68,8 +74,8 @@ class CriteriaFactory
         $allowedFilters = $allFilters;
 
         // Limit entity filters
-        if ($graphQLMetadata['excludeCriteria']) {
-            $excludeCriteria = $graphQLMetadata['excludeCriteria'];
+        if ($entityMetadata['excludeCriteria']) {
+            $excludeCriteria = $entityMetadata['excludeCriteria'];
             $allowedFilters  = array_filter($allowedFilters, static function ($value) use ($excludeCriteria) {
                 return ! in_array($value, $excludeCriteria);
             });
@@ -87,7 +93,7 @@ class CriteriaFactory
             $graphQLType = null;
 
             // Only process fields which are in the graphql metadata
-            if (! in_array($fieldName, array_keys($graphQLMetadata['fields']))) {
+            if (! in_array($fieldName, array_keys($entityMetadata['fields']))) {
                 continue;
             }
 
@@ -105,12 +111,12 @@ class CriteriaFactory
 
             // Step through all criteria and create filter fields
             $descriptions = [
-                'eq' => 'Equals; same as name: value.  DateTime not supported.',
-                'neq' => 'Not Equals',
-                'lt' => 'Less Than',
-                'lte' => 'Less Than or Equals',
-                'gt' => 'Greater Than',
-                'gte' => 'Greater Than or Equals',
+                Filters::EQ  => 'Equals; same as name: value.  DateTime not supported.',
+                Filters::NEQ => 'Not Equals',
+                Filters::LT  => 'Less Than',
+                Filters::LTE => 'Less Than or Equals',
+                Filters::GT  => 'Greater Than',
+                Filters::GTE => 'Greater Than or Equals',
             ];
 
             // Build simple filters
@@ -119,7 +125,7 @@ class CriteriaFactory
                     continue;
                 }
 
-                $filters[$fieldName] = [
+                $fields[$fieldName . '_' . $filter] = [
                     'name' => $fieldName . '_' . $filter,
                     'type' => $graphQLType,
                     'description' => $docs,
@@ -127,29 +133,23 @@ class CriteriaFactory
             }
 
             // eq filter is for field:value and field_eq:value
-            if (in_array('eq', $allowedFilters)) {
-                $filters[$fieldName] = [
+            if (in_array(Filters::EQ, $allowedFilters)) {
+                $fields[$fieldName] = [
                     'name' => $fieldName,
-                    'type' => $graphQLType,
-                    'description' => 'Equals.  DateTime not supported.',
-                ];
-
-                $filters[$fieldName . '_eq'] = [
-                    'name' => $fieldName . '_eq',
                     'type' => $graphQLType,
                     'description' => 'Equals.  DateTime not supported.',
                 ];
             }
 
-            if (in_array('sort', $allowedFilters)) {
-                $filters[$fieldName . '_sort'] = [
+            if (in_array(Filters::SORT, $allowedFilters)) {
+                $fields[$fieldName . '_sort'] = [
                     'name' => $fieldName . '_sort',
                     'type' => Type::string(),
                     'description' => 'Sort the result either ASC or DESC',
                 ];
             }
 
-            if (in_array('isnull', $allowedFilters)) {
+            if (in_array(Filters::ISNULL, $allowedFilters)) {
                 $fields[$fieldName . '_isnull'] = [
                     'name' => $fieldName . '_isnull',
                     'type' => Type::boolean(),
@@ -160,7 +160,7 @@ class CriteriaFactory
                 ];
             }
 
-            if (in_array('between', $allowedFilters)) {
+        if (in_array(Filters::BETWEEN, $allowedFilters)) {
                 $fields[$fieldName . '_between'] = [
                     'name' => $fieldName . '_between',
                     'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
@@ -179,7 +179,7 @@ class CriteriaFactory
                 ];
             }
 
-            if (in_array('in', $allowedFilters)) {
+            if (in_array(Filters::IN, $allowedFilters)) {
                 $fields[$fieldName . '_in'] = [
                     'name' => $fieldName . '_in',
                     'type' => Type::listOf($graphQLType),
@@ -187,7 +187,7 @@ class CriteriaFactory
                 ];
             }
 
-            if (in_array('notin', $allowedFilters)) {
+            if (in_array(Filters::NOTIN, $allowedFilters)) {
                 $fields[$fieldName . '_notin'] = [
                     'name' => $fieldName . '_notin',
                     'type' => Type::listOf($graphQLType),
@@ -196,7 +196,7 @@ class CriteriaFactory
             }
 
             if ($graphQLType === Type::string()) {
-                if (in_array('startswith', $allowedFilters)) {
+                if (in_array(Filters::STARTSWITH, $allowedFilters)) {
                     $fields[$fieldName . '_startswith'] = [
                         'name' => $fieldName . '_startswith',
                         'type' => $graphQLType,
@@ -205,7 +205,7 @@ class CriteriaFactory
                     ];
                 }
 
-                if (in_array('endswith', $allowedFilters)) {
+                if (in_array(Filters::ENDSWITH, $allowedFilters)) {
                     $fields[$fieldName . '_endswith'] = [
                         'name' => $fieldName . '_endswith',
                         'type' => $graphQLType,
@@ -214,7 +214,7 @@ class CriteriaFactory
                     ];
                 }
 
-                if (in_array('contains', $allowedFilters)) {
+                if (in_array(Filters::CONTAINS, $allowedFilters)) {
                     $fields[$fieldName . '_contains'] = [
                         'name' => $fieldName . '_contains',
                         'type' => $graphQLType,

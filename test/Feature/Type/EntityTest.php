@@ -22,7 +22,7 @@ class EntityTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'entityTest']));
 
-        $entity = $driver->getMetadata()->get(Recording::class);
+        $entity = $driver->get(Metadata::class)->get(Recording::class);
 
         $this->assertInstanceOf(Entity::class, $entity);
         $this->assertEquals(Recording::class, $entity->getEntityClass());
