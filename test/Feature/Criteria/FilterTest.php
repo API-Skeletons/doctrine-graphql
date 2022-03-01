@@ -106,6 +106,15 @@ class FilterTest extends AbstractTest
 
     public function testbetween(): void
     {
+        $query = '{ artist { performances ( filter: {performanceDate_between: { from: "1995-02-21T00:00:00+00:00" to: "1995-07-09T00:00:00+00:00" } } ) { id performanceDate } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(1, count($data['artist'][0]['performances']));
+        $this->assertEquals(2, $data['artist'][0]['performances'][0]['id']);
+
+
         $query = '{ artist { performances ( filter: {id_between: { from: 2, to: 3 } } ) { id } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
@@ -113,6 +122,8 @@ class FilterTest extends AbstractTest
 
         $this->assertEquals(2, count($data['artist'][0]['performances']));
         $this->assertEquals(2, $data['artist'][0]['performances'][0]['id']);
+
+
     }
 
     public function testcontains(): void

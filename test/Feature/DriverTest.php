@@ -20,6 +20,14 @@ use Psr\Container\ContainerInterface;
 
 class DriverTest extends AbstractTest
 {
+    public function testGetInvalidService(): void
+    {
+        $driver = new Driver($this->getEntityManager());
+
+        $this->expectException(Error::class);
+        $driver->get('invalid');
+    }
+
     public function testCreateDriverWithoutConfig(): void
     {
         $driver = new Driver($this->getEntityManager());

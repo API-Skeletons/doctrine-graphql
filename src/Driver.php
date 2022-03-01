@@ -45,7 +45,12 @@ class Driver extends AbstractContainer
             )
             ->set(
                 ResolveCollectionFactory::class,
-                new ResolveCollectionFactory($this->get(Config::class), $this->get(FieldResolver::class))
+                new ResolveCollectionFactory(
+                    $this->get(EntityManager::class),
+                    $this->get(Config::class),
+                    $this->get(FieldResolver::class),
+                    $this->get(TypeManager::class)
+                )
             )
             ->set(
                 ResolveEntityFactory::class,

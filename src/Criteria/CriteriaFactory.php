@@ -166,11 +166,11 @@ class CriteriaFactory
                         'fields' => [
                             'from' => [
                                 'name' => 'from',
-                                'type' => Type::nonNull($graphQLType),
+                                'type' => $graphQLType,
                             ],
                             'to' => [
                                 'name' => 'to',
-                                'type' => Type::nonNull($graphQLType),
+                                'type' => $graphQLType,
                             ],
                         ],
                     ]),

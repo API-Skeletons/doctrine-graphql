@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
+use ApiSkeletons\Doctrine\GraphQL\Type\DateTime as DateTimeType;
 use GraphQL\Type\Definition\Type;
 
 class TypeManager extends AbstractContainer
@@ -23,6 +24,7 @@ class TypeManager extends AbstractContainer
             ->set('string', Type::string())
             ->set('text', Type::string())
             ->set('array', Type::listOf(Type::string()))
-            ->set('datetime', new DateTime());
+            ->set('datetime', new DateTimeType())
+            ;
     }
 }
