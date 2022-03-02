@@ -21,6 +21,7 @@ class AssociationDefault extends AbstractCollectionStrategy implements
 
     /**
      * @param mixed[] |null $data
+     *
      * @codeCoverageIgnore
      */
     public function hydrate(mixed $value, ?array $data): mixed

@@ -10,11 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
-use Psr\Container\ContainerInterface;
 
 class EntityTest extends AbstractTest
 {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 
 use Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy;
+use GraphQL\Error\Error;
 use Laminas\Hydrator\Strategy\StrategyInterface;
 
 /**
@@ -33,18 +34,16 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class NullifyOwningAssociation extends AbstractCollectionStrategy implements
     StrategyInterface
 {
-    /**
-     * @return null
-     */
-    public function extract(mixed $value, ?object $object = null)
+    public function extract(mixed $value, ?object $object = null): void
     {
-        return null;
+        throw new Error('Query is barred by Nullify Owning Association');
     }
 
     /**
      * @param mixed[]|null $data
      *
      * @return null
+     *
      * @codeCoverageIgnore
      */
     public function hydrate(mixed $value, ?array $data)

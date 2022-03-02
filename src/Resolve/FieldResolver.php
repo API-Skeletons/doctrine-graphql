@@ -10,7 +10,6 @@ use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 
-use function is_array;
 use function spl_object_hash;
 
 /**
@@ -40,14 +39,8 @@ class FieldResolver
      */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
-        if (is_array($source)) {
-            return $source[$info->fieldName];
-        }
-
         $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
-
-        $hydrator = $this->metadata->get($entityClass)->getHydrator();
 
         /**
          * For disabled hydrator cache, store only last hydrator result and reuse for consecutive calls
@@ -60,7 +53,8 @@ class FieldResolver
                 $this->extractValues = [];
             }
 
-            $this->extractValues[$splObjectHash] = $hydrator->extract($source);
+            $this->extractValues[$splObjectHash] = $this->metadata
+                ->get($entityClass)->getHydrator()->extract($source);
 
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
@@ -70,7 +64,8 @@ class FieldResolver
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        $this->extractValues[$splObjectHash] = $hydrator->extract($source);
+        $this->extractValues[$splObjectHash] = $this->metadata
+            ->get($entityClass)->getHydrator()->extract($source);
 
         return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
     }

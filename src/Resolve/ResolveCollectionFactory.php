@@ -77,6 +77,7 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
+            $skip  = 0;
             $limit = $this->config->getLimit();
 
             foreach ($filter as $field => $value) {
@@ -139,6 +140,14 @@ class ResolveCollectionFactory
                             break;
                     }
                 }
+            }
+
+            if ($skip) {
+                $criteria->setFirstResult($skip);
+            }
+
+            if ($limit) {
+                $criteria->setMaxResults($limit);
             }
 
             $criteria->orderBy($orderBy);

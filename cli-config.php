@@ -6,7 +6,7 @@ use Doctrine\ORM\EntityManager;
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Create a simple "default" Doctrine ORM configuration for Annotations
-$config = Setup::createXMLMetadataConfiguration(array(__DIR__ . "/test/config/orm"), true);
+$config = Setup::createXMLMetadataConfiguration(array(__DIR__ . "/test/config"), true);
 
 // database configuration parameters
 $conn = array(

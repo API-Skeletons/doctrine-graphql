@@ -3,12 +3,14 @@
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 
 /**
  * Recording
  */
 #[GraphQL\Entity(typeName: 'recording', description: 'Performance recordings')]
 #[GraphQL\Entity(typeName: 'entitytestrecording', description: 'Entity Test Recordings', group: 'entityTest')]
+#[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
 class Recording
 {
     /**
@@ -16,6 +18,7 @@ class Recording
      */
     #[GraphQL\Field(description: 'Source')]
     #[GraphQL\Field(description: 'Entity Test Source', group: 'entityTest')]
+    #[GraphQL\Field(group: 'CustomFieldStrategyTest')]
     private $source;
 
     /**

@@ -1,10 +1,8 @@
 <?php
 
-namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use GraphQL\GraphQL;
@@ -12,7 +10,9 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
-class FilterTest extends AbstractTest
+use function count;
+
+class CollectionFilterTest extends AbstractTest
 {
     protected Schema $schema;
 
@@ -218,4 +218,27 @@ class FilterTest extends AbstractTest
         $this->assertEquals(5, count($data['artist'][0]['performances']));
         $this->assertEquals(4, $data['artist'][0]['performances'][0]['id']);
     }
+
+    public function testskip(): void
+    {
+        $query = '{ artist { performances ( filter: { _skip: 2 } ) { id } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(3, count($data['artist'][0]['performances']));
+        $this->assertEquals(3, $data['artist'][0]['performances'][0]['id']);
+    }
+
+    public function testlimit(): void
+    {
+        $query = '{ artist { performances ( filter: { _limit: 4 } ) { id artist { name } } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(4, count($data['artist'][0]['performances']));
+        $this->assertEquals(1, $data['artist'][0]['performances'][0]['id']);
+    }
+
 }
