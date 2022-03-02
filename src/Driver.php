@@ -50,7 +50,7 @@ class Driver extends AbstractContainer
             )
             ->set(
                 Metadata::class,
-                static function (Driver $container) use ($metadataConfig) {
+                static function (ContainerInterface $container) use ($metadataConfig) {
                     return (new MetadataFactory($container, $metadataConfig))->getMetadata();
                 }
             )

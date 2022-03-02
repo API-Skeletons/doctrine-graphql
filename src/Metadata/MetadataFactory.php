@@ -6,10 +6,10 @@ namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute;
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 use function assert;
@@ -17,8 +17,10 @@ use function str_replace;
 
 class MetadataFactory
 {
-    protected Driver $driver;
+    protected ContainerInterface $container;
     protected ?Metadata $metadata;
+    protected EntityManager $entityManager;
+    protected Config $config;
 
     /** @var array|mixed[]|null */
     protected ?array $metadataConfig;
@@ -26,13 +28,15 @@ class MetadataFactory
     /**
      * @param mixed|null $metadataConfig
      */
-    public function __construct(Driver $driver, ?array $metadataConfig)
+    public function __construct(ContainerInterface $container, ?array $metadataConfig)
     {
-        $this->driver         = $driver;
+        $this->container      = $container;
         $this->metadataConfig = $metadataConfig;
+        $this->entityManager = $container->get(EntityManager::class);
+        $this->config = $container->get(Config::class);
 
         if ($metadataConfig) {
-            $this->metadata = new Metadata($driver, $metadataConfig);
+            $this->metadata = new Metadata($this->container, $metadataConfig);
         } else {
             $this->metadata = null;
         }
@@ -50,7 +54,7 @@ class MetadataFactory
     protected function buildMetadata(): Metadata
     {
         // Get all entity classes
-        $allMetadata = $this->driver->get(EntityManager::class)
+        $allMetadata = $this->entityManager
             ->getMetadataFactory()->getAllMetadata();
 
         $entityClasses = [];
@@ -67,7 +71,7 @@ class MetadataFactory
                 $instance = $attribute->newInstance();
 
                 // Only process attributes for the same group
-                if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
+                if ($instance->getGroup() !== $this->config->getGroup()) {
                     continue;
                 }
 
@@ -95,7 +99,7 @@ class MetadataFactory
             }
 
             // Fetch attributes for fields
-            $entityClassMetadata = $this->driver->get(EntityManager::class)
+            $entityClassMetadata = $this->entityManager
                 ->getMetadataFactory()->getMetadataFor($entityClass);
             $fieldNames          = $entityClassMetadata->getFieldNames();
 
@@ -107,7 +111,7 @@ class MetadataFactory
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
-                    if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
+                    if ($instance->getGroup() !== $this->config->getGroup()) {
                         continue;
                     }
 
@@ -121,6 +125,9 @@ class MetadataFactory
 
                     $this->metadataConfig[$entityClass]['fields'][$fieldName]['description'] =
                         $instance->getDescription();
+
+                    $this->metadataConfig[$entityClass]['fields'][$fieldName]['type'] =
+                        $instance->getType();
 
                     if ($instance->getStrategy()) {
                         $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
@@ -164,7 +171,7 @@ class MetadataFactory
             }
 
             // Fetch attributes for associations
-            $associationNames = $this->driver->get(EntityManager::class)->getMetadataFactory()
+            $associationNames = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor($entityClass)->getAssociationNames();
 
             foreach ($associationNames as $associationName) {
@@ -175,7 +182,7 @@ class MetadataFactory
                     $instance = $attribute->newInstance();
 
                     // Only process attributes for the same group
-                    if ($instance->getGroup() !== $this->driver->get(Config::class)->getGroup()) {
+                    if ($instance->getGroup() !== $this->config->getGroup()) {
                         continue;
                     }
 
@@ -210,7 +217,7 @@ class MetadataFactory
             }
         }
 
-        $this->metadata = new Metadata($this->driver, $this->metadataConfig);
+        $this->metadata = new Metadata($this->container, $this->metadataConfig);
 
         return $this->metadata;
     }
