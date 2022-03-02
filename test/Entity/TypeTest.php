@@ -10,6 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
  */
 #[GraphQL\Entity(typeName: 'typeTest', description: 'Type test')]
 #[GraphQL\Entity(group: 'DataTypesTest')]
+#[GraphQL\Entity(group: 'CustomTypeTest')]
 class TypeTest
 {
     /**
@@ -31,6 +32,7 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[GraphQL\Field(group: 'CustomTypeTest', type: "customType")]
     private $testFloat;
 
     /**

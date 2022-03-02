@@ -15,14 +15,18 @@ class Field
 
     protected ?string $description;
 
+    protected ?string $type;
+
     public function __construct(
         string $group = 'default',
         ?string $strategy = null,
-        ?string $description = null
+        ?string $description = null,
+        ?string $type = null
     ) {
         $this->group       = $group;
         $this->strategy    = $strategy;
         $this->description = $description;
+        $this->type = $type;
     }
 
     public function getGroup(): string
@@ -38,5 +42,10 @@ class Field
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
     }
 }
