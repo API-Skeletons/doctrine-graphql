@@ -155,9 +155,6 @@ class Entity
                         ];
                     };
                     break;
-
-                default:
-                    break;
             }
         }
 

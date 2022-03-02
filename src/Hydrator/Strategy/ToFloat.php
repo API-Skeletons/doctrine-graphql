@@ -23,7 +23,9 @@ class ToFloat extends AbstractCollectionStrategy implements
     public function extract(mixed $value, ?object $object = null): mixed
     {
         if ($value === null) {
+            // @codeCoverageIgnoreStart
             return $value;
+            // @codeCoverageIgnoreEnd
         }
 
         return floatval($value);
@@ -31,6 +33,8 @@ class ToFloat extends AbstractCollectionStrategy implements
 
     /**
      * @param mixed[]|null $data
+     *
+     * @codeCoverageIgnore
      */
     public function hydrate(mixed $value, ?array $data): mixed
     {

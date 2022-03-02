@@ -65,7 +65,7 @@ class ResolveEntityFactory
                 // Special case for eq `field: value`
                 if (strrpos($field, '_') === false) {
                     // Handle field:value
-                    $filterArray[$field] = $value;
+                    $filterArray[$field . '|eq'] = $value;
                 } else {
                     $field = substr($field, 0, strrpos($field, '_'));
 
@@ -80,12 +80,16 @@ class ResolveEntityFactory
                             $filterArray[$field . '|like'] = '%' . $value;
                             break;
                         case 'isnull':
-                            if ($value === true) {
-                                $filterArray[$field . '|isnull'] = true;
-                            } else {
-                                $filterArray[$field . '|isnotnull'] = true;
-                            }
-
+                            $filterArray[$field . '|isnull'] = 'true';
+                            break;
+                        case 'between':
+                            $filterArray[$field . '|between'] = $value['from'] . ',' . $value['to'];
+                            break;
+                        case 'in':
+                            $filterArray[$field . '|in'] = implode(',', $value);
+                            break;
+                        case 'notin':
+                            $filterArray[$field . '|notin'] = implode(',', $value);
                             break;
                         default:
                             $filterArray[$field . '|' . $filter] = $value;

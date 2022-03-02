@@ -20,7 +20,9 @@ class ToInteger extends AbstractCollectionStrategy implements
     public function extract(mixed $value, ?object $object = null): mixed
     {
         if ($value === null) {
+            // @codeCoverageIgnoreStart
             return $value;
+            // @codeCoverageIgnoreEnd
         }
 
         return intval($value);
@@ -28,6 +30,8 @@ class ToInteger extends AbstractCollectionStrategy implements
 
     /**
      * @param mixed[]|null $data
+     *
+     * @codeCoverageIgnore
      */
     public function hydrate(mixed $value, ?array $data): mixed
     {

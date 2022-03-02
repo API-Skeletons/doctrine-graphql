@@ -24,21 +24,11 @@ class Between extends InputObjectType
                 'name' => 'field',
                 'type' => Type::string(),
             ],
-            'where' => [
-                'name' => 'where',
-                'type' => Type::string(),
-                'defaultValue' => 'and',
-            ],
-            'format' => [
-                'name' => 'format',
-                'type' => Type::string(),
-                'defaultValue' => 'Y-m-d\TH:i:sP',
-            ],
         ];
 
         $config['fields'] = array_merge($config['fields'], $defaultFieldConfig);
+        $config['name']   = 'fc' . uniqid();
 
-        $config['name'] = 'fc' . uniqid();
         parent::__construct($config);
     }
 }

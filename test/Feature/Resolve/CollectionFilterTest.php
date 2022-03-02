@@ -1,10 +1,8 @@
 <?php
 
-namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use GraphQL\GraphQL;
@@ -12,7 +10,9 @@ use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
-class FilterTest extends AbstractTest
+use function count;
+
+class CollectionFilterTest extends AbstractTest
 {
     protected Schema $schema;
 
@@ -56,7 +56,7 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(3, count($data['artist'][0]['performances']));
+        $this->assertEquals(4, count($data['artist'][0]['performances']));
         $this->assertEquals(1, $data['artist'][0]['performances'][0]['id']);
     }
 
@@ -89,7 +89,7 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(3, count($data['artist'][0]['performances']));
+        $this->assertEquals(4, count($data['artist'][0]['performances']));
         $this->assertEquals(2, $data['artist'][0]['performances'][0]['id']);
     }
 
@@ -100,8 +100,19 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(3, count($data['artist'][0]['performances']));
+        $this->assertEquals(4, count($data['artist'][0]['performances']));
         $this->assertEquals(2, $data['artist'][0]['performances'][0]['id']);
+    }
+
+    public function testisnull(): void
+    {
+        $query = '{ artist { performances ( filter: {venue_isnull: true} ) { id } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(1, count($data['artist'][0]['performances']));
+        $this->assertEquals(5, $data['artist'][0]['performances'][0]['id']);
     }
 
     public function testbetween(): void
@@ -113,6 +124,15 @@ class FilterTest extends AbstractTest
 
         $this->assertEquals(2, count($data['artist'][0]['performances']));
         $this->assertEquals(2, $data['artist'][0]['performances'][0]['id']);
+
+
+        $query = '{ artist { performances ( filter: {performanceDate_between: { from: "1995-02-21T00:00:00+00:00" to: "1995-07-09T00:00:00+00:00" } } ) { id performanceDate } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(2, count($data['artist'][0]['performances']));
+        $this->assertEquals(1, $data['artist'][0]['performances'][0]['id']);
     }
 
     public function testcontains(): void
@@ -166,7 +186,7 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(2, count($data['artist'][0]['performances']));
+        $this->assertEquals(3, count($data['artist'][0]['performances']));
         $this->assertEquals(1, $data['artist'][0]['performances'][0]['id']);
     }
 
@@ -177,8 +197,8 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(4, count($data['artist'][0]['performances']));
-        $this->assertEquals(4, $data['artist'][0]['performances'][0]['id']);
+        $this->assertEquals(5, count($data['artist'][0]['performances']));
+        $this->assertEquals(5, $data['artist'][0]['performances'][0]['id']);
 
 
         $query = '{ artist { performances ( filter: { venue_sort: "asc" } ) { id } } }';
@@ -186,8 +206,8 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(4, count($data['artist'][0]['performances']));
-        $this->assertEquals(3, $data['artist'][0]['performances'][0]['id']);
+        $this->assertEquals(5, count($data['artist'][0]['performances']));
+        $this->assertEquals(5, $data['artist'][0]['performances'][0]['id']);
 
 
         $query = '{ artist { performances ( filter: { venue_sort: "desc" } ) { id } } }';
@@ -195,7 +215,30 @@ class FilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(4, count($data['artist'][0]['performances']));
+        $this->assertEquals(5, count($data['artist'][0]['performances']));
         $this->assertEquals(4, $data['artist'][0]['performances'][0]['id']);
     }
+
+    public function testskip(): void
+    {
+        $query = '{ artist { performances ( filter: { _skip: 2 } ) { id } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(3, count($data['artist'][0]['performances']));
+        $this->assertEquals(3, $data['artist'][0]['performances'][0]['id']);
+    }
+
+    public function testlimit(): void
+    {
+        $query = '{ artist { performances ( filter: { _limit: 4 } ) { id artist { name } } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(4, count($data['artist'][0]['performances']));
+        $this->assertEquals(1, $data['artist'][0]['performances'][0]['id']);
+    }
+
 }

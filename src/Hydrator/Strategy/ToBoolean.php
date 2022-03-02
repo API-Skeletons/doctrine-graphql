@@ -18,7 +18,9 @@ class ToBoolean extends AbstractCollectionStrategy implements
     public function extract(mixed $value, ?object $object = null): ?bool
     {
         if ($value === null) {
+            // @codeCoverageIgnoreStart
             return $value;
+            // @codeCoverageIgnoreEnd
         }
 
         return (bool) $value;
@@ -26,6 +28,8 @@ class ToBoolean extends AbstractCollectionStrategy implements
 
     /**
      * @param mixed[]|null $data
+     *
+     * @codeCoverageIgnore
      */
     public function hydrate(mixed $value, ?array $data): ?bool
     {

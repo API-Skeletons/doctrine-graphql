@@ -8,6 +8,7 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -166,11 +167,11 @@ class CriteriaFactory
                         'fields' => [
                             'from' => [
                                 'name' => 'from',
-                                'type' => Type::nonNull($graphQLType),
+                                'type' => $graphQLType,
                             ],
                             'to' => [
                                 'name' => 'to',
-                                'type' => Type::nonNull($graphQLType),
+                                'type' => $graphQLType,
                             ],
                         ],
                     ]),
@@ -230,6 +231,38 @@ class CriteriaFactory
                 ];
             }
             */
+        }
+
+        foreach ($classMetadata->getAssociationNames() as $associationName) {
+            // Only process fields which are in the graphql metadata
+            if (! in_array($associationName, array_keys($entityMetadata['fields']))) {
+                continue;
+            }
+
+            /**
+             * @psalm-suppress UndefinedDocblockClass
+             */
+            $associationMetadata = $classMetadata->getAssociationMapping($associationName);
+            $graphQLType         = Type::id();
+            switch ($associationMetadata['type']) {
+                case ClassMetadataInfo::ONE_TO_ONE:
+                case ClassMetadataInfo::MANY_TO_ONE:
+                case ClassMetadataInfo::TO_ONE:
+                    // eq filter is for field:value and field_eq:value
+                    if (in_array(Filters::EQ, $allowedFilters)) {
+                        $fields[$associationName] = [
+                            'name' => $associationName,
+                            'type' => $graphQLType,
+                            'description' => 'Equals.',
+                        ];
+
+                        $fields[$associationName . '_eq'] = [
+                            'name' => $associationName . '_eq',
+                            'type' => $graphQLType,
+                            'description' => 'Equals.',
+                        ];
+                    }
+            }
         }
 
         $fields['_skip']  = [

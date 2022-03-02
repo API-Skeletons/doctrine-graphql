@@ -53,7 +53,8 @@ class User
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    #[GraphQL\Association(description: 'Recordings', strategy: AssociationDefault::class)]
+    #[GraphQL\Association(description: 'Recordings')]
+    #[GraphQL\Association(group: 'CustomFieldStrategyTest', strategy: AssociationDefault::class)]
     private $recordings;
 
     /**

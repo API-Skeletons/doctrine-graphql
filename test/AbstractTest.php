@@ -56,7 +56,7 @@ abstract class AbstractTest extends TestCase
 
         $artists = [
             'Grateful Dead' => [
-                '1995-02-21' => [
+                '1995-02-21T00:00:00+00:00' => [
                     'venue' => 'Delta Center',
                     'city' => 'Salt Lake City',
                     'state' => 'Utah',
@@ -67,24 +67,29 @@ abstract class AbstractTest extends TestCase
                         'DSBD > 1C > DAT; Seeded to etree by Dan Stephens',
                     ]
                 ],
-                '1969-11-08' => [
+                '1969-11-08T00:00:00+00:00' => [
                     'venue' => 'Fillmore Auditorium',
                     'city' => 'San Francisco',
                     'state' => 'California',
                 ],
-                '1977-05-08' => [
+                '1977-05-08T00:00:00+00:00' => [
                   'venue' => 'Barton Hall, Cornell University',
                   'city' => 'Ithaca',
                   'state' => 'New York',
                 ],
-                '1995-07-09' => [
-                  'venue' => 'Soldier Field',
-                  'city' => 'Chicago',
-                  'state' => 'Illinois',
+                '1995-07-09T00:00:00+00:00' => [
+                    'venue' => 'Soldier Field',
+                    'city' => 'Chicago',
+                    'state' => 'Illinois',
+                ],
+                '1995-08-09T00:00:00+00:00' => [
+                    'venue' => null,
+                    'city' => null,
+                    'state' => null,
                 ],
             ],
             'Phish' => [
-                '1998-11-02' => [
+                '1998-11-02T00:00:00+00:00' => [
                     'venue' => 'E Center',
                     'city' => 'West Valley City',
                     'state' => 'Utah',
@@ -92,14 +97,14 @@ abstract class AbstractTest extends TestCase
                         'AKG480 > Aerco preamp > SBM-1',
                     ],
                 ],
-                '1999-12-31' => [
+                '1999-12-31T00:00:00+00:00' => [
                     'venue' => null,
                     'city' => 'Big Cypress',
                     'state' => 'Florida',
                 ],
             ],
             'String Cheese Incident' => [
-                '2002-06-21' => [
+                '2002-06-21T00:00:00+00:00' => [
                     'venue' => 'Bonnaroo',
                     'city' => 'Manchester',
                     'state' => 'Tennessee',
@@ -122,7 +127,7 @@ abstract class AbstractTest extends TestCase
 
             foreach ($performances as $performanceDate => $location) {
                 $performance = (new Entity\Performance())
-                    ->setPerformanceDate(DateTime::createFromFormat('Y-m-d H:i:s', $performanceDate . ' 00:00:00'))
+                    ->setPerformanceDate(DateTime::createFromFormat('Y-m-d\TH:i:sP', $performanceDate))
                     ->setVenue($location['venue'])
                     ->setCity($location['city'])
                     ->setState($location['state'])
@@ -140,6 +145,18 @@ abstract class AbstractTest extends TestCase
                 }
             }
         }
+
+        $typeTest = new Entity\TypeTest();
+        $typeTest
+            ->setTestBool(true)
+            ->setTestDateTime(new DateTime())
+            ->setTestFloat(3.14159265)
+            ->setTestInt(12345)
+            ->setTestText('Now is the time for all good men')
+            ->setTestArray(['test', 'doctrine', 'array'])
+            ;
+        $this->entityManager->persist($typeTest);
+
 
         $this->entityManager->flush();
         $this->entityManager->clear();

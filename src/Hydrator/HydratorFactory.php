@@ -12,7 +12,6 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
@@ -52,7 +51,6 @@ class HydratorFactory extends AbstractContainer
             ->set(ToBoolean::class, new ToBoolean())
             ->set(ToFloat::class, new ToFloat())
             ->set(ToInteger::class, new ToInteger())
-            ->set(ToJson::class, new ToJson())
             ->set(Password::class, new Password());
     }
 
