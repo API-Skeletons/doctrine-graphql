@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use GraphQL\Error\Error;
+use Psr\Container\ContainerInterface;
 
 class Metadata extends AbstractContainer
 {
-    protected Driver $driver;
+    protected ContainerInterface $container;
     /** @var mixed[]|null */
     protected ?array $metadataConfig;
 
-    public function __construct(Driver $driver, ?array $metadataConfig)
+    public function __construct(ContainerInterface $container, ?array $metadataConfig)
     {
-        $this->driver         = $driver;
+        $this->container      = $container;
         $this->metadataConfig = $metadataConfig;
     }
 
@@ -33,7 +33,7 @@ class Metadata extends AbstractContainer
         }
 
         if (! $this->has($id)) {
-            $this->set($id, new Entity($this->driver, $this->metadataConfig[$id]));
+            $this->set($id, new Entity($this->container, $this->metadataConfig[$id]));
         }
 
         return parent::get($id);
