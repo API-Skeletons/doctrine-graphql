@@ -81,7 +81,7 @@ $schema = new Schema([
         'name' => 'query',
         'fields' => [
             'artist' => [
-                'type' => Type::listOf($driver->type(Artist::class),
+                'type' => Type::listOf($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
                 ],
