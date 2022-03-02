@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use Closure;
 use GraphQL\Error\Error;
 use Psr\Container\ContainerInterface;
 
@@ -30,7 +31,7 @@ abstract class AbstractContainer implements ContainerInterface
             throw new Error($id . ' is not registered');
         }
 
-        if ($this->register[$id] instanceof \Closure) {
+        if ($this->register[$id] instanceof Closure) {
             $closure = $this->register[$id];
 
             $this->register[$id] = $closure($this);

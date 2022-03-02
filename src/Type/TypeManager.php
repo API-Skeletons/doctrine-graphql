@@ -13,17 +13,17 @@ class TypeManager extends AbstractContainer
     public function __construct()
     {
         $this
-            ->set('tinyint', fn() => Type::int())
-            ->set('smallint', fn() => Type::int())
-            ->set('integer', fn() => Type::int())
-            ->set('int', fn() => Type::int())
-            ->set('boolean', fn() => Type::boolean())
-            ->set('decimal', fn() => Type::float())
-            ->set('float', fn() => Type::float())
-            ->set('bigint', fn() => Type::string())
-            ->set('string', fn() => Type::string())
-            ->set('text', fn() => Type::string())
-            ->set('array', fn() => Type::listOf(Type::string()))
-            ->set('datetime', fn() => new DateTimeType());
+            ->set('tinyint', static fn () => Type::int())
+            ->set('smallint', static fn () => Type::int())
+            ->set('integer', static fn () => Type::int())
+            ->set('int', static fn () => Type::int())
+            ->set('boolean', static fn () => Type::boolean())
+            ->set('decimal', static fn () => Type::float())
+            ->set('float', static fn () => Type::float())
+            ->set('bigint', static fn () => Type::string())
+            ->set('string', static fn () => Type::string())
+            ->set('text', static fn () => Type::string())
+            ->set('array', static fn () => Type::listOf(Type::string()))
+            ->set('datetime', static fn () => new DateTimeType());
     }
 }

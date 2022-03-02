@@ -32,7 +32,7 @@ class Driver extends AbstractContainer
             ->set(EntityManager::class, $entityManager)
             ->set(
                 Config::class,
-                function () use ($config) {
+                static function () use ($config) {
                     if (! $config) {
                         $config = new Config();
                     }
@@ -42,21 +42,21 @@ class Driver extends AbstractContainer
             )
             ->set(
                 EventDispatcher::class,
-                fn() => new EventDispatcher()
+                static fn () => new EventDispatcher()
             )
             ->set(
                 TypeManager::class,
-                fn() => new TypeManager()
+                static fn () => new TypeManager()
             )
             ->set(
                 Metadata::class,
-                function (Driver $container) use ($metadataConfig) {
+                static function (Driver $container) use ($metadataConfig) {
                     return (new MetadataFactory($container, $metadataConfig))->getMetadata();
                 }
             )
             ->set(
                 FieldResolver::class,
-                function (ContainerInterface $container) {
+                static function (ContainerInterface $container) {
                     return new FieldResolver(
                         $container->get(Config::class),
                         $container->get(Metadata::class)
@@ -65,7 +65,7 @@ class Driver extends AbstractContainer
             )
             ->set(
                 ResolveCollectionFactory::class,
-                function (ContainerInterface $container) {
+                static function (ContainerInterface $container) {
                     return new ResolveCollectionFactory(
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
@@ -76,7 +76,7 @@ class Driver extends AbstractContainer
             )
             ->set(
                 ResolveEntityFactory::class,
-                function (ContainerInterface $container) {
+                static function (ContainerInterface $container) {
                     return new ResolveEntityFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
@@ -86,7 +86,7 @@ class Driver extends AbstractContainer
             )
             ->set(
                 CriteriaFactory::class,
-                function( ContainerInterface $container) {
+                static function (ContainerInterface $container) {
                     return new CriteriaFactory(
                         $container->get(EntityManager::class),
                         $container->get(TypeManager::class)
@@ -95,7 +95,7 @@ class Driver extends AbstractContainer
             )
             ->set(
                 HydratorFactory::class,
-                function (ContainerInterface $container) {
+                static function (ContainerInterface $container) {
                     return new HydratorFactory(
                         $container->get(EntityManager::class),
                         $container->get(Metadata::class)
