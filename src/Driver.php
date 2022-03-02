@@ -16,6 +16,7 @@ use Closure;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ObjectType;
 use League\Event\EventDispatcher;
+use Psr\Container\ContainerInterface;
 
 class Driver extends AbstractContainer
 {
@@ -32,41 +33,74 @@ class Driver extends AbstractContainer
 
         $this
             // Plain classes
-            ->set(EntityManager::class, $entityManager)
-            ->set(Config::class, $config)
-            ->set(EventDispatcher::class, new EventDispatcher())
-            ->set(TypeManager::class, new TypeManager())
-            ->set(Metadata::class, (new MetadataFactory($this, $metadataConfig))->getMetadata())
+            ->set(EntityManager::class, function() use ($entityManager) { return $entityManager; })
+            ->set(Config::class, function () use ($config) { return $config; })
+
+            ->set(
+                EventDispatcher::class,
+                fn() => new EventDispatcher()
+            )
+
+            ->set(
+                TypeManager::class,
+                fn() => new TypeManager()
+            )
+
+            ->set(
+                Metadata::class,
+                function (Driver $container) use ($metadataConfig) {
+                    return (new MetadataFactory($container, $metadataConfig))->getMetadata();
+                }
+            )
 
             // Composed classes
             ->set(
                 FieldResolver::class,
-                new FieldResolver($this->get(Config::class), $this->get(Metadata::class))
+                function (ContainerInterface $container) {
+                    return new FieldResolver(
+                        $container->get(Config::class),
+                        $container->get(Metadata::class)
+                    );
+                }
             )
             ->set(
                 ResolveCollectionFactory::class,
-                new ResolveCollectionFactory(
-                    $this->get(EntityManager::class),
-                    $this->get(Config::class),
-                    $this->get(FieldResolver::class),
-                    $this->get(TypeManager::class)
-                )
+                function (ContainerInterface $container) {
+                    return new ResolveCollectionFactory(
+                        $container->get(EntityManager::class),
+                        $container->get(Config::class),
+                        $container->get(FieldResolver::class),
+                        $container->get(TypeManager::class)
+                    );
+                }
             )
             ->set(
                 ResolveEntityFactory::class,
-                new ResolveEntityFactory(
-                    $this->get(Config::class),
-                    $this->get(EntityManager::class),
-                    $this->get(EventDispatcher::class)
-                )
+                function (ContainerInterface $container) {
+                    return new ResolveEntityFactory(
+                        $container->get(Config::class),
+                        $container->get(EntityManager::class),
+                        $container->get(EventDispatcher::class)
+                    );
+                }
             )
             ->set(
                 CriteriaFactory::class,
-                new CriteriaFactory($this->get(EntityManager::class), $this->get(TypeManager::class))
+                function( ContainerInterface $container) {
+                    return new CriteriaFactory(
+                        $container->get(EntityManager::class),
+                        $container->get(TypeManager::class)
+                    );
+                }
             )
             ->set(
                 HydratorFactory::class,
-                new HydratorFactory($this->get(EntityManager::class), $this->get(Metadata::class))
+                function (ContainerInterface $container) {
+                    return new HydratorFactory(
+                        $container->get(EntityManager::class),
+                        $container->get(Metadata::class)
+                    );
+                }
             );
     }
 
