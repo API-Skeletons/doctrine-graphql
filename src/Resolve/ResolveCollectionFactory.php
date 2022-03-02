@@ -42,11 +42,14 @@ class ResolveCollectionFactory
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
         $fieldMapping = $metadata->getFieldMapping($field);
-        $graphQLType = $this->typeManager->get($fieldMapping['type']);
+        $graphQLType  = $this->typeManager->get($fieldMapping['type']);
 
         return $graphQLType->parseValue($graphQLType->serialize($value));
     }
 
+    /**
+     * @param mixed[] $value
+     */
     public function parseArrayValue(ClassMetadata $metadata, string $field, array $value): mixed
     {
         foreach ($value as $key => $val) {
@@ -74,7 +77,7 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
-            $limit  = $this->config->getLimit();
+            $limit = $this->config->getLimit();
 
             foreach ($filter as $field => $value) {
                 if ($field === '_skip') {

@@ -27,7 +27,7 @@ class Between extends InputObjectType
         ];
 
         $config['fields'] = array_merge($config['fields'], $defaultFieldConfig);
-        $config['name'] = 'fc' . uniqid();
+        $config['name']   = 'fc' . uniqid();
 
         parent::__construct($config);
     }

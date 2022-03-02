@@ -24,7 +24,6 @@ class TypeManager extends AbstractContainer
             ->set('string', Type::string())
             ->set('text', Type::string())
             ->set('array', Type::listOf(Type::string()))
-            ->set('datetime', new DateTimeType())
-            ;
+            ->set('datetime', new DateTimeType());
     }
 }
