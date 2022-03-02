@@ -27,33 +27,33 @@ class Driver extends AbstractContainer
      */
     public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null)
     {
-        if (! $config) {
-            $config = new Config();
-        }
-
         $this
             // Plain classes
-            ->set(EntityManager::class, function() use ($entityManager) { return $entityManager; })
-            ->set(Config::class, function () use ($config) { return $config; })
+            ->set(EntityManager::class, $entityManager)
+            ->set(
+                Config::class,
+                function () use ($config) {
+                    if (! $config) {
+                        $config = new Config();
+                    }
 
+                    return $config;
+                }
+            )
             ->set(
                 EventDispatcher::class,
                 fn() => new EventDispatcher()
             )
-
             ->set(
                 TypeManager::class,
                 fn() => new TypeManager()
             )
-
             ->set(
                 Metadata::class,
                 function (Driver $container) use ($metadataConfig) {
                     return (new MetadataFactory($container, $metadataConfig))->getMetadata();
                 }
             )
-
-            // Composed classes
             ->set(
                 FieldResolver::class,
                 function (ContainerInterface $container) {

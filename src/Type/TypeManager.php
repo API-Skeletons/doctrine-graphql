@@ -13,17 +13,17 @@ class TypeManager extends AbstractContainer
     public function __construct()
     {
         $this
-            ->set('tinyint', Type::int())
-            ->set('smallint', Type::int())
-            ->set('integer', Type::int())
-            ->set('int', Type::int())
-            ->set('boolean', Type::boolean())
-            ->set('decimal', Type::float())
-            ->set('float', Type::float())
-            ->set('bigint', Type::string())
-            ->set('string', Type::string())
-            ->set('text', Type::string())
-            ->set('array', Type::listOf(Type::string()))
-            ->set('datetime', new DateTimeType());
+            ->set('tinyint', fn() => Type::int())
+            ->set('smallint', fn() => Type::int())
+            ->set('integer', fn() => Type::int())
+            ->set('int', fn() => Type::int())
+            ->set('boolean', fn() => Type::boolean())
+            ->set('decimal', fn() => Type::float())
+            ->set('float', fn() => Type::float())
+            ->set('bigint', fn() => Type::string())
+            ->set('string', fn() => Type::string())
+            ->set('text', fn() => Type::string())
+            ->set('array', fn() => Type::listOf(Type::string()))
+            ->set('datetime', fn() => new DateTimeType());
     }
 }
