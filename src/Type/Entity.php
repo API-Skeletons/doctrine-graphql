@@ -105,7 +105,7 @@ class Entity
             /**
              * @psalm-suppress UndefinedDocblockClass
              */
-            $fieldMapping              = $classMetadata->getFieldMapping($fieldName);
+            $fieldMapping = $classMetadata->getFieldMapping($fieldName);
 
             if ($this->getMetadataConfig()['fields'][$fieldName]['type']) {
                 $graphQLType = $this->typeManager

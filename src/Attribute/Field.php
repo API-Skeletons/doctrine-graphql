@@ -26,7 +26,7 @@ class Field
         $this->group       = $group;
         $this->strategy    = $strategy;
         $this->description = $description;
-        $this->type = $type;
+        $this->type        = $type;
     }
 
     public function getGroup(): string

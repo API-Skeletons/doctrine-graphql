@@ -112,7 +112,6 @@ class CriteriaFactory
                 }
             }
 
-
             assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
             // Step through all criteria and create filter fields

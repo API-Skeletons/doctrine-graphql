@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use GraphQL\Error\Error;
 use Psr\Container\ContainerInterface;
@@ -18,7 +17,7 @@ class Metadata extends AbstractContainer
 
     public function __construct(ContainerInterface $container, ?array $metadataConfig)
     {
-        $this->container       = $container;
+        $this->container      = $container;
         $this->metadataConfig = $metadataConfig;
     }
 

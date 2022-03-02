@@ -32,8 +32,8 @@ class MetadataFactory
     {
         $this->container      = $container;
         $this->metadataConfig = $metadataConfig;
-        $this->entityManager = $container->get(EntityManager::class);
-        $this->config = $container->get(Config::class);
+        $this->entityManager  = $container->get(EntityManager::class);
+        $this->config         = $container->get(Config::class);
 
         if ($metadataConfig) {
             $this->metadata = new Metadata($this->container, $metadataConfig);
