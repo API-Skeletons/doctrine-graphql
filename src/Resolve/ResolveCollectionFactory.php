@@ -41,6 +41,9 @@ class ResolveCollectionFactory
 
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
+        /**
+         * @psalm-suppress UndefinedDocblockClass
+         */
         $fieldMapping = $metadata->getFieldMapping($field);
         $graphQLType  = $this->typeManager->get($fieldMapping['type']);
 
