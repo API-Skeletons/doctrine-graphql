@@ -1,9 +1,6 @@
 GraphQL for Doctrine Using Attributes
 =====================================
 
-THIS IS A WORK IN PROGRESS.  ALL DOCUMENTATION DESCRIBES THE `main` BRANCH.  USE IS NOT RECOMMENDED AT THIS TIME.
-
-
 [![Build Status](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main/graphs/badge.svg)](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main)
 [![PHP Version](https://img.shields.io/badge/PHP-8.0%2b-blue)](https://img.shields.io/badge/PHP-8.0%2b-blue)
