@@ -10,7 +10,7 @@ entities is not supported.  Your Doctrine metadata must contain all the
 associations.  This requriement relates to the very basics of working in
 Doctrine.
 
-There are some `config options <config>`_ available but they are all optional.
+There are some `config options <config.html>`_ available but they are all optional.
 
 The first step is to add attributes to your entities.  Attributes are a new
 feature in PHP 8.0 which act like annotations but are built into the language.
@@ -45,7 +45,7 @@ entity manager
   $driver = new Driver($entityManager);
 
 The next step is configuring your GraphQL schema.  In this section we'll create
-an types for the entity, the filter for the entity, and the resolver.
+types for the entity, the filter for the entity, and the resolver.
 
 .. code-block:: php
   :linenos:

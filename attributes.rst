@@ -59,11 +59,11 @@ data from Doctrine entities.  The hydrator library is
   More information here:
   `By Value and By Reference <https://www.doctrine-project.org/projects/doctrine-laminas-hydrator/en/3.0/by-value-by-reference.html#by-value-and-by-reference>`_
 * ``namingStrategy`` - Default is null.  You may set a naming strategy class.
-  Class must be injected into the HydratorFactory container.  See `containers <containers>`_
+  Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
 * ``filters`` - Default is null.  An array of filters to apply to the
   hydrator.  In practice these should not be necessary because if you want to
   filter fields just don't include them in the attribute group.
-  Filter classes must be injected into the HydratorFactory container.  See `containers <containers>`_
+  Filter classes must be injected into the HydratorFactory container.  See `containers <containers.html>`_
 
 ``Field``
 ---------
@@ -75,7 +75,7 @@ in your graph. Optional parameters are:
 * ``description`` - A description of the ``Field``.
 * ``type`` - Used for overriding the GraphQL type used for the field.
   The custom type must be injected into the TypeManager container.
-  See `containers <containers>`_
+  See `containers <containers.html>`_
 
 .. code-block:: php
   :linenos:
@@ -93,7 +93,7 @@ in your graph. Optional parameters are:
   $driver->get(TypeManager::class)->set('customtype', fn() => Type::string());
 
 * ``strategy`` - A custom hydrator strategy class.
-  Class must be injected into the HydratorFactory container.  See `containers <containers>`_
+  Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
 
 
 ``Association``
@@ -114,5 +114,5 @@ associated with.  Associations of the to many variety will be filterable.
     #[GraphQL\Association(excludeCriteria: ['contains', 'startswith', 'endswith'])]
 
 * ``strategy`` - A custom hydrator strategy class.
-  Class must be injected into the HydratorFactory container.  See `containers <containers>`_
+  Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
 
