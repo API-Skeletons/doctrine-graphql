@@ -1,27 +1,29 @@
 Doctrine and GraphQL
 ====================
 
-Welcome to the documentation for
+This is the documentation for
 `API-Skeletons/doctrine-graphql <https://github.com/API-Skeletons/doctrine-graphql>`_
 
-This repository uses Doctrine metadata to introspect your entities and builds
-relationships dynamically covering your entire schema, if you wish, allowing
-deep GraphQL queries on your data with a single entry point.
+This project builds GraphQL types for Doctrine entities.  To select which
+entities, fields, and associations are available for querying via GraphQL,
+PHP 8 attributes are used.
+
+The goal of this project is to make creating GraphQL types very simple, but as
+you'll see, there's a lot of customizable power built in too.
 
 .. toctree::
 
     :caption: Table of Contents
 
     about
-    installation
-    use
-    configuration
-    hydrators
+    install
+    justthebasics
     queries
+    config
+    attributes
     events
-    custommappingtypes
-    graphiql
-    internals
+    metadata
+    containers
 
 
 .. role:: raw-html(raw)

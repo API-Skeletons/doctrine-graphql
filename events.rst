@@ -1,104 +1,42 @@
 Events
 ======
 
-All events are grouped under a common **ApiSkeletons\\Doctrine\\GraphQL\\Event**
-object.  In this repository the same event can be called in different places
-based on context such as when building an EntityType and when building the
-filters for an EntityType; both places need the same type override.  That is
-why all events are grouped.
-
+A PSR-14 event dispatcher is included for listening to events.
 
 Filtering Query Builders
 ------------------------
 
-Each top level entity to query uses a QueryBuilder object.  This QueryBuilder
+Each top level type uses a QueryBuilder object.  This QueryBuilder
 object should be modified to filter the data for the logged in user.  This is
 the security layer.  QueryBuilders are built then triggered through an event.
 Listen to this event and modify the passed QueryBuilder to apply your security.
-The queryBuilder already has the entityClassName assigned to fetch with the
-alias 'row'.
 
 .. code-block:: php
+  :linenos:
 
-    use Laminas\EventManager\Event as LaminasEvent;
-    use ZF\Doctrine\GraphQL\Event;
+  use ApiSkeletons\Doctrine\GraphQL\Driver;
+  use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
+  use Doctrine\ORM\QueryBuilder;
+  use League\Event\EventDispatcher;
 
-    $events = $container->get('SharedEventManager');
+  $driver = new Driver($this->getEntityManager());
 
-    $events->attach(
-        Event::class,
-        Event::FILTER_QUERY_BUILDER,
-        function(LaminasEvent $event)
-        {
-            switch ($event->getParam('entityClassName')) {
-                case 'Db\Entity\Performance':
-                    // Modify the queryBuilder for your needs
-                    $event->getParam('queryBuilder')
-                        ->andWhere('row.id = 1')
-                        ;
-                    break;
-                default:
-                    break;
-            }
-        },
-        100
-    );
+  $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
+      function(FilterQueryBuilder $event) {
+          assert(QueryBuilder::class, $event->getQueryBuilder());
+          assert([
+              'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist' => 'entity'
+          ] === $event->getEntityAliasMap());
+      }
+  );
 
+The ``FilterQueryBuilder`` event has two functions:
 
-Resolve
--------
-
-The **Event::RESOLVE** event includes the **parameters**
-and allows you to override the whole ResolveLoader event.  This allows
-you to have custom parameters and act on them through the ResolveLoader
-RESOLVE event.
-
-
-Resolve Post
-------------
-
-The **Event::RESOLVE_POST** event allows you to modify the values
-returned from the ResolveLoader via an ArrayObject or replace the values.
-
-
-Override GraphQL Type
----------------------
-
-The **Event::MAP_FIELD_TYPE** event allows you to override the GraphQL
-type for any field.  Imagine you have an **array** field on an entity and
-the array field is multi-dimentional.  Because this module handles arrays
-as arrays of strings (because GraphQL needs to know exact subtypes of types)
-it cannot handle a multi-dimentional array.  A good solution is to turn the
-value into JSON in a hydrator strategy and override the type to a String.
-
-.. code-block:: php
-
-    use Laminas\EventManager\Event as LaminasEvent;
-    use GraphQL\Type\Definition\Type;
-    use ZF\Doctrine\GraphQL\Event;
-
-    $events = $container->get('SharedEventManager');
-
-    $events->attach(
-        Event::class,
-        Event::MAP_FIELD_TYPE,
-        function(LaminasEvent $event)
-        {
-            $hydratorAlias = $event->getParam('hydratorAlias');
-            $fieldName = $event->getParam('fieldName');
-
-            if ($hydratorAlias == 'ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\Db_Entity_Artist') {
-                if ($fieldName === 'arrayField') {
-                    $event->stopPropagation();
-
-                    return Type::string();
-                }
-            }
-        },
-        100
-    );
-
-
+* ``getQueryBuilder`` - Will return a query builder with the user specified
+  filters already applied.
+* ``getEntityAliasMap`` - Returns an array of entities used in the QueryBuilder
+  and the aliases used for each.  Use this to help you apply more filters to
+  the QueryBuider.
 
 .. role:: raw-html(raw)
    :format: html
