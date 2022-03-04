@@ -14,6 +14,8 @@ Listen to this event and modify the passed QueryBuilder to apply your security.
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Driver;
   use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
   use Doctrine\ORM\QueryBuilder;

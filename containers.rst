@@ -20,6 +20,8 @@ library.
   .. code-block:: php
     :linenos:
 
+    <?php
+
     use ApiSkeletonsTest\Doctrine\GraphQL\Driver;
     use ApiSkeletonsTest\Doctrine\GraphQL\Type\TypeManager;
     use GraphQL\Type\Definition\Type;
@@ -34,6 +36,8 @@ library.
 
   .. code-block:: php
     :linenos:
+
+    <?php
 
     use ApiSkeletonsTest\Doctrine\GraphQL\Driver;
     use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\HydratorFactory;

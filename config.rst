@@ -25,6 +25,8 @@ Creating a ``Driver`` with all config options:
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Config;
   use ApiSkeletons\Doctrine\GraphQL\Driver;
 

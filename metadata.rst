@@ -9,6 +9,8 @@ rebuilding it with each request.
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Driver;
   use ApiSkeletons\Doctrine\GraphQL\Metadata;
 

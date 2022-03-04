@@ -16,14 +16,16 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
 
 .. code-block:: php
 
-    $query = "{
-        artist ( filter: { name_contains: \"Dead\" } ) {
-          name
-          performance ( filter: { _limit: 100 state:\"CA\" } ) {
-            performanceDate venue
-          }
+  <?php
+
+  $query = "{
+      artist ( filter: { name_contains: \"Dead\" } ) {
+        name
+        performance ( filter: { _limit: 100 state:\"CA\" } ) {
+          performanceDate venue
         }
-    }";
+      }
+  }";
 
 
 Filters

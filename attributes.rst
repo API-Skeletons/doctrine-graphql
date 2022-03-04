@@ -13,6 +13,8 @@ A slightly complicated example:
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL
 
   #[GraphQL\Entity(description: 'Artist data', typeName: 'Artist')]
@@ -79,6 +81,8 @@ in your graph. Optional parameters are:
 
 .. code-block:: php
   :linenos:
+
+  <?php
 
   // Handle a number field as a string
 
