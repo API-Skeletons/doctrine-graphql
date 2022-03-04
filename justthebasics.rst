@@ -22,6 +22,8 @@ each element you want to be queryable from GraphQL.
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 
   #[GraphQL\Entity]
@@ -40,6 +42,8 @@ entity manager
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use ApiSkeletons\Doctrine\GraphQL\Driver;
 
   $driver = new Driver($entityManager);
@@ -49,6 +53,8 @@ types for the entity, the filter for the entity, and the resolver.
 
 .. code-block:: php
   :linenos:
+
+  <?php
 
   use GraphQL\Type\Definition\ObjectType;
   use GraphQL\Type\Definition\Type;
@@ -74,6 +80,8 @@ Now, using the schema, you can start making GraphqL queries
 .. code-block:: php
   :linenos:
 
+  <?php
+
   use GraphQL\GraphQL;
 
   $query = '{ artist { id name } }';
@@ -86,6 +94,8 @@ Performance and we want to make deeper queries from Artist to Performance.
 
 .. code-block:: php
   :linenos:
+
+  <?php
 
   use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 
@@ -117,6 +127,8 @@ attributes, a query of performances is now possible:
 
 .. code-block:: php
   :linenos:
+
+  <?php
 
   use GraphQL\GraphQL;
 
