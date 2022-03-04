@@ -5,3 +5,4 @@ master_doc = 'index'
 show_sphinx = False
 commit = False
 last_updated = True
+pygments_style = 'sphinx'
