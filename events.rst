@@ -27,7 +27,7 @@ Listen to this event and modify the passed QueryBuilder to apply your security.
       function(FilterQueryBuilder $event) {
           assert(QueryBuilder::class, $event->getQueryBuilder());
           assert([
-              'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist' => 'entity'
+              'App\ORM\Entity\Artist' => 'entity'
           ] === $event->getEntityAliasMap());
       }
   );

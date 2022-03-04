@@ -22,8 +22,8 @@ library.
 
     <?php
 
-    use ApiSkeletonsTest\Doctrine\GraphQL\Driver;
-    use ApiSkeletonsTest\Doctrine\GraphQL\Type\TypeManager;
+    use ApiSkeletons\Doctrine\GraphQL\Driver;
+    use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
     use GraphQL\Type\Definition\Type;
 
     $driver = new Driver($this->getEntityManager());
@@ -39,8 +39,8 @@ library.
 
     <?php
 
-    use ApiSkeletonsTest\Doctrine\GraphQL\Driver;
-    use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\HydratorFactory;
+    use ApiSkeletons\Doctrine\GraphQL\Driver;
+    use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
 
     $driver = new Driver($this->getEntityManager());
     $hydratorFactory = $driver->get(HydratorFactory::class);
