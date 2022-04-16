@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use Amp\ByteStream\ClosedException;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
+use ApiSkeletons\Doctrine\GraphQL\Input\InputFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
@@ -14,6 +16,7 @@ use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveEntityFactory;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use League\Event\EventDispatcher;
 use Psr\Container\ContainerInterface;
@@ -101,7 +104,18 @@ class Driver extends AbstractContainer
                         $container->get(Metadata::class)
                     );
                 }
-            );
+            )
+            ->set(
+                InputFactory::class,
+                static function (ContainerInterface $container) {
+                    return new InputFactory(
+                        $container->get(EntityManager::class),
+                        $container->get(TypeManager::class),
+                        $container->get(Metadata::class)
+                    );
+                }
+            )
+            ;
     }
 
     public function type(string $entityClass): ObjectType
@@ -120,4 +134,16 @@ class Driver extends AbstractContainer
         return $this->get(ResolveEntityFactory::class)
             ->get($this->get(Metadata::class)->get($entityClass));
     }
+
+    public function input(string $entityClass, array $requiredFields = [], array $optionalFields = []): InputObjectType
+    {
+        return $this->get(InputFactory::class)->get($entityClass, $requiredFields, $optionalFields);
+    }
+
+    /*
+    public function partialInput(string $entityClass): object
+    {
+
+    }
+    */
 }
