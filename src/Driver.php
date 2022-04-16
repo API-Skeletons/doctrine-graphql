@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
-use Amp\ByteStream\ClosedException;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Input\InputFactory;
@@ -114,8 +113,7 @@ class Driver extends AbstractContainer
                         $container->get(Metadata::class)
                     );
                 }
-            )
-            ;
+            );
     }
 
     public function type(string $entityClass): ObjectType
@@ -135,6 +133,12 @@ class Driver extends AbstractContainer
             ->get($this->get(Metadata::class)->get($entityClass));
     }
 
+    /**
+     * @param string[] $requiredFields An optional list of just the required fields you want for the mutation.
+     *                              This allows specific fields per mutation.
+     * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
+     *                              This allows specific fields per mutation.
+     */
     public function input(string $entityClass, array $requiredFields = [], array $optionalFields = []): InputObjectType
     {
         return $this->get(InputFactory::class)->get($entityClass, $requiredFields, $optionalFields);
