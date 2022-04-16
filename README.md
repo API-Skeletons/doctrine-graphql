@@ -86,6 +86,27 @@ $schema = new Schema([
             ],
         ],
     ]),
+    'mutation' => new ObjectType([
+        'name' => 'mutation',
+        'fields' => [
+            'artistUpdateName' => [
+                'type' => $driver->type(Artist::class),
+                'args' => [
+                    'id' => Type::nonNull(Type::id()),
+                    'input' => Type::nonNull($driver->input(Artist::class, ['name'])),
+                ],
+                'resolve' => function ($root, $args): User {
+                    $artist = $this->getEntityManager()->getRepository(Artist::class)
+                        ->find($args['id']);
+
+                    $artist->setName($args['input']['name']);
+                    $this->getEntityManager()->flush();
+
+                    return $artist;
+                },
+            ],
+        ],
+    ]),
 ]);
 ```
 
@@ -99,6 +120,24 @@ $query = '{ artist { id name performances { venue } } }';
 $result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
 ```
+
+Run GraphQL mutations
+
+```php
+use GraphQL\GraphQL;
+
+$query = 'mutation {
+    artistUpdateName(id: 1, input: { name: "newName" }) {
+        id
+        name
+    }
+}';
+
+$result = GraphQL::executeQuery($schema, $query);
+$output = $result->toArray();
+```
+
+
 
 Filtering
 ---------

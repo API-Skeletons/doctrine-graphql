@@ -17,6 +17,7 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrate
 #[GraphQL\Entity(description: 'User', typeName: 'user', group: 'testPasswordFilter', filters: ['password' => ['filter' => Password::class]])]
 #[GraphQL\Entity(group: 'NamingStrategyTest', namingStrategy: CustomNamingStrategy::class)]
 #[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
+#[GraphQL\Entity(group: 'InputFactoryTest')]
 class User
 {
     /**
@@ -27,6 +28,7 @@ class User
     #[GraphQL\Field(description: 'User name', group: 'testPasswordFilter')]
     #[GraphQL\Field(group: 'NamingStrategyTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest', strategy: ToBoolean::class)]
+    #[GraphQL\Field(group: 'InputFactoryTest')]
     private $name;
 
     /**
@@ -34,6 +36,7 @@ class User
      */
     #[GraphQL\Field(description: 'User email')]
     #[GraphQL\Field(group: 'NamingStrategyTest')]
+    #[GraphQL\Field(group: 'InputFactoryTest')]
     private $email;
 
     /**
@@ -41,6 +44,7 @@ class User
      */
     #[GraphQL\Field(description: 'User password')]
     #[GraphQL\Field(description: 'User password', group: 'testPasswordFilter')]
+    #[GraphQL\Field(group: 'InputFactoryTest')]
     private $password;
 
     /**
@@ -48,6 +52,7 @@ class User
      */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(description: 'Primary key', group: 'testNonDefaultGroup')]
+    #[GraphQL\Field(group: 'InputFactoryTest')]
     private $id;
 
     /**

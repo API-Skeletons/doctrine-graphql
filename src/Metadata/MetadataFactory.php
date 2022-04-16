@@ -127,7 +127,7 @@ class MetadataFactory
                         $instance->getDescription();
 
                     $this->metadataConfig[$entityClass]['fields'][$fieldName]['type'] =
-                        $instance->getType();
+                        $instance->getType() ?? $entityClassMetadata->getTypeOfField($fieldName);
 
                     if ($instance->getStrategy()) {
                         $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
@@ -140,8 +140,7 @@ class MetadataFactory
                     /**
                      * @psalm-suppress UndefinedDocblockClass
                      */
-                    $fieldMetadata = $entityClassMetadata->getFieldMapping($fieldName);
-                    switch ($fieldMetadata['type']) {
+                    switch ($entityClassMetadata->getTypeOfField($fieldName)) {
                         case 'tinyint':
                         case 'smallint':
                         case 'integer':

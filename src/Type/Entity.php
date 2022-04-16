@@ -102,17 +102,8 @@ class Entity
                 continue;
             }
 
-            /**
-             * @psalm-suppress UndefinedDocblockClass
-             */
-            $fieldMapping = $classMetadata->getFieldMapping($fieldName);
-
-            if ($this->getMetadataConfig()['fields'][$fieldName]['type']) {
-                $graphQLType = $this->typeManager
-                    ->get($this->getMetadataConfig()['fields'][$fieldName]['type']);
-            } else {
-                $graphQLType = $this->typeManager->get($fieldMapping['type']);
-            }
+            $graphQLType = $this->typeManager
+                ->get($this->getMetadataConfig()['fields'][$fieldName]['type']);
 
             $graphQLFields[$fieldName] = [
                 'type' => $graphQLType,
