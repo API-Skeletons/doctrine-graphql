@@ -19,6 +19,7 @@ you'll see, there's a lot of customizable power built in too.
     install
     justthebasics
     queries
+    mutations
     config
     attributes
     events
