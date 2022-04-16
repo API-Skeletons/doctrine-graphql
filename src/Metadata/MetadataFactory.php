@@ -140,8 +140,7 @@ class MetadataFactory
                     /**
                      * @psalm-suppress UndefinedDocblockClass
                      */
-                    $fieldMetadata = $entityClassMetadata->getFieldMapping($fieldName);
-                    switch ($fieldMetadata['type']) {
+                    switch ($entityClassMetadata->getTypeOfField($fieldName)) {
                         case 'tinyint':
                         case 'smallint':
                         case 'integer':
