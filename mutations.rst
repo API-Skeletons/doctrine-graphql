@@ -4,6 +4,7 @@ Running Mutations
 Mutations modify data in your Doctrine ORM.  They are defined as such:
 
 .. code-block:: php
+  :linenos:
 
   <?php
 
@@ -44,6 +45,7 @@ Calling Mutations
 -----------------
 
 .. code-block:: php
+  :linenos:
 
   <?php
 
@@ -68,6 +70,7 @@ required.  Since this is rarely what is intended, there are two optional
 parameters to specify required and optional fields.
 
 .. code-block:: php
+  :linenos:
 
   <?php
 
