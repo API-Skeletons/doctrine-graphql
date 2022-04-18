@@ -21,9 +21,12 @@ class FilterQueryBuilderTest extends AbstractTest
         $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
             function(FilterQueryBuilder $event) {
                 $this->assertInstanceOf(QueryBuilder::class, $event->getQueryBuilder());
-                $this->assertEquals([
-                        'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist' => 'entity'
-                ], $event->getEntityAliasMap());
+
+                $entityAliasMap = $event->getEntityAliasMap();
+                $entityAliasMapKeys = array_keys($event->getEntityAliasMap());
+
+                $this->assertEquals(Artist::class, reset($entityAliasMap));
+                $this->assertEquals('entity', reset($entityAliasMapKeys));
             }
         );
 
