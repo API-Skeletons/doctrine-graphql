@@ -3,5 +3,7 @@
   "restructuredtext.updateOnTextChanged"    : "true",
   "restructuredtext.updateDelay"            : 300,
   "restructuredtext.sphinxBuildPath": null,
-  "restructuredtext.confPath": "${workspaceFolder}"
+  "restructuredtext.confPath": "${workspaceFolder}",
+  "esbonio.sphinx.confDir": "${workspaceFolder}",
+  "esbonio.sphinx.buildDir": "${workspaceRoot}/dist"
 }
