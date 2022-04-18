@@ -13,7 +13,7 @@
         "php": "^8.0",
         "doctrine/orm": "^2.8",
         "doctrine/doctrine-laminas-hydrator": "^2.2",
-        "api-skeletons/doctrine-querybuilder-filter": "^1.2.2",
+        "api-skeletons/doctrine-querybuilder-filter": "^2.0",
         "webonyx/graphql-php": "^v14.7",
         "psr/container": "^2.0",
         "league/event": "^3.0"
