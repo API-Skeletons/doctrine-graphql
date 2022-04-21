@@ -83,3 +83,8 @@ You may use a wildcard ``['*']`` for required and optional fields.
 
 Identifiers are excluded from the input field list because they should not be
 changed or added by a user.
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. include:: footer.rst

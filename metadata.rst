@@ -24,3 +24,8 @@ rebuilding it with each request.
       // The second parameter is the Config object
       $driver = new Driver($entityManager, null, $metadataConfig);
   }
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. include:: footer.rst
