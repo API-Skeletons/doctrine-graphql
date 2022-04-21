@@ -120,3 +120,7 @@ associated with.  Associations of the to many variety will be filterable.
 * ``strategy`` - A custom hydrator strategy class.
   Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
 
+.. role:: raw-html(raw)
+   :format: html
+
+.. include:: footer.rst
