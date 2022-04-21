@@ -45,15 +45,24 @@ class InputFactory extends AbstractContainer
                 $fields = [];
 
                 foreach ($this->entityManager->getClassMetadata($id)->getFieldNames() as $fieldName) {
+                    /**
+                     * Do not include identifiers as input.  In the majority of cases there will be
+                     * no reason to set or update an identifier.  For the case where an identifier
+                     * should be set or updated this facotry is not the correct solution.
+                     */
+                    if ($this->entityManager->getClassMetadata($id)->isIdentifier($fieldName)) {
+                        continue;
+                    }
+
                     if ($optionalFields) {
                         // Include field as optional
-                        if (in_array($fieldName, $optionalFields)) {
+                        if (in_array($fieldName, $optionalFields) || $optionalFields === ['*']) {
                             $fields[$fieldName]['description'] = $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'];
                             $fields[$fieldName]['type']        = $this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']);
                         }
                     } elseif ($requiredFields) {
                         // Include fields as required
-                        if (in_array($fieldName, $requiredFields)) {
+                        if (in_array($fieldName, $requiredFields) || $requiredFields === ['*']) {
                             $fields[$fieldName]['description'] = $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'];
                             $fields[$fieldName]['type']        = Type::nonNull($this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']));
                         }
