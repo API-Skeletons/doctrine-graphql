@@ -72,6 +72,9 @@ class InputFactoryTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), $config);
 
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Identifier id is an invalid input.');
+
         $schema = new Schema([
             'mutation' => new ObjectType([
                 'name' => 'mutation',
@@ -82,27 +85,13 @@ class InputFactoryTest extends AbstractTest
                             'id' => Type::nonNull(Type::id()),
                             'input' => Type::nonNull($driver->input(User::class, ['id'])),
                         ],
-                        'resolve' => function ($root, $args): User {
+                        'resolve' => function ($root, $args): void {
 
                         },
                     ],
                 ],
             ]),
         ]);
-
-        $query = 'mutation {
-            testInput(id: 1, input: { id: 2 }) {
-                id
-                name
-            }
-        }';
-
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals(
-            'Field "id" is not defined by type ApiSkeletonsTest_Doctrine_GraphQL_Entity_User_Input.',
-            $output['errors'][0]['message']);
     }
 
     public function testInputWithOptionalField(): void
