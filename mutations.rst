@@ -64,7 +64,7 @@ mutation will return the new values from the mutated entity.
 Input Argument
 --------------
 
-The driver function ``$driver->input(Entity:class)`` will return an
+The driver function ``$driver->input(Entity::class)`` will return an
 ``InputObjectType`` with all the fields set to nonNull, thereby making them
 required.  Since this is rarely what is intended, there are two optional
 parameters to specify required and optional fields.
@@ -79,3 +79,7 @@ parameters to specify required and optional fields.
 In the above mutation example the ``name`` field is required and there are no
 optional fields, so the only field in the ``input`` args will be ``name``.
 The ``name`` input field will be typed according to its metadata configuration.
+You may use a wildcard ``['*']`` for required and optional fields.
+
+Identifiers are excluded from the input field list because they should not be
+changed or added by a user.
