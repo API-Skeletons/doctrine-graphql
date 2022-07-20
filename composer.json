@@ -37,5 +37,10 @@
     },
     "scripts": {
         "test": "vendor/bin/phpcs && vendor/bin/phpunit && vendor/bin/psalm"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
