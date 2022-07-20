@@ -33,7 +33,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class NullifyOwningAssociation extends AbstractCollectionStrategy implements
     StrategyInterface
 {
-    public function extract(mixed $value, ?object $object = null): void
+    public function extract(mixed $value, ?object $object = null): mixed
     {
         throw new Error('Query is barred by Nullify Owning Association');
     }
