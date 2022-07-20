@@ -47,3 +47,8 @@ the response when queried from the owning side of a many to many relationship
 
 Ideally the developer will add the owning relation to a filter so the
 field is not queryable at all.
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. include:: footer.rst
