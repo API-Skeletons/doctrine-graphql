@@ -5,3 +5,5 @@
 /vendor/
 /coverage/
 /.idea/
+.phpcs-cache
+.phpunit.result.cache
