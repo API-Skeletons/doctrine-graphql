@@ -96,6 +96,9 @@ class MetadataFactory
                     'typeName' => $instance->getTypeName()
                         ?: str_replace('\\', '_', $entityClass),
                 ];
+
+                // Append group to all type names
+                $this->metadataConfig[$entityClass]['typeName'] .= '_' . $this->config->getGroup();
             }
 
             // Fetch attributes for fields

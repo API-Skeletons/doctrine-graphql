@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
@@ -19,14 +20,11 @@ use function in_array;
 
 class CriteriaFactory
 {
-    protected EntityManager $entityManager;
-
-    protected TypeManager $typeManager;
-
-    public function __construct(EntityManager $entityManager, TypeManager $typeManager)
-    {
-        $this->entityManager = $entityManager;
-        $this->typeManager   = $typeManager;
+    public function __construct(
+        protected Config $config,
+        protected EntityManager $entityManager,
+        protected TypeManager $typeManager
+    ) {
     }
 
     /**
@@ -67,7 +65,6 @@ class CriteriaFactory
             'startswith',
             'endswith',
             'contains',
-//            'memberof',
         ];
 
         $allowedFilters = $allFilters;
@@ -196,43 +193,37 @@ class CriteriaFactory
                 ];
             }
 
-            if ($graphQLType === Type::string()) {
-                if (in_array(Filters::STARTSWITH, $allowedFilters)) {
-                    $fields[$fieldName . '_startswith'] = [
-                        'name' => $fieldName . '_startswith',
-                        'type' => $graphQLType,
-                        'documentation' => 'Strings only. '
-                            . 'A like query from the beginning of the value `like \'value%\'`',
-                    ];
-                }
-
-                if (in_array(Filters::ENDSWITH, $allowedFilters)) {
-                    $fields[$fieldName . '_endswith'] = [
-                        'name' => $fieldName . '_endswith',
-                        'type' => $graphQLType,
-                        'documentation' => 'Strings only. '
-                            . 'A like query from the end of the value `like \'%value\'`',
-                    ];
-                }
-
-                if (in_array(Filters::CONTAINS, $allowedFilters)) {
-                    $fields[$fieldName . '_contains'] = [
-                        'name' => $fieldName . '_contains',
-                        'type' => $graphQLType,
-                        'description' => 'Strings only. Similar to a Like query as `like \'%value%\'`',
-                    ];
-                }
+            if ($graphQLType !== Type::string()) {
+                continue;
             }
 
-            /*
-            if (in_array('memberof', $allowedFilters)) {
-                $fields[$fieldName . '_memberof'] = [
-                    'name' => $fieldName . '_memberof',
+            if (in_array(Filters::STARTSWITH, $allowedFilters)) {
+                $fields[$fieldName . '_startswith'] = [
+                    'name' => $fieldName . '_startswith',
                     'type' => $graphQLType,
-                    'description' => 'Matches a value in an array field.',
+                    'documentation' => 'Strings only. '
+                        . 'A like query from the beginning of the value `like \'value%\'`',
                 ];
             }
-            */
+
+            if (in_array(Filters::ENDSWITH, $allowedFilters)) {
+                $fields[$fieldName . '_endswith'] = [
+                    'name' => $fieldName . '_endswith',
+                    'type' => $graphQLType,
+                    'documentation' => 'Strings only. '
+                        . 'A like query from the end of the value `like \'%value\'`',
+                ];
+            }
+
+            if (! in_array(Filters::CONTAINS, $allowedFilters)) {
+                continue;
+            }
+
+            $fields[$fieldName . '_contains'] = [
+                'name' => $fieldName . '_contains',
+                'type' => $graphQLType,
+                'description' => 'Strings only. Similar to a Like query as `like \'%value%\'`',
+            ];
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {

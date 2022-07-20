@@ -90,6 +90,7 @@ class Driver extends AbstractContainer
                 CriteriaFactory::class,
                 static function (ContainerInterface $container) {
                     return new CriteriaFactory(
+                        $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(TypeManager::class)
                     );
@@ -108,6 +109,7 @@ class Driver extends AbstractContainer
                 InputFactory::class,
                 static function (ContainerInterface $container) {
                     return new InputFactory(
+                        $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(TypeManager::class),
                         $container->get(Metadata::class)

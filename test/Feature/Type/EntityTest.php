@@ -46,6 +46,6 @@ class EntityTest extends AbstractTest
         $this->assertEquals('Entity Test Performance', $metadataConfig['fields']['performance']['description']);
         $this->assertEquals('Entity Test Users', $metadataConfig['fields']['users']['description']);
 
-        $this->assertEquals('entitytestrecording', $metadataConfig['typeName']);
+        $this->assertEquals('entitytestrecording_entityTest', $metadataConfig['typeName']);
     }
 }

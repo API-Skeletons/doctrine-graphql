@@ -40,6 +40,7 @@ class Performance
      * @var int
      */
     #[GraphQL\Field(description: 'Primary key')]
+    #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     private $id;
 
     /**
