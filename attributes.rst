@@ -97,7 +97,7 @@ in your graph. Optional parameters are:
   $driver->get(TypeManager::class)->set('customtype', fn() => Type::string());
 
 * ``strategy`` - A custom hydrator strategy class.
-  Class must be injected into the HydratorFactory container.  See `_strategies <strategies.html>`_ and `containers <containers.html>`_
+  Class must be injected into the HydratorFactory container.  See `strategies <strategies.html>`_ and `containers <containers.html>`_
 
 
 ``Association``
