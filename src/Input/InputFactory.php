@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Input;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
@@ -16,17 +17,12 @@ use function in_array;
 
 class InputFactory extends AbstractContainer
 {
-    protected EntityManager $entityManager;
-
-    protected Metadata $metadata;
-
-    protected TypeManager $typeManager;
-
-    public function __construct(EntityManager $entityManager, TypeManager $typeManager, Metadata $metadata)
-    {
-        $this->entityManager = $entityManager;
-        $this->metadata      = $metadata;
-        $this->typeManager   = $typeManager;
+    public function __construct(
+        protected Config $config,
+        protected EntityManager $entityManager,
+        protected TypeManager $typeManager,
+        protected Metadata $metadata
+    ) {
     }
 
     /**

@@ -19,24 +19,12 @@ use function substr;
 
 class ResolveCollectionFactory
 {
-    protected EntityManager $entityManager;
-
-    protected Config $config;
-
-    protected FieldResolver $fieldResolver;
-
-    protected TypeManager $typeManager;
-
     public function __construct(
-        EntityManager $entityManager,
-        Config $config,
-        FieldResolver $fieldResolver,
-        TypeManager $typeManager
+        protected EntityManager $entityManager,
+        protected Config $config,
+        protected FieldResolver $fieldResolver,
+        protected TypeManager $typeManager
     ) {
-        $this->entityManager = $entityManager;
-        $this->config        = $config;
-        $this->fieldResolver = $fieldResolver;
-        $this->typeManager   = $typeManager;
     }
 
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
