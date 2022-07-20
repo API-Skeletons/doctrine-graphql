@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use LogicException;
 use ReflectionException;
 
-use function get_class;
 use function is_array;
 use function method_exists;
 use function spl_object_hash;
@@ -85,7 +84,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      *
      * @return mixed       Returns the value that should be extracted.
      */
-    public function extract($value, ?object $object = null)
+    public function extract(mixed $value, ?object $object = null): mixed
     {
         return $value;
     }
@@ -113,7 +112,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
                     'The getter %s to access collection %s in object %s does not exist',
                     $getter,
                     $this->getCollectionName(),
-                    get_class($object)
+                    $object::class
                 )
             );
         }
