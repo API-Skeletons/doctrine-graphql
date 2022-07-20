@@ -19,6 +19,11 @@ use function method_exists;
 use function spl_object_hash;
 use function sprintf;
 
+/**
+ * Copied from Doctrine\Laminas\Hydrator\Strategy\AbstractCollectionStrategy
+ *
+ * @codeCoverageIgnore
+ */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
     private ?string $collectionName = null;
