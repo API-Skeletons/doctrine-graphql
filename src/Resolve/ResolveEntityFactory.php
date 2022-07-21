@@ -40,11 +40,17 @@ class ResolveEntityFactory
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
+            $page        = 0;
             $skip        = 0;
             $limit       = $this->config->getLimit();
 
             foreach ($filterTypes as $field => $value) {
                 // Parse command filters first
+                if ($field === '_page') {
+                    $page = $value;
+                    continue;
+                }
+
                 if ($field === '_skip') {
                     $skip = $value;
                     continue;
@@ -127,6 +133,11 @@ class ResolveEntityFactory
             } else {
                 // Build query builder from Query Provider
                 $queryBuilder->select('entity');
+            }
+
+            // Page has a 1 index, not 0
+            if ($page) {
+                $skip = $limit * ($page - 1);
             }
 
             if ($skip) {

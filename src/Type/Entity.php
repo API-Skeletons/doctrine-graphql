@@ -138,9 +138,31 @@ class Entity
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function () use ($targetEntity, $associationName) {
                         $entity = $this->metadata->get($targetEntity);
+                        $shortName = $this->getTypeName() . '_' . $associationName;
+
+                        $paginationInfoObjectTypeConfiguration = [
+                            'name' => $shortName . '_PaginationInfo',
+                            'description' => 'Pagination information',
+                            'fields' => [
+                                'itemsPerPage' => Type::nonNull(Type::int()),
+                                'lastPage' => Type::nonNull(Type::int()),
+                                'totalCount' => Type::nonNull(Type::int()),
+                            ],
+                        ];
+                        $paginationInfoObjectType = new ObjectType($paginationInfoObjectTypeConfiguration);
+
+                        $configuration = [
+                            'name' => $shortName . '_Connection',
+                            'description' => 'Connection for ' . $shortName,
+                            'fields' => [
+                                'collection' => Type::listOf($entity->getGraphQLType()),
+                                'paginationInfo' => Type::nonNull($paginationInfoObjectType),
+                            ],
+                            'resolve' => $this->collectionFactory->get($entity),
+                        ];
 
                         return [
-                            'type' => Type::listOf($entity->getGraphQLType()),
+                            'type' => new ObjectType($configuration),
                             'args' => [
                                 'filter' => $this->criteriaFactory->get(
                                     $entity,

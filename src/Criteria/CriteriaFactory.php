@@ -258,6 +258,11 @@ class CriteriaFactory
             }
         }
 
+        $fields['_page']  = [
+            'name' => '_page',
+            'type' => Type::int(),
+            'documentation' => 'Return a given page of results.',
+        ];
         $fields['_skip']  = [
             'name' => '_skip',
             'type' => Type::int(),

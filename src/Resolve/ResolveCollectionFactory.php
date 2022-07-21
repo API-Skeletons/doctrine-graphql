@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use GraphQL\Type\Definition\ResolveInfo;
 
+use GraphQL\Type\Definition\Type;
 use function strrpos;
 use function substr;
 
@@ -68,10 +69,17 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
+            $page  = 0;
             $skip  = 0;
             $limit = $this->config->getLimit();
 
             foreach ($filter as $field => $value) {
+                if ($field === '_page') {
+                    $page = $value;
+
+                    continue;
+                }
+
                 if ($field === '_skip') {
                     $skip = $value;
 
@@ -133,6 +141,11 @@ class ResolveCollectionFactory
                 }
             }
 
+            // Page has a 1 index, not 0
+            if ($page) {
+                $skip = $limit * ($page - 1);
+            }
+
             if ($skip) {
                 $criteria->setFirstResult($skip);
             }
@@ -143,8 +156,28 @@ class ResolveCollectionFactory
 
             $criteria->orderBy($orderBy);
 
+            $items = $collection->matching($criteria);
+            $itemCount = count($collection);
+
+            $lastPage = 1;
+            if (! $itemCount || ! $limit) {
+                $lastPage = 1;
+            } else {
+                $lastPage = ceil($itemCount / $limit);
+            }
+
+
+
+
             // Return entities
-            return $collection->matching($criteria);
+            return [
+                'collection' => $items,
+                'paginationInfo' => [
+                    'itemsPerPage' => $limit,
+                    'lastPage' => $lastPage,
+                    'totalCount' => count($collection),
+                ],
+            ];
         };
     }
 }
