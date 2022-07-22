@@ -12,6 +12,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveEntityFactory;
+use ApiSkeletons\Doctrine\GraphQL\Type\Collection;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
@@ -115,7 +116,16 @@ class Driver extends AbstractContainer
                         $container->get(Metadata::class)
                     );
                 }
+            )
+            ->set(
+                Collection::class,
+                static fn () => new Collection()
             );
+    }
+
+    public function collection(ObjectType $objectType): ObjectType
+    {
+        return $this->get(Collection::class)->get($objectType);
     }
 
     public function type(string $entityClass): ObjectType
@@ -145,11 +155,4 @@ class Driver extends AbstractContainer
     {
         return $this->get(InputFactory::class)->get($entityClass, $requiredFields, $optionalFields);
     }
-
-    /*
-    public function partialInput(string $entityClass): object
-    {
-
-    }
-    */
 }

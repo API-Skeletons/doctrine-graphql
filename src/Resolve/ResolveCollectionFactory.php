@@ -166,9 +166,6 @@ class ResolveCollectionFactory
                 $lastPage = ceil($itemCount / $limit);
             }
 
-
-
-
             // Return entities
             return [
                 'collection' => $items,

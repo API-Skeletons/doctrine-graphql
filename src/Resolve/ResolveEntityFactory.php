@@ -10,6 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
 use Closure;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use GraphQL\Type\Definition\ResolveInfo;
 use League\Event\EventDispatcher;
 
@@ -152,8 +153,24 @@ class ResolveEntityFactory
                 new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap())
             );
 
-            // Return array of entities
-            return $queryBuilder->getQuery()->getResult();
+            $paginator = new Paginator($queryBuilder->getQuery());
+
+            $lastPage = 1;
+            if (! $paginator->count() || ! $limit) {
+                $lastPage = 1;
+            } else {
+                $lastPage = ceil($paginator->count() / $limit);
+            }
+
+            return [
+                'collection' => $paginator->getQuery()->getResult(),
+                'pagination' => [
+                    'page' => $page,
+                    'pageCount' => $pageCount,
+                    'pageSize' => $limit,
+                    'totalItems' => $paginator->count(),
+                ],
+            ];
         };
     }
 }
