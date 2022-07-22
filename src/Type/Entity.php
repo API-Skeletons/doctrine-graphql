@@ -40,6 +40,8 @@ class Entity
 
     protected CriteriaFactory $criteriaFactory;
 
+    protected Connection $connection;
+
     /**
      * @param mixed[] $metadataConfig
      */
@@ -52,6 +54,7 @@ class Entity
         $this->metadata          = $container->get(Metadata::class);
         $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
+        $this->connection        = $container->get(Connection::class);
         $this->metadataConfig    = $metadataConfig;
     }
 
@@ -140,29 +143,8 @@ class Entity
                         $entity = $this->metadata->get($targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
-                        $paginationInfoObjectTypeConfiguration = [
-                            'name' => $shortName . '_PaginationInfo',
-                            'description' => 'Pagination information',
-                            'fields' => [
-                                'itemsPerPage' => Type::nonNull(Type::int()),
-                                'lastPage' => Type::nonNull(Type::int()),
-                                'totalCount' => Type::nonNull(Type::int()),
-                            ],
-                        ];
-                        $paginationInfoObjectType = new ObjectType($paginationInfoObjectTypeConfiguration);
-
-                        $configuration = [
-                            'name' => $shortName . '_Connection',
-                            'description' => 'Connection for ' . $shortName,
-                            'fields' => [
-                                'collection' => Type::listOf($entity->getGraphQLType()),
-                                'paginationInfo' => Type::nonNull($paginationInfoObjectType),
-                            ],
-                            'resolve' => $this->collectionFactory->get($entity),
-                        ];
-
                         return [
-                            'type' => new ObjectType($configuration),
+                            'type' => $this->connection->get($entity->getGraphQLType(), $shortName),
                             'args' => [
                                 'filter' => $this->criteriaFactory->get(
                                     $entity,

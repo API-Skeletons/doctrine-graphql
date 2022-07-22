@@ -12,7 +12,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\MetadataFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveEntityFactory;
-use ApiSkeletons\Doctrine\GraphQL\Type\Collection;
+use ApiSkeletons\Doctrine\GraphQL\Type\Connection;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use Doctrine\ORM\EntityManager;
@@ -118,14 +118,14 @@ class Driver extends AbstractContainer
                 }
             )
             ->set(
-                Collection::class,
-                static fn () => new Collection()
+                Connection::class,
+                static fn () => new Connection()
             );
     }
 
-    public function collection(ObjectType $objectType): ObjectType
+    public function connection(ObjectType $objectType): ObjectType
     {
-        return $this->get(Collection::class)->get($objectType);
+        return $this->get(Connection::class)->get($objectType);
     }
 
     public function type(string $entityClass): ObjectType

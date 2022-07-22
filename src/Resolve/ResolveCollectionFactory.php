@@ -69,29 +69,28 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
-            $page  = 0;
-            $skip  = 0;
-            $limit = $this->config->getLimit();
+            $first       = 0;
+            $after       = 0;
+            $last        = 0;
+            $before      = 0;
 
             foreach ($filter as $field => $value) {
-                if ($field === '_page') {
-                    $page = $value;
-
+                // Cursor based pagination
+                if ($field === '_first') {
+                    $first = $value;
                     continue;
                 }
-
-                if ($field === '_skip') {
-                    $skip = $value;
-
+                if ($field === '_after') {
+                    $after = (int) base64_decode($value, true) + 1;
                     continue;
                 }
-
-                if ($field === '_limit') {
-                    if ($value <= $limit) {
-                        $limit = $value;
-
-                        continue;
-                    }
+                if ($field === '_last') {
+                    $last = $value;
+                    continue;
+                }
+                if ($field === '_before') {
+                    $before = (int) base64_decode($value, true);
+                    continue;
                 }
 
                 // Handle other fields as $field_$type: $value
@@ -141,38 +140,65 @@ class ResolveCollectionFactory
                 }
             }
 
-            // Page has a 1 index, not 0
-            if ($page) {
-                $skip = $limit * ($page - 1);
+            $criteria->orderBy($orderBy);
+
+            $offset = 0;
+            $limit = $this->config->getLimit();
+            $adjustedLimit = $first ?: $last ?: 0;
+            if ($adjustedLimit < $limit) {
+                $limit = $adjustedLimit;
             }
 
-            if ($skip) {
-                $criteria->setFirstResult($skip);
+            if ($after) {
+                $offset = $after;
+            } else if ($before) {
+                $offset = $before - $limit;
+            }
+
+            if ($offset < 0) {
+                $limit += $offset;
+                $offset = 0;
+            }
+
+            // Get total count from collection then match
+            $itemCount = count($collection->matching($criteria));
+
+            if ($offset) {
+                $criteria->setFirstResult($offset);
             }
 
             if ($limit) {
                 $criteria->setMaxResults($limit);
             }
 
-            $criteria->orderBy($orderBy);
-
+            // Fetch slice of collection
             $items = $collection->matching($criteria);
-            $itemCount = count($collection);
 
-            $lastPage = 1;
-            if (! $itemCount || ! $limit) {
-                $lastPage = 1;
-            } else {
-                $lastPage = ceil($itemCount / $limit);
+            $edges = [];
+            $index = 0;
+            $lastCursor = base64_encode((string) 0);
+            foreach ($items as $result) {
+                $cursor = base64_encode((string) ($index + $offset));
+
+                $edges[] = [
+                    'node' => $result,
+                    'cursor' => $cursor,
+                ];
+
+                $lastCursor = $cursor;
+                $index ++;
             }
+
+            $endCursor = $itemCount ? $itemCount - 1: 0;
+            $endCursor = base64_encode((string) $endCursor);
 
             // Return entities
             return [
-                'collection' => $items,
-                'paginationInfo' => [
-                    'itemsPerPage' => $limit,
-                    'lastPage' => $lastPage,
-                    'totalCount' => count($collection),
+                'edges' => $edges,
+                'totalCount' => $itemCount,
+                'pageInfo' => [
+                    'endCursor' => $endCursor,
+                    'hasNextPage' => $endCursor !== $lastCursor,
                 ],
             ];
         };

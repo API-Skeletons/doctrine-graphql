@@ -258,17 +258,6 @@ class CriteriaFactory
             }
         }
 
-        $fields['_skip']  = [
-            'name' => '_skip',
-            'type' => Type::int(),
-            'documentation' => 'Skip x records from beginning of data set.',
-        ];
-        $fields['_limit'] = [
-            'name' => '_limit',
-            'type' => Type::int(),
-            'documentation' => 'Limit the number of results.',
-        ];
-
         // Cursor pagination
         $fields['_first'] = [
             'name' => '_first',

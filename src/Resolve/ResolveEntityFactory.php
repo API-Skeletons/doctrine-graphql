@@ -182,6 +182,7 @@ class ResolveEntityFactory
 
             $edges = [];
             $index = 0;
+            $lastCursor = base64_encode((string) 0);
             foreach ($paginator->getQuery()->getResult() as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
 
