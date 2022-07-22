@@ -30,7 +30,7 @@ class NamingStrategyTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'user' => [
-                        'type' => Type::listOf($driver->type(User::class)),
+                        'type' => $driver->connection($driver->type(User::class)),
                         'args' => [
                             'filter' => $driver->filter(User::class),
                         ],
@@ -40,13 +40,13 @@ class NamingStrategyTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ user { name email } }';
+        $query = '{ user { edges { node { name email } } } }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        foreach ($output['data']['user'] as $user) {
-            $this->assertNotEmpty($user['name']);
+        foreach ($output['data']['user']['edges'] as $edge) {
+            $this->assertNotEmpty($edge['node']['name']);
         }
     }
 }

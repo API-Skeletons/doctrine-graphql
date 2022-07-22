@@ -155,17 +155,6 @@ class ResolveEntityFactory
                 $offset = 0;
             }
 
-/*
-            print_r([
-                'offset' => $offset,
-                'after' => $after,
-                'first' => $first,
-                'last' => $last,
-                'limit' => $limit,
-            ]);
-            die();
-*/
-
             if ($offset) {
                 $queryBuilder->setFirstResult($offset);
             }
@@ -179,6 +168,13 @@ class ResolveEntityFactory
             );
 
             $paginator = new Paginator($queryBuilder->getQuery());
+
+            if ($last && ! $before) {
+                $offset = $itemCount - $last - 1;
+                $queryBuilder->setFirstResult($offset);
+                $paginator = new Paginator($queryBuilder->getQuery());
+            }
+
 
             $edges = [];
             $index = 0;

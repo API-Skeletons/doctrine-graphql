@@ -163,6 +163,10 @@ class ResolveCollectionFactory
             // Get total count from collection then match
             $itemCount = count($collection->matching($criteria));
 
+            if ($last && ! $before) {
+                $offset = $itemCount - $last - 1;
+            }
+
             if ($offset) {
                 $criteria->setFirstResult($offset);
             }

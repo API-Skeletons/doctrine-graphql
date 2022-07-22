@@ -22,14 +22,12 @@ class DataTypesTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), $config);
 
-//        print_r($driver->get(Metadata::class)->getMetadataConfig());die();
-
         $schema = new Schema([
             'query' => new ObjectType([
                 'name' => 'query',
                 'fields' => [
                     'typetest' => [
-                        'type' => Type::listOf($driver->type(TypeTest::class)),
+                        'type' => $driver->connection($driver->type(TypeTest::class)),
                         'args' => [
                             'filter' => $driver->filter(TypeTest::class),
                         ],
@@ -39,7 +37,7 @@ class DataTypesTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ typetest { testInt testDateTime testFloat testBool testText testArray } }';
+        $query = '{ typetest { edges { node { testInt testDateTime testFloat testBool testText testArray } } } }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $data = $result->toArray()['data'];
