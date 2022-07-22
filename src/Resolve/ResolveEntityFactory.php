@@ -41,27 +41,28 @@ class ResolveEntityFactory
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
-            $page        = 0;
-            $skip        = 0;
-            $limit       = $this->config->getLimit();
+
+            $first       = 0;
+            $after       = 0;
+            $last        = 0;
+            $before      = 0;
 
             foreach ($filterTypes as $field => $value) {
-                // Parse command filters first
-                if ($field === '_page') {
-                    $page = $value;
+                // Cursor based pagination
+                if ($field === '_first') {
+                    $first = $value;
                     continue;
                 }
-
-                if ($field === '_skip') {
-                    $skip = $value;
+                if ($field === '_after') {
+                    $after = (int) base64_decode($value, true) + 1;
                     continue;
                 }
-
-                if ($field === '_limit') {
-                    if ($value <= $limit) {
-                        $limit = $value;
-                    }
-
+                if ($field === '_last') {
+                    $last = $value;
+                    continue;
+                }
+                if ($field === '_before') {
+                    $before = (int) base64_decode($value, true);
                     continue;
                 }
 
@@ -136,13 +137,37 @@ class ResolveEntityFactory
                 $queryBuilder->select('entity');
             }
 
-            // Page has a 1 index, not 0
-            if ($page) {
-                $skip = $limit * ($page - 1);
+            $offset = 0;
+            $limit = $this->config->getLimit();
+            $adjustedLimit = $first ?: $last ?: 0;
+            if ($adjustedLimit < $limit) {
+                $limit = $adjustedLimit;
             }
 
-            if ($skip) {
-                $queryBuilder->setFirstResult($skip);
+            if ($after) {
+                $offset = $after;
+            } else if ($before) {
+                $offset = $before - $limit;
+            }
+
+            if ($offset < 0) {
+                $limit += $offset;
+                $offset = 0;
+            }
+
+/*
+            print_r([
+                'offset' => $offset,
+                'after' => $after,
+                'first' => $first,
+                'last' => $last,
+                'limit' => $limit,
+            ]);
+            die();
+*/
+
+            if ($offset) {
+                $queryBuilder->setFirstResult($offset);
             }
 
             if ($limit) {
@@ -155,20 +180,29 @@ class ResolveEntityFactory
 
             $paginator = new Paginator($queryBuilder->getQuery());
 
-            $lastPage = 1;
-            if (! $paginator->count() || ! $limit) {
-                $lastPage = 1;
-            } else {
-                $lastPage = ceil($paginator->count() / $limit);
+            $edges = [];
+            $index = 0;
+            foreach ($paginator->getQuery()->getResult() as $result) {
+                $cursor = base64_encode((string) ($index + $offset));
+
+                $edges[] = [
+                    'node' => $result,
+                    'cursor' => $cursor,
+                ];
+
+                $lastCursor = $cursor;
+                $index ++;
             }
 
+            $endCursor = $paginator->count() ? $paginator->count() - 1: 0;
+            $endCursor = base64_encode((string) $endCursor);
+
             return [
-                'collection' => $paginator->getQuery()->getResult(),
-                'pagination' => [
-                    'page' => $page,
-                    'pageCount' => $pageCount,
-                    'pageSize' => $limit,
-                    'totalItems' => $paginator->count(),
+                'edges' => $edges,
+                'totalCount' => $paginator->count(),
+                'pageInfo' => [
+                    'endCursor' => $endCursor,
+                    'hasNextPage' => $endCursor !== $lastCursor,
                 ],
             ];
         };

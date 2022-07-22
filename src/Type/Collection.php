@@ -15,24 +15,36 @@ class Collection
             'name' => $objectType->name . '_Connection',
             'description' => 'Connection for ' . $objectType->name,
             'fields' => [
-                'collection' => Type::listOf($objectType),
-                'pagination' => Type::nonNull($this->getPaginationInfo($objectType->name)),
+                'edges' => Type::listOf($this->getNodeObjectType($objectType)),
+                'totalCount' => Type::nonNull(Type::int()),
+                'pageInfo' => $this->getPageInfo($objectType->name),
             ],
         ];
 
         return new ObjectType($configuration);
     }
 
-    private function getPaginationInfo(string $typeName)
+    private function getNodeObjectType(ObjectType $objectType): ObjectType
     {
         $configuration = [
-            'name' => $typeName . '_PaginationInfo',
-            'description' => 'Pagination information',
+            'name' => $objectType->name . '_Node',
             'fields' => [
-                'page' => Type::nonNull(Type::int()),
-                'pageCount' => Type::nonNull(Type::int()),
-                'pageSize' => Type::nonNull(Type::int()),
-                'totalItems' => Type::nonNull(Type::int()),
+                'node' => $objectType,
+                'cursor' => Type::nonNull(Type::string()),
+            ],
+        ];
+
+        return new ObjectType($configuration);
+    }
+
+    private function getPageInfo(string $typeName): ObjectType
+    {
+        $configuration = [
+            'name' => $typeName . '_PageInfo',
+            'description' => 'Page information',
+            'fields' => [
+                'endCursor' => Type::nonNull(Type::string()),
+                'hasNextPage' => Type::nonNull(Type::boolean()),
             ],
         ];
 
