@@ -10,6 +10,9 @@ filtering of data is not defined.  In order to build the filters for this
 an underscore approach is used.  `fieldName_filter` is the format for all
 filters.
 
+Pagination of collections supports
+`GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
+
 An example query:
 
 Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
@@ -20,9 +23,17 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
 
   $query = "{
       artist ( filter: { name_contains: \"Dead\" } ) {
-        name
-        performance ( filter: { _limit: 100 state:\"CA\" } ) {
-          performanceDate venue
+        edges {
+          node {
+            name
+            performance ( filter: { _limit: 100 state:\"CA\" } ) {
+              edges {
+                node {
+                  performanceDate venue
+                }
+              }
+            }
+          }
         }
       }
   }";
@@ -94,26 +105,86 @@ To select a distinct list of years
 
     {
       artist ( filter: { id:2 } ) {
-        performance( filter: { year_distinct: true year_sort: "asc" } ) {
-          year
+        edges {
+          node {
+            performance( filter: { year_sort: "asc" } ) {
+              edges {
+                node {
+                  year
+                }
+              }
+            }
+          }
         }
       }
     }
 
 
-All filters are **AND** filters.  For **OR** support use multiple aliases
+All filters are **AND** filters.  For **OR** support use multiple
 queries and aggregate them.
 
 
 Pagination
 ----------
 
-The filter supports `_skip` and `_limit`.  There is a configuration
-variable to set the max limit size and anything under this limit is
-valid.  To select a page of data set the `_skip:10 _limit:10` and
-increment `_skip` by the `_limit` for each request.  These pagination
-filters exist for collections too.
+Pagination of collections supports
+`GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
 
+A complete query for all pagination data
+
+.. code-block:: js
+  {
+    artist(filter: {_first: 10, _after: "cursor"}) {
+      totalCount
+      pageInfo {
+        endCursor
+        hasNextPage
+      }
+      edges {
+        cursor
+        node {
+          id
+        }
+      }
+    }
+  }
+
+Cursors are included with each edge.  A cursor is a base64 encoded
+offset from the beginning of the result set.
+
+Two pairs of parameters work with the query:
+
+* ``_first`` and ``_after``
+* ``_last`` and ``_before``
+
+* ``_first`` corresponds to the items per page starting from the beginning;
+* ``_after`` corresponds to the cursor from which the items are returned.
+* ``_last`` corresponds to the items per page starting from the end;
+* ``_before`` corresponds to the cursor from which the items are returned, from a backwards point of view.
+
+To get the first page specify the number of edges
+
+.. code-block:: js
+  {
+    artist(filter: {_first: 10}) {
+    }
+  }
+
+To get the next page, you would add the endCursor from the current page as the after parameter.
+
+.. code-block:: js
+  {
+    artist(filter: {_first: 10, _after: "endCursor"}) {
+    }
+  }
+
+For the previous page, you would add the startCursor from the current page as the before parameter.
+
+.. code-block:: js
+  {
+    offers(filter: {_last: 10, _before: "startCursor"}) {
+    }
+  }
 
 .. role:: raw-html(raw)
    :format: html
