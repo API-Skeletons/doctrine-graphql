@@ -15,10 +15,6 @@ The parameter options are:
 * ``useHydratorCache`` - When set to true hydrator results will be cached for
   the duration of the request thereby saving multiple extracts for
   the same entity.  Default is ``false``.
-* ``usePartials`` - Instead of hydrating complete entities when data is fetched
-  using Doctrine, `partials <https://www.doctrine-project.org/projects/doctrine-orm/en/2.11/reference/partial-objects.html>`_
-  can be used.  Be sure to understand the use of partials in Doctrine if you
-  choose to use this option.  Default is ``false``.
 
 Creating a ``Driver`` with all config options:
 
@@ -34,7 +30,6 @@ Creating a ``Driver`` with all config options:
       'group' => 'customGroup',
       'limit' => 500,
       'useHydratorCache' => true,
-      'usePartials' => true,
   ]);
 
 

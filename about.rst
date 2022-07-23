@@ -14,6 +14,9 @@ are available for querying through GraphQL.  Filtering is provided for
 top-level GraphQL types (those types assigned to fields on the query object
 type) and for all association collections below that type.
 
+Pagination of collections supports
+`GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
+
 This project uses the latest advancements in the PHP language.
 
 
