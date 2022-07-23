@@ -54,10 +54,6 @@ class InputFactory extends AbstractContainer
                                 continue;
                             }
 
-                            if ($this->entityManager->getClassMetadata($id)->isIdentifier($fieldName)) {
-                                throw new Exception('Identifier ' . $fieldName . ' is an invalid input.');
-                            }
-
                             $fields[$fieldName]['description'] = $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'];
                             $fields[$fieldName]['type']        = $this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']);
                         }

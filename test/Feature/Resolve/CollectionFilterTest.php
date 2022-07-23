@@ -37,7 +37,7 @@ class CollectionFilterTest extends AbstractTest
             ]),
         ]);
     }
-    
+
     public function testEq(): void
     {
         $query = '{ artist { edges { node { performances ( filter: {id: 2} ) { edges { node { id } } } } } } }';
@@ -264,5 +264,16 @@ class CollectionFilterTest extends AbstractTest
 
         $this->assertEquals(2, count($data['artist']['edges'][0]['node']['performances']['edges']));
         $this->assertEquals(3, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
+    }
+
+    public function testNegativeOffset(): void
+    {
+        $query = '{ artist { edges { node { performances ( filter: { _first: 3, _after: "LTU=" } ) { edges { node { id } } } } } } }';
+        $result = GraphQL::executeQuery($this->schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(5, count($data['artist']['edges'][0]['node']['performances']['edges']));
+        $this->assertEquals(1, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
     }
 }

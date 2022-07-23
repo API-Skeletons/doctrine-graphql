@@ -325,4 +325,18 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(2, count($data['performance']['edges']));
         $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
     }
+
+    /**
+     * @dataProvider schemaProvider
+     */
+    public function testNegativeOffset(Schema $schema): void
+    {
+        $query = '{ performance ( filter: { _first: 3, _after: "LTU=" } ) { edges { node { id } } } }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(8, count($data['performance']['edges']));
+        $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
+    }
 }
