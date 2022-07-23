@@ -14,6 +14,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use GraphQL\Type\Definition\ResolveInfo;
 
+use function base64_decode;
+use function base64_encode;
+use function count;
 use function strrpos;
 use function substr;
 
@@ -68,22 +71,31 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
-            $skip  = 0;
-            $limit = $this->config->getLimit();
+            $first  = 0;
+            $after  = 0;
+            $last   = 0;
+            $before = 0;
 
             foreach ($filter as $field => $value) {
-                if ($field === '_skip') {
-                    $skip = $value;
-
+                // Cursor based pagination
+                if ($field === '_first') {
+                    $first = $value;
                     continue;
                 }
 
-                if ($field === '_limit') {
-                    if ($value <= $limit) {
-                        $limit = $value;
+                if ($field === '_after') {
+                    $after = (int) base64_decode($value, true) + 1;
+                    continue;
+                }
 
-                        continue;
-                    }
+                if ($field === '_last') {
+                    $last = $value;
+                    continue;
+                }
+
+                if ($field === '_before') {
+                    $before = (int) base64_decode($value, true);
+                    continue;
                 }
 
                 // Handle other fields as $field_$type: $value
@@ -133,18 +145,71 @@ class ResolveCollectionFactory
                 }
             }
 
-            if ($skip) {
-                $criteria->setFirstResult($skip);
+            $criteria->orderBy($orderBy);
+
+            $offset        = 0;
+            $limit         = $this->config->getLimit();
+            $adjustedLimit = $first ?: $last ?: 0;
+            if ($adjustedLimit < $limit) {
+                $limit = $adjustedLimit;
+            }
+
+            if ($after) {
+                $offset = $after;
+            } elseif ($before) {
+                $offset = $before - $limit;
+            }
+
+            if ($offset < 0) {
+                $limit += $offset;
+                $offset = 0;
+            }
+
+            // Get total count from collection then match
+            $itemCount = count($collection->matching($criteria));
+
+            if ($last && ! $before) {
+                $offset = $itemCount - $last - 1;
+            }
+
+            if ($offset) {
+                $criteria->setFirstResult($offset);
             }
 
             if ($limit) {
                 $criteria->setMaxResults($limit);
             }
 
-            $criteria->orderBy($orderBy);
+            // Fetch slice of collection
+            $items = $collection->matching($criteria);
+
+            $edges      = [];
+            $index      = 0;
+            $lastCursor = base64_encode((string) 0);
+            foreach ($items as $result) {
+                $cursor = base64_encode((string) ($index + $offset));
+
+                $edges[] = [
+                    'node' => $result,
+                    'cursor' => $cursor,
+                ];
+
+                $lastCursor = $cursor;
+                $index++;
+            }
+
+            $endCursor = $itemCount ? $itemCount - 1 : 0;
+            $endCursor = base64_encode((string) $endCursor);
 
             // Return entities
-            return $collection->matching($criteria);
+            return [
+                'edges' => $edges,
+                'totalCount' => $itemCount,
+                'pageInfo' => [
+                    'endCursor' => $endCursor,
+                    'hasNextPage' => $endCursor !== $lastCursor,
+                ],
+            ];
         };
     }
 }

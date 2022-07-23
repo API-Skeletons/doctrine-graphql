@@ -36,7 +36,9 @@
         "vimeo/psalm": "^4.21"
     },
     "scripts": {
-        "test": "vendor/bin/phpcs && vendor/bin/phpunit && vendor/bin/psalm"
+        "test": "vendor/bin/phpcs && vendor/bin/phpunit && vendor/bin/psalm",
+        "coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html=coverage"
+
     },
     "config": {
         "allow-plugins": {

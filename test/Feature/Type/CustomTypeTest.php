@@ -24,7 +24,7 @@ class CustomTypeTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'typeTest' => [
-                        'type' => Type::listOf($driver->type(TypeTest::class)),
+                        'type' => $driver->connection($driver->type(TypeTest::class)),
                         'args' => [
                             'filter' => $driver->filter(TypeTest::class),
                         ],
@@ -34,12 +34,11 @@ class CustomTypeTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ typeTest { testFloat } }';
+        $query = '{ typeTest { edges { node { testFloat } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];
 
-        $this->assertTrue(is_string($data['typeTest'][0]['testFloat']));
-
+        $this->assertTrue(is_string($data['typeTest']['edges'][0]['node']['testFloat']));
     }
 }

@@ -258,15 +258,26 @@ class CriteriaFactory
             }
         }
 
-        $fields['_skip']  = [
-            'name' => '_skip',
+        // Cursor pagination
+        $fields['_first']  = [
+            'name' => '_first',
             'type' => Type::int(),
-            'documentation' => 'Skip x records from beginning of data set.',
+            'documentation' => 'Items per page starting from the beginning.',
         ];
-        $fields['_limit'] = [
-            'name' => '_limit',
+        $fields['_after']  = [
+            'name' => '_after',
+            'type' => Type::string(),
+            'documentation' => 'Cursor from which the items are returned.',
+        ];
+        $fields['_last']   = [
+            'name' => '_last',
             'type' => Type::int(),
-            'documentation' => 'Limit the number of results.',
+            'documentation' => 'Items per page starting from the end.',
+        ];
+        $fields['_before'] = [
+            'name' => '_before',
+            'type' => Type::string(),
+            'documentation' => 'Cursor from which the items are returned, from a backwards point of view.',
         ];
 
         $inputObject = new InputObjectType([

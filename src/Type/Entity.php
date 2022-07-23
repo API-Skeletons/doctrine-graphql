@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use Laminas\Hydrator\HydratorInterface;
 use Psr\Container\ContainerInterface;
 
@@ -40,6 +39,8 @@ class Entity
 
     protected CriteriaFactory $criteriaFactory;
 
+    protected Connection $connection;
+
     /**
      * @param mixed[] $metadataConfig
      */
@@ -52,6 +53,7 @@ class Entity
         $this->metadata          = $container->get(Metadata::class);
         $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
+        $this->connection        = $container->get(Connection::class);
         $this->metadataConfig    = $metadataConfig;
     }
 
@@ -137,10 +139,11 @@ class Entity
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function () use ($targetEntity, $associationName) {
-                        $entity = $this->metadata->get($targetEntity);
+                        $entity    = $this->metadata->get($targetEntity);
+                        $shortName = $this->getTypeName() . '_' . $associationName;
 
                         return [
-                            'type' => Type::listOf($entity->getGraphQLType()),
+                            'type' => $this->connection->get($entity->getGraphQLType(), $shortName),
                             'args' => [
                                 'filter' => $this->criteriaFactory->get(
                                     $entity,
