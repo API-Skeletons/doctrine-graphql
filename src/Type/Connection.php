@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\Type;
 
 class Connection
 {
-    public function get(ObjectType $objectType, string $objectName = null): ObjectType
+    public function get(ObjectType $objectType, ?string $objectName = null): ObjectType
     {
         $objectName ??= $objectType->name;
 

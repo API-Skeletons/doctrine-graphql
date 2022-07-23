@@ -13,7 +13,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use Laminas\Hydrator\HydratorInterface;
 use Psr\Container\ContainerInterface;
 
@@ -140,7 +139,7 @@ class Entity
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
                     $graphQLFields[$associationName] = function () use ($targetEntity, $associationName) {
-                        $entity = $this->metadata->get($targetEntity);
+                        $entity    = $this->metadata->get($targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
                         return [

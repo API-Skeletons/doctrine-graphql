@@ -14,7 +14,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use GraphQL\Type\Definition\ResolveInfo;
 use League\Event\EventDispatcher;
 
-use function array_keys;
+use function base64_decode;
+use function base64_encode;
 use function implode;
 use function strrpos;
 use function substr;
@@ -42,10 +43,10 @@ class ResolveEntityFactory
             $filterTypes = $args['filter'] ?? [];
             $filterArray = [];
 
-            $first       = 0;
-            $after       = 0;
-            $last        = 0;
-            $before      = 0;
+            $first  = 0;
+            $after  = 0;
+            $last   = 0;
+            $before = 0;
 
             foreach ($filterTypes as $field => $value) {
                 // Cursor based pagination
@@ -53,14 +54,17 @@ class ResolveEntityFactory
                     $first = $value;
                     continue;
                 }
+
                 if ($field === '_after') {
                     $after = (int) base64_decode($value, true) + 1;
                     continue;
                 }
+
                 if ($field === '_last') {
                     $last = $value;
                     continue;
                 }
+
                 if ($field === '_before') {
                     $before = (int) base64_decode($value, true);
                     continue;
@@ -110,35 +114,11 @@ class ResolveEntityFactory
                 ->setEntityAlias('entity');
             $queryBuilder       = $queryBuilderFilter($filterArray);
 
-            if ($this->config->getUsePartials()) {
-                // Select only the fields being queried
-                $fieldArray = $info->getFieldSelection();
+            // Build query builder from Query Provider
+            $queryBuilder->select('entity');
 
-                // Add primary key of this entity; required for partials
-                $classMetadata = $this->entityManager->getClassMetadata($entityClass);
-
-                $fieldArray[$classMetadata->getSingleIdentifierFieldName()] = 1;
-
-                // Verify all fields exist and only query for scalar values, not associations
-                foreach ($fieldArray as $fieldName => $value) {
-                    if (! $classMetadata->hasAssociation($fieldName)) {
-                        continue;
-                    }
-
-                    unset($fieldArray[$fieldName]);
-                }
-
-                $fieldList = implode(',', array_keys($fieldArray));
-
-                // Build query builder from Query Provider
-                $queryBuilder->select('partial entity.{' . $fieldList . '}');
-            } else {
-                // Build query builder from Query Provider
-                $queryBuilder->select('entity');
-            }
-
-            $offset = 0;
-            $limit = $this->config->getLimit();
+            $offset        = 0;
+            $limit         = $this->config->getLimit();
             $adjustedLimit = $first ?: $last ?: 0;
             if ($adjustedLimit < $limit) {
                 $limit = $adjustedLimit;
@@ -146,7 +126,7 @@ class ResolveEntityFactory
 
             if ($after) {
                 $offset = $after;
-            } else if ($before) {
+            } elseif ($before) {
                 $offset = $before - $limit;
             }
 
@@ -168,6 +148,7 @@ class ResolveEntityFactory
             );
 
             $paginator = new Paginator($queryBuilder->getQuery());
+            $itemCount = $paginator->count();
 
             if ($last && ! $before) {
                 $offset = $itemCount - $last - 1;
@@ -175,9 +156,8 @@ class ResolveEntityFactory
                 $paginator = new Paginator($queryBuilder->getQuery());
             }
 
-
-            $edges = [];
-            $index = 0;
+            $edges      = [];
+            $index      = 0;
             $lastCursor = base64_encode((string) 0);
             foreach ($paginator->getQuery()->getResult() as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
@@ -188,10 +168,10 @@ class ResolveEntityFactory
                 ];
 
                 $lastCursor = $cursor;
-                $index ++;
+                $index++;
             }
 
-            $endCursor = $paginator->count() ? $paginator->count() - 1: 0;
+            $endCursor = $paginator->count() ? $paginator->count() - 1 : 0;
             $endCursor = base64_encode((string) $endCursor);
 
             return [

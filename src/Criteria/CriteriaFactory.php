@@ -259,17 +259,17 @@ class CriteriaFactory
         }
 
         // Cursor pagination
-        $fields['_first'] = [
+        $fields['_first']  = [
             'name' => '_first',
             'type' => Type::int(),
             'documentation' => 'Items per page starting from the beginning.',
         ];
-        $fields['_after'] = [
+        $fields['_after']  = [
             'name' => '_after',
             'type' => Type::string(),
             'documentation' => 'Cursor from which the items are returned.',
         ];
-        $fields['_last'] = [
+        $fields['_last']   = [
             'name' => '_last',
             'type' => Type::int(),
             'documentation' => 'Items per page starting from the end.',

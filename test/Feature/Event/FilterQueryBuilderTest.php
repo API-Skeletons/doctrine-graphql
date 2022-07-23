@@ -35,7 +35,7 @@ class FilterQueryBuilderTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
                         ],
@@ -47,7 +47,7 @@ class FilterQueryBuilderTest extends AbstractTest
 
         $query = '{
             artist (filter: { name_contains: "dead" })
-                { id name performances { venue recordings { source } } }
+                { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 
         GraphQL::executeQuery($schema, $query);

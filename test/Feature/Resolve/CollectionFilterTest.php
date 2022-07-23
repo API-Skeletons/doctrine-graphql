@@ -37,7 +37,7 @@ class CollectionFilterTest extends AbstractTest
             ]),
         ]);
     }
-
+    
     public function testEq(): void
     {
         $query = '{ artist { edges { node { performances ( filter: {id: 2} ) { edges { node { id } } } } } } }';

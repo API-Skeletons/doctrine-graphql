@@ -14,7 +14,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use GraphQL\Type\Definition\ResolveInfo;
 
-use GraphQL\Type\Definition\Type;
+use function base64_decode;
+use function base64_encode;
+use function count;
 use function strrpos;
 use function substr;
 
@@ -69,10 +71,10 @@ class ResolveCollectionFactory
 
             $filter = $args['filter'] ?? [];
 
-            $first       = 0;
-            $after       = 0;
-            $last        = 0;
-            $before      = 0;
+            $first  = 0;
+            $after  = 0;
+            $last   = 0;
+            $before = 0;
 
             foreach ($filter as $field => $value) {
                 // Cursor based pagination
@@ -80,14 +82,17 @@ class ResolveCollectionFactory
                     $first = $value;
                     continue;
                 }
+
                 if ($field === '_after') {
                     $after = (int) base64_decode($value, true) + 1;
                     continue;
                 }
+
                 if ($field === '_last') {
                     $last = $value;
                     continue;
                 }
+
                 if ($field === '_before') {
                     $before = (int) base64_decode($value, true);
                     continue;
@@ -142,8 +147,8 @@ class ResolveCollectionFactory
 
             $criteria->orderBy($orderBy);
 
-            $offset = 0;
-            $limit = $this->config->getLimit();
+            $offset        = 0;
+            $limit         = $this->config->getLimit();
             $adjustedLimit = $first ?: $last ?: 0;
             if ($adjustedLimit < $limit) {
                 $limit = $adjustedLimit;
@@ -151,7 +156,7 @@ class ResolveCollectionFactory
 
             if ($after) {
                 $offset = $after;
-            } else if ($before) {
+            } elseif ($before) {
                 $offset = $before - $limit;
             }
 
@@ -178,8 +183,8 @@ class ResolveCollectionFactory
             // Fetch slice of collection
             $items = $collection->matching($criteria);
 
-            $edges = [];
-            $index = 0;
+            $edges      = [];
+            $index      = 0;
             $lastCursor = base64_encode((string) 0);
             foreach ($items as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
@@ -190,10 +195,10 @@ class ResolveCollectionFactory
                 ];
 
                 $lastCursor = $cursor;
-                $index ++;
+                $index++;
             }
 
-            $endCursor = $itemCount ? $itemCount - 1: 0;
+            $endCursor = $itemCount ? $itemCount - 1 : 0;
             $endCursor = base64_encode((string) $endCursor);
 
             // Return entities
