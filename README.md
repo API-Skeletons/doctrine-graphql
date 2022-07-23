@@ -78,7 +78,7 @@ $schema = new Schema([
         'name' => 'query',
         'fields' => [
             'artist' => [
-                'type' => Type::listOf($driver->type(Artist::class)),
+                'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
                 ],
@@ -115,7 +115,7 @@ Run GraphQL queries
 ```php
 use GraphQL\GraphQL;
 
-$query = '{ artist { id name performances { venue } } }';
+$query = '{ artist { edges { node { id name performances { edges { node { venue } } } } } } }';
 
 $result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
@@ -150,10 +150,18 @@ Example
 ```gql
 {
   artist (filter: { name_contains: "dead" }) {
-    id
-    name
-    performances (filter: { venue_eq: "The Fillmore" }) {
-      venue
+    edges {
+      node {
+        id
+        name
+        performances (filter: { venue_eq: "The Fillmore" }) {
+          edges { 
+            node {
+              venue
+            }
+          }
+        }
+      }
     }
   }
 }

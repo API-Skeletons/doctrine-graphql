@@ -28,7 +28,7 @@ class ExcludeCriteriaTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
                         ],
@@ -38,14 +38,14 @@ class ExcludeCriteriaTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ artist { performances ( filter: {venue_neq: "test"} ) { venue } } }';
+        $query = '{ artist { edges { node { performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {
             $this->assertEquals('Field "venue_neq" is not defined by type ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_Filter; Did you mean venue_eq, venue_lt, venue_lte, venue_gt, or venue_gte?', $error->getMessage());
         }
 
-        $query = '{ artist { performances ( filter: {venue_contains: "test"} ) { venue } } }';
+        $query = '{ artist { edges { node { performances ( filter: {venue_contains: "test"} ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {

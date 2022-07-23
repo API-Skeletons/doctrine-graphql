@@ -85,7 +85,7 @@ class DriverTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
                         ],
@@ -97,13 +97,13 @@ class DriverTest extends AbstractTest
 
         $query = '{
             artist (filter: { name_contains: "dead" })
-                { id name performances { venue recordings { source } } }
+                { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        $this->assertEquals('Grateful Dead', $output['data']['artist'][0]['name']);
+        $this->assertEquals('Grateful Dead', $output['data']['artist']['edges'][0]['node']['name']);
     }
 
     public function testUseHydratorCache(): void
@@ -119,7 +119,7 @@ class DriverTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => Type::listOf($driver->type(Artist::class)),
+                        'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
                         ],
@@ -131,12 +131,12 @@ class DriverTest extends AbstractTest
 
         $query = '{
             artist (filter: { name_contains: "dead" })
-                { id name performances { venue recordings { source } } }
+                { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        $this->assertEquals('Grateful Dead', $output['data']['artist'][0]['name']);
+        $this->assertEquals('Grateful Dead', $output['data']['artist']['edges'][0]['node']['name']);
     }
 }

@@ -28,7 +28,7 @@ class FieldStrategyTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'user' => [
-                        'type' => Type::listOf($driver->type(User::class)),
+                        'type' => $driver->connection($driver->type(User::class)),
                         'args' => [
                             'filter' => $driver->filter(User::class),
                         ],
@@ -38,12 +38,12 @@ class FieldStrategyTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ user { name recordings { source } } }';
+        $query = '{ user { edges { node { name recordings { edges { node { source } } } } } } }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
-        foreach ($output['data']['user'] as $user) {
-            $this->assertEquals(1, $user['name']);
+        foreach ($output['data']['user']['edges'] as $edge) {
+            $this->assertEquals(1, $edge['node']['name']);
         }
     }
 
@@ -56,7 +56,7 @@ class FieldStrategyTest extends AbstractTest
                 'name' => 'query',
                 'fields' => [
                     'user' => [
-                        'type' => Type::listOf($driver->type(User::class)),
+                        'type' => $driver->connection($driver->type(User::class)),
                         'args' => [
                             'filter' => $driver->filter(User::class),
                         ],
@@ -66,7 +66,7 @@ class FieldStrategyTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ user { name recordings { source } } }';
+        $query = '{ user { edges { node { name recordings { edges { node { source } } } } } } }';
 
         $result = GraphQL::executeQuery($schema, $query);
 
