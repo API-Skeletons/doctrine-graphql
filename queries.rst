@@ -133,6 +133,7 @@ Pagination of collections supports
 A complete query for all pagination data
 
 .. code-block:: js
+
   {
     artist(filter: {_first: 10, _after: "cursor"}) {
       totalCount
@@ -165,6 +166,7 @@ Two pairs of parameters work with the query:
 To get the first page specify the number of edges
 
 .. code-block:: js
+
   {
     artist(filter: {_first: 10}) {
     }
@@ -173,6 +175,7 @@ To get the first page specify the number of edges
 To get the next page, you would add the endCursor from the current page as the after parameter.
 
 .. code-block:: js
+
   {
     artist(filter: {_first: 10, _after: "endCursor"}) {
     }
@@ -181,6 +184,7 @@ To get the next page, you would add the endCursor from the current page as the a
 For the previous page, you would add the startCursor from the current page as the before parameter.
 
 .. code-block:: js
+
   {
     offers(filter: {_last: 10, _before: "startCursor"}) {
     }
