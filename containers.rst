@@ -38,13 +38,13 @@ Custom Types
 For instance, if your schema has a ``date`` type, that datatype is not suppored
 by default in this library.  But adding the type is just a matter of creating a 
 new Date type (modifying the DateTime class is uncomplicated) then adding the 
-type to the type manager
+type to the type manager.
 
-.. code-block:: php
-  :linenos:
+  .. code-block:: php
+    :linenos:
 
-  $driver->get(TypeManager::class)
-      ->set('date', fn() => new Type\Date());
+    $driver->get(TypeManager::class)
+        ->set('date', fn() => new Type\Date());
 
 
 Custom Hydrators
