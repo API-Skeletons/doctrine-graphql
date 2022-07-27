@@ -82,35 +82,8 @@ class MetadataFactory
                     $entityClassMetadata->getTypeOfField($fieldName);
 
                 // Set default strategy based on field type
-                /**
-                 * @psalm-suppress UndefinedDocblockClass
-                 */
-                switch ($entityClassMetadata->getTypeOfField($fieldName)) {
-                    case 'tinyint':
-                    case 'smallint':
-                    case 'integer':
-                    case 'int':
-                        $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                            Strategy\ToInteger::class;
-                        break;
-                    case 'boolean':
-                        $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                            Strategy\ToBoolean::class;
-                        break;
-                    case 'decimal':
-                    case 'float':
-                        $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                            Strategy\ToFloat::class;
-                        break;
-                    case 'bigint':  // bigint is handled as a string internal to php
-                    case 'string':
-                    case 'text':
-                    case 'datetime':
-                    default:
-                        $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                            Strategy\FieldDefault::class;
-                        break;
-                }
+                $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                    $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
             }
 
             // Fetch attributes for associations
@@ -232,35 +205,8 @@ class MetadataFactory
                     }
 
                     // Set default strategy based on field type
-                    /**
-                     * @psalm-suppress UndefinedDocblockClass
-                     */
-                    switch ($entityClassMetadata->getTypeOfField($fieldName)) {
-                        case 'tinyint':
-                        case 'smallint':
-                        case 'integer':
-                        case 'int':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToInteger::class;
-                            break;
-                        case 'boolean':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToBoolean::class;
-                            break;
-                        case 'decimal':
-                        case 'float':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToFloat::class;
-                            break;
-                        case 'bigint':  // bigint is handled as a string internal to php
-                        case 'string':
-                        case 'text':
-                        case 'datetime':
-                        default:
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\FieldDefault::class;
-                            break;
-                    }
+                    $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                        $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
                 }
             }
 
@@ -314,5 +260,31 @@ class MetadataFactory
         $this->metadata = new Metadata($this->container, $this->metadataConfig);
 
         return $this->metadata;
+    }
+
+    private function getDefaultStrategy(string $fieldType): string
+    {
+        // Set default strategy based on field type
+        /**
+         * @psalm-suppress UndefinedDocblockClass
+         */
+        switch ($fieldType) {
+            case 'tinyint':
+            case 'smallint':
+            case 'integer':
+            case 'int':
+                return Strategy\ToInteger::class;
+            case 'boolean':
+                return Strategy\ToBoolean::class;
+            case 'decimal':
+            case 'float':
+                return Strategy\ToFloat::class;
+            case 'bigint':  // bigint is handled as a string internal to php
+            case 'string':
+            case 'text':
+            case 'datetime':
+            default:
+                return Strategy\FieldDefault::class;
+        }
     }
 }
