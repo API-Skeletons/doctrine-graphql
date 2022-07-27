@@ -42,7 +42,7 @@ class Config
         $this->group            = $config['group'] ?? 'default';
         $this->useHydratorCache = $config['useHydratorCache'] ?? false;
         $this->limit            = $config['limit'] ?? 1000;
-        $this->globalEnable    = $config['globalEnable'] ?? false;
+        $this->globalEnable     = $config['globalEnable'] ?? false;
     }
 
     public function getGroup(): string

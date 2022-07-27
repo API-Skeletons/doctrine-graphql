@@ -51,6 +51,9 @@ class MetadataFactory
         return $this->buildMetadata();
     }
 
+    /**
+     * @param string[] $entityClasses
+     */
     private function globalEnable(array $entityClasses): Metadata
     {
         foreach ($entityClasses as $entityClass) {
@@ -72,7 +75,7 @@ class MetadataFactory
             // Fetch fields
             $entityClassMetadata = $this->entityManager
                 ->getMetadataFactory()->getMetadataFor($entityClass);
-            $fieldNames = $entityClassMetadata->getFieldNames();
+            $fieldNames          = $entityClassMetadata->getFieldNames();
 
             foreach ($fieldNames as $fieldName) {
                 $this->metadataConfig[$entityClass]['fields'][$fieldName]['description'] =
@@ -274,11 +277,14 @@ class MetadataFactory
             case 'integer':
             case 'int':
                 return Strategy\ToInteger::class;
+
             case 'boolean':
                 return Strategy\ToBoolean::class;
+
             case 'decimal':
             case 'float':
                 return Strategy\ToFloat::class;
+
             case 'bigint':  // bigint is handled as a string internal to php
             case 'string':
             case 'text':
