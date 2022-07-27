@@ -51,6 +51,70 @@ class MetadataFactory
         return $this->buildMetadata();
     }
 
+    /**
+     * @param string[] $entityClasses
+     */
+    private function globalEnable(array $entityClasses): Metadata
+    {
+        foreach ($entityClasses as $entityClass) {
+            // Save entity-level metadata
+            $this->metadataConfig[$entityClass] = [
+                'entityClass' => $entityClass,
+                'byValue' => true,
+                'namingStrategy' => null,
+                'fields' => [],
+                'filters' => [],
+                'excludeCriteria' => [],
+                'description' => $entityClass,
+                'typeName' => str_replace('\\', '_', $entityClass),
+            ];
+
+            // Append group to all type names
+            $this->metadataConfig[$entityClass]['typeName'] .= '_' . $this->config->getGroup();
+
+            // Fetch fields
+            $entityClassMetadata = $this->entityManager
+                ->getMetadataFactory()->getMetadataFor($entityClass);
+            $fieldNames          = $entityClassMetadata->getFieldNames();
+
+            foreach ($fieldNames as $fieldName) {
+                $this->metadataConfig[$entityClass]['fields'][$fieldName]['description'] =
+                    $fieldName;
+
+                $this->metadataConfig[$entityClass]['fields'][$fieldName]['type'] =
+                    $entityClassMetadata->getTypeOfField($fieldName);
+
+                // Set default strategy based on field type
+                $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                    $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
+            }
+
+            // Fetch attributes for associations
+            $associationNames = $this->entityManager->getMetadataFactory()
+                ->getMetadataFor($entityClass)->getAssociationNames();
+
+            foreach ($associationNames as $associationName) {
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $associationName;
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = [];
+
+                $mapping = $entityClassMetadata->getAssociationMapping($associationName);
+
+                // See comment on NullifyOwningAssociation for details of why this is done
+                if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
+                    $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
+                        Strategy\NullifyOwningAssociation::class;
+                } else {
+                    $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
+                        Strategy\AssociationDefault::class;
+                }
+            }
+        }
+
+        $this->metadata = new Metadata($this->container, $this->metadataConfig);
+
+        return $this->metadata;
+    }
+
     protected function buildMetadata(): Metadata
     {
         // Get all entity classes
@@ -60,6 +124,10 @@ class MetadataFactory
         $entityClasses = [];
         foreach ($allMetadata as $metadata) {
             $entityClasses[] = $metadata->getName();
+        }
+
+        if ($this->config->getGlobalEnable()) {
+            return $this->globalEnable($entityClasses);
         }
 
         foreach ($entityClasses as $entityClass) {
@@ -140,35 +208,8 @@ class MetadataFactory
                     }
 
                     // Set default strategy based on field type
-                    /**
-                     * @psalm-suppress UndefinedDocblockClass
-                     */
-                    switch ($entityClassMetadata->getTypeOfField($fieldName)) {
-                        case 'tinyint':
-                        case 'smallint':
-                        case 'integer':
-                        case 'int':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToInteger::class;
-                            break;
-                        case 'boolean':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToBoolean::class;
-                            break;
-                        case 'decimal':
-                        case 'float':
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\ToFloat::class;
-                            break;
-                        case 'bigint':  // bigint is handled as a string internal to php
-                        case 'string':
-                        case 'text':
-                        case 'datetime':
-                        default:
-                            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
-                                Strategy\FieldDefault::class;
-                            break;
-                    }
+                    $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
+                        $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
                 }
             }
 
@@ -222,5 +263,34 @@ class MetadataFactory
         $this->metadata = new Metadata($this->container, $this->metadataConfig);
 
         return $this->metadata;
+    }
+
+    private function getDefaultStrategy(string $fieldType): string
+    {
+        // Set default strategy based on field type
+        /**
+         * @psalm-suppress UndefinedDocblockClass
+         */
+        switch ($fieldType) {
+            case 'tinyint':
+            case 'smallint':
+            case 'integer':
+            case 'int':
+                return Strategy\ToInteger::class;
+
+            case 'boolean':
+                return Strategy\ToBoolean::class;
+
+            case 'decimal':
+            case 'float':
+                return Strategy\ToFloat::class;
+
+            case 'bigint':  // bigint is handled as a string internal to php
+            case 'string':
+            case 'text':
+            case 'datetime':
+            default:
+                return Strategy\FieldDefault::class;
+        }
     }
 }

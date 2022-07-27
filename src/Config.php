@@ -28,6 +28,13 @@ class Config
     protected int $limit;
 
     /**
+     * @var bool When set to true all fields and all associations will be
+     *           enabled.  This is best used as a development setting when
+     *           the entities are subject to change.
+     */
+    protected bool $globalEnable;
+
+    /**
      * @param mixed[] $config
      */
     public function __construct(array $config = [])
@@ -35,6 +42,7 @@ class Config
         $this->group            = $config['group'] ?? 'default';
         $this->useHydratorCache = $config['useHydratorCache'] ?? false;
         $this->limit            = $config['limit'] ?? 1000;
+        $this->globalEnable     = $config['globalEnable'] ?? false;
     }
 
     public function getGroup(): string
@@ -50,5 +58,10 @@ class Config
     public function getLimit(): int
     {
         return $this->limit;
+    }
+
+    public function getGlobalEnable(): bool
+    {
+        return $this->globalEnable;
     }
 }
