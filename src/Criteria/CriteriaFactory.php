@@ -193,7 +193,9 @@ class CriteriaFactory
                 ];
             }
 
-            if ($graphQLType !== Type::string()) {
+            // According to GraphQL id types are represented as strings so
+            // include string fitlers with ids
+            if ($graphQLType !== Type::string() && $graphQLType !== Type::id()) {
                 continue;
             }
 
