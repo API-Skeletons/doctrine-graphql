@@ -28,7 +28,12 @@ composer require api-skeletons/doctrine-graphql
 Quick Start
 -----------
 
-Add attributes to your Doctrine entities (Doctrine metadata not listed)
+The quickest way to use this library is to use the 
+[globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable)
+configuration flag.  This flag will turn an entire Doctrine ORM into GraphQL.  This flag is intended
+for development only
+
+For finer control over your GraphQL add attributes to your Doctrine entities (Doctrine metadata not listed)
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
