@@ -77,7 +77,7 @@ class ResolveEntityFactory
                 // Special case for eq `field: value`
                 if (strrpos($field, '_') === false) {
                     // Handle field:value
-                    $filterArray[$field . '|eq'] = $value;
+                    $filterArray[$field . '|eq'] = (string) $value;
                 } else {
                     $field = substr($field, 0, strrpos($field, '_'));
 
@@ -104,7 +104,7 @@ class ResolveEntityFactory
                             $filterArray[$field . '|notin'] = implode(',', $value);
                             break;
                         default:
-                            $filterArray[$field . '|' . $filter] = $value;
+                            $filterArray[$field . '|' . $filter] = (string) $value;
                             break;
                     }
                 }
