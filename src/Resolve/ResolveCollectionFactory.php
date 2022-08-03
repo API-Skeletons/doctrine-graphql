@@ -186,6 +186,7 @@ class ResolveCollectionFactory
             $edges      = [];
             $index      = 0;
             $lastCursor = base64_encode((string) 0);
+            $firstCursor = null;
             foreach ($items as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
 
@@ -195,10 +196,14 @@ class ResolveCollectionFactory
                 ];
 
                 $lastCursor = $cursor;
+                if (! $firstCursor) {
+                    $firstCursor = $cursor;
+                }
                 $index++;
             }
 
             $endCursor = $itemCount ? $itemCount - 1 : 0;
+            $startCursor = base64_encode((string) 0);
             $endCursor = base64_encode((string) $endCursor);
 
             // Return entities
@@ -207,7 +212,9 @@ class ResolveCollectionFactory
                 'totalCount' => $itemCount,
                 'pageInfo' => [
                     'endCursor' => $endCursor,
+                    'startCursor' => $startCursor,
                     'hasNextPage' => $endCursor !== $lastCursor,
+                    'hasPreviousPage' => ! (($firstCursor === null) || ($startCursor === $firstCursor)),
                 ],
             ];
         };

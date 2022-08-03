@@ -41,15 +41,25 @@ class Connection
 
     private function getPageInfo(string $typeName): ObjectType
     {
+        static $objectType;
+
+        if ($objectType) {
+            return $objectType;
+        }
+
         $configuration = [
-            'name' => $typeName . '_PageInfo',
+            'name' => 'PageInfo',
             'description' => 'Page information',
             'fields' => [
+                'startCursor' => Type::nonNull(Type::string()),
                 'endCursor' => Type::nonNull(Type::string()),
+                'hasPreviousPage' => Type::nonNull(Type::boolean()),
                 'hasNextPage' => Type::nonNull(Type::boolean()),
             ],
         ];
 
-        return new ObjectType($configuration);
+        $objectType = new ObjectType($configuration);
+
+        return $objectType;
     }
 }
