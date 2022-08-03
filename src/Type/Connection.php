@@ -9,6 +9,11 @@ use GraphQL\Type\Definition\Type;
 
 class Connection
 {
+    public function __construct(
+        private TypeManager $typeManager
+    ) {
+    }
+
     public function get(ObjectType $objectType, ?string $objectName = null): ObjectType
     {
         $objectName ??= $objectType->name;
@@ -19,7 +24,7 @@ class Connection
             'fields' => [
                 'edges' => Type::listOf($this->getNodeObjectType($objectType, $objectName)),
                 'totalCount' => Type::nonNull(Type::int()),
-                'pageInfo' => $this->getPageInfo($objectName),
+                'pageInfo' => $this->typeManager->get('PageInfo'),
             ],
         ];
 
@@ -37,29 +42,5 @@ class Connection
         ];
 
         return new ObjectType($configuration);
-    }
-
-    private function getPageInfo(string $typeName): ObjectType
-    {
-        static $objectType;
-
-        if ($objectType) {
-            return $objectType;
-        }
-
-        $configuration = [
-            'name' => 'PageInfo',
-            'description' => 'Page information',
-            'fields' => [
-                'startCursor' => Type::nonNull(Type::string()),
-                'endCursor' => Type::nonNull(Type::string()),
-                'hasPreviousPage' => Type::nonNull(Type::boolean()),
-                'hasNextPage' => Type::nonNull(Type::boolean()),
-            ],
-        ];
-
-        $objectType = new ObjectType($configuration);
-
-        return $objectType;
     }
 }
