@@ -27,7 +27,6 @@ class TypeManager extends AbstractContainer
             ->set('text', static fn () => Type::string())
             ->set('array', static fn () => Type::listOf(Type::string()))
             ->set('datetime', static fn () => new DateTimeType())
-            ->set('PageInfo', static fn () => new PageInfo())
-        ;
+            ->set('PageInfo', static fn () => new PageInfo());
     }
 }

@@ -183,9 +183,9 @@ class ResolveCollectionFactory
             // Fetch slice of collection
             $items = $collection->matching($criteria);
 
-            $edges      = [];
-            $index      = 0;
-            $lastCursor = base64_encode((string) 0);
+            $edges       = [];
+            $index       = 0;
+            $lastCursor  = base64_encode((string) 0);
             $firstCursor = null;
             foreach ($items as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
@@ -199,12 +199,13 @@ class ResolveCollectionFactory
                 if (! $firstCursor) {
                     $firstCursor = $cursor;
                 }
+
                 $index++;
             }
 
-            $endCursor = $itemCount ? $itemCount - 1 : 0;
+            $endCursor   = $itemCount ? $itemCount - 1 : 0;
             $startCursor = base64_encode((string) 0);
-            $endCursor = base64_encode((string) $endCursor);
+            $endCursor   = base64_encode((string) $endCursor);
 
             // Return entities
             return [
@@ -214,7 +215,7 @@ class ResolveCollectionFactory
                     'endCursor' => $endCursor,
                     'startCursor' => $startCursor,
                     'hasNextPage' => $endCursor !== $lastCursor,
-                    'hasPreviousPage' => ! (($firstCursor === null) || ($startCursor === $firstCursor)),
+                    'hasPreviousPage' => ! ($firstCursor === null) || ($startCursor === $firstCursor),
                 ],
             ];
         };

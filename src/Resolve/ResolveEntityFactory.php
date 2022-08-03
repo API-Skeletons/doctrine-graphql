@@ -156,9 +156,9 @@ class ResolveEntityFactory
                 $paginator = new Paginator($queryBuilder->getQuery());
             }
 
-            $edges      = [];
-            $index      = 0;
-            $lastCursor = base64_encode((string) 0);
+            $edges       = [];
+            $index       = 0;
+            $lastCursor  = base64_encode((string) 0);
             $firstCursor = null;
             foreach ($paginator->getQuery()->getResult() as $result) {
                 $cursor = base64_encode((string) ($index + $offset));
@@ -172,12 +172,13 @@ class ResolveEntityFactory
                 if (! $firstCursor) {
                     $firstCursor = $cursor;
                 }
+
                 $index++;
             }
 
-            $endCursor = $paginator->count() ? $paginator->count() - 1 : 0;
+            $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
             $startCursor = base64_encode((string) 0);
-            $endCursor = base64_encode((string) $endCursor);
+            $endCursor   = base64_encode((string) $endCursor);
 
             return [
                 'edges' => $edges,
@@ -186,7 +187,7 @@ class ResolveEntityFactory
                     'endCursor' => $endCursor,
                     'startCursor' => $startCursor,
                     'hasNextPage' => $endCursor !== $lastCursor,
-                    'hasPreviousPage' => ! (($firstCursor === null) || ($startCursor === $firstCursor)),
+                    'hasPreviousPage' => ! ($firstCursor === null) || ($startCursor === $firstCursor),
                 ],
             ];
         };
