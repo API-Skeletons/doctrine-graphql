@@ -151,7 +151,7 @@ class ResolveEntityFactory
             $itemCount = $paginator->count();
 
             if ($last && ! $before) {
-                $offset = $itemCount - $last - 1;
+                $offset = $itemCount - $last;
                 $queryBuilder->setFirstResult($offset);
                 $paginator = new Paginator($queryBuilder->getQuery());
             }

@@ -169,7 +169,7 @@ class ResolveCollectionFactory
             $itemCount = count($collection->matching($criteria));
 
             if ($last && ! $before) {
-                $offset = $itemCount - $last - 1;
+                $offset = $itemCount - $last;
             }
 
             if ($offset) {
