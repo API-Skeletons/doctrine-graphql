@@ -12,7 +12,7 @@ use GraphQL\Type\Definition\ScalarType;
 
 use function is_string;
 
-final class DateTime extends ScalarType
+class DateTime extends ScalarType
 {
     // phpcs:disable SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
     public $description = 'The `DateTime` scalar type represents datetime data.'
