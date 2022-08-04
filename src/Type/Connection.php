@@ -9,6 +9,9 @@ use GraphQL\Type\Definition\Type;
 
 use function assert;
 
+/**
+ * This type is built within the TypeManager
+ */
 class Connection extends ObjectType implements
     Buildable
 {
@@ -25,7 +28,7 @@ class Connection extends ObjectType implements
             'description' => 'Connection for ' . $typeName,
             'fields' => [
                 'edges' => Type::listOf($typeManager
-                        ->build(Node::class, $typeName . '_Node', $objectType)),
+                    ->build(Node::class, $typeName . '_Node', $objectType)),
                 'totalCount' => Type::nonNull(Type::int()),
                 'pageInfo' => $typeManager->get('PageInfo'),
             ],
