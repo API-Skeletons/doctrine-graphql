@@ -12,6 +12,8 @@ class TypeManager extends AbstractContainer
 {
     public function __construct()
     {
+        $pageInfo = new PageInfo();
+
         $this
             ->set('tinyint', static fn () => Type::int())
             ->set('smallint', static fn () => Type::int())
@@ -24,6 +26,7 @@ class TypeManager extends AbstractContainer
             ->set('string', static fn () => Type::string())
             ->set('text', static fn () => Type::string())
             ->set('array', static fn () => Type::listOf(Type::string()))
-            ->set('datetime', static fn () => new DateTimeType());
+            ->set('datetime', static fn () => new DateTimeType())
+            ->set('PageInfo', static fn () => new PageInfo());
     }
 }

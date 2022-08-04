@@ -251,7 +251,7 @@ class CollectionFilterTest extends AbstractTest
         $data = $result->toArray()['data'];
 
         $this->assertEquals(3, count($data['artist']['edges'][0]['node']['performances']['edges']));
-        $this->assertEquals(2, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
+        $this->assertEquals(3, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
     }
 
     public function testlastbefore(): void

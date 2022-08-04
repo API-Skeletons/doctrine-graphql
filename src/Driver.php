@@ -119,7 +119,9 @@ class Driver extends AbstractContainer
             )
             ->set(
                 Connection::class,
-                static fn () => new Connection()
+                static function (ContainerInterface $container) {
+                    return new Connection($container->get(TypeManager::class));
+                }
             );
     }
 
