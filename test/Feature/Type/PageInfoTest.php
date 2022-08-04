@@ -13,7 +13,7 @@ use GraphQL\Type\Schema;
 
 use function count;
 
-class ConnectionTest extends AbstractTest
+class PageInfoTest extends AbstractTest
 {
     public function testPageInfo(): void
     {

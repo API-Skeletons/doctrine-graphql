@@ -215,7 +215,7 @@ class ResolveCollectionFactory
                     'endCursor' => $endCursor,
                     'startCursor' => $startCursor,
                     'hasNextPage' => $endCursor !== $lastCursor,
-                    'hasPreviousPage' => ! ($firstCursor === null) || ($startCursor === $firstCursor),
+                    'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
                 ],
             ];
         };
