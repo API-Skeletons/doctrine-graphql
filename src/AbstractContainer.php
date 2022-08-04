@@ -27,7 +27,7 @@ abstract class AbstractContainer implements ContainerInterface
     {
         $id = strtolower($id);
 
-        if (! isset($this->register[$id])) {
+        if (! $this->has($id)) {
             throw new Error($id . ' is not registered');
         }
 
