@@ -21,10 +21,9 @@ abstract class AbstractContainer implements ContainerInterface
     }
 
     /**
-     * @param $params
      * @throws Error
      */
-    public function get(string $id, ...$params): mixed
+    public function get(string $id): mixed
     {
         $id = strtolower($id);
 
@@ -35,7 +34,7 @@ abstract class AbstractContainer implements ContainerInterface
         if ($this->register[$id] instanceof Closure) {
             $closure = $this->register[$id];
 
-            $this->register[$id] = $closure($this, $params);
+            $this->register[$id] = $closure($this);
         }
 
         return $this->register[$id];

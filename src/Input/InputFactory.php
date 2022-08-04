@@ -27,19 +27,15 @@ class InputFactory extends AbstractContainer
     }
 
     /**
-    /**
-     * @param ...$params
-     *      [0] string[] $requiredFields An optional list of just the required fields you want for the mutation.
+     * @param string[] $requiredFields An optional list of just the required fields you want for the mutation.
      *                              This allows specific fields per mutation.
-     *      [1] string[] $optionalFields An optional list of optional fields you want for the mutation.
+     * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
      *                              This allows specific fields per mutation.
+     *
      * @throws Error
      */
-    public function get(string $id, ...$params): InputObjectType
+    public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
     {
-        $requiredFields = $params[0] ?: [];
-        $optionalFields = $params[1] ?: [];
-
         $targetEntity = $this->metadata->get($id);
 
         return new InputObjectType([

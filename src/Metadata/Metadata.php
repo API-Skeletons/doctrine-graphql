@@ -22,10 +22,9 @@ class Metadata extends AbstractContainer
     }
 
     /**
-     * @param $params
      * @throws Error
      */
-    public function get(string $id, ...$params): Entity
+    public function get(string $id): Entity
     {
         if (! isset($this->metadataConfig[$id])) {
             throw new Error(
