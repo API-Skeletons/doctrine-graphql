@@ -55,9 +55,10 @@ class HydratorFactory extends AbstractContainer
     }
 
     /**
+     * @param ...$params
      * @throws Error
      */
-    public function get(string $id): mixed
+    public function get(string $id, ...$params): mixed
     {
         // Custom hydrators should already be registered
         if ($this->has($id)) {

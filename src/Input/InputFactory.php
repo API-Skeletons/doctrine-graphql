@@ -10,6 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
 use Exception;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -26,13 +27,19 @@ class InputFactory extends AbstractContainer
     }
 
     /**
-     * @param string[] $requiredFields An optional list of just the required fields you want for the mutation.
+    /**
+     * @param ...$params
+     *      [0] string[] $requiredFields An optional list of just the required fields you want for the mutation.
      *                              This allows specific fields per mutation.
-     * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
+     *      [1] string[] $optionalFields An optional list of optional fields you want for the mutation.
      *                              This allows specific fields per mutation.
+     * @throws Error
      */
-    public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
+    public function get(string $id, ...$params): InputObjectType
     {
+        $requiredFields = $params[0] ?: [];
+        $optionalFields = $params[1] ?: [];
+
         $targetEntity = $this->metadata->get($id);
 
         return new InputObjectType([
