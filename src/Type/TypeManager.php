@@ -6,14 +6,14 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime as DateTimeType;
+use GraphQL\Error\Error;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
 class TypeManager extends AbstractContainer
 {
     public function __construct()
     {
-        $pageInfo = new PageInfo();
-
         $this
             ->set('tinyint', static fn () => Type::int())
             ->set('smallint', static fn () => Type::int())
@@ -28,5 +28,18 @@ class TypeManager extends AbstractContainer
             ->set('array', static fn () => Type::listOf(Type::string()))
             ->set('datetime', static fn () => new DateTimeType())
             ->set('PageInfo', static fn () => new PageInfo());
+    }
+
+    public function getNode(ObjectType $objectType, string $objectName): ObjectType
+    {
+        $typeName = $objectName . '_Node';
+
+        try {
+            return $this->get($typeName);
+        } catch (Error $e) {
+            $this->set($typeName, new Node($objectType, $objectName));
+
+            return $this->get($typeName);
+        }
     }
 }
