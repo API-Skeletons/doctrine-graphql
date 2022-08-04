@@ -22,22 +22,9 @@ class Connection
             'name' => $objectName . '_Connection',
             'description' => 'Connection for ' . $objectName,
             'fields' => [
-                'edges' => Type::listOf($this->getNodeObjectType($objectType, $objectName)),
+                'edges' => Type::listOf($this->typeManager->getNode($objectType, $objectName)),
                 'totalCount' => Type::nonNull(Type::int()),
                 'pageInfo' => $this->typeManager->get('PageInfo'),
-            ],
-        ];
-
-        return new ObjectType($configuration);
-    }
-
-    private function getNodeObjectType(ObjectType $objectType, string $objectName): ObjectType
-    {
-        $configuration = [
-            'name' => $objectName . '_Node',
-            'fields' => [
-                'node' => $objectType,
-                'cursor' => Type::nonNull(Type::string()),
             ],
         ];
 
