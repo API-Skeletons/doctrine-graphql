@@ -39,8 +39,6 @@ class Entity
 
     protected CriteriaFactory $criteriaFactory;
 
-    protected Connection $connection;
-
     /**
      * @param mixed[] $metadataConfig
      */
