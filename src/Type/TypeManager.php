@@ -7,7 +7,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime as DateTimeType;
 use GraphQL\Error\Error;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use ReflectionClass;
 use ReflectionException;
@@ -40,14 +39,13 @@ class TypeManager extends AbstractContainer
      * @throws Error
      * @throws ReflectionException
      */
-    public function build(string $typeClassName, string $typeName, mixed ...$params): ObjectType
+    public function build(string $typeClassName, string $typeName, mixed ...$params): Type
     {
         if ($this->has($typeName)) {
             return $this->get($typeName);
         }
 
-        $typeClass = new ReflectionClass($typeClassName);
-        assert($typeClass->implementsInterface(Buildable::class));
+        assert((new ReflectionClass($typeClassName))->implementsInterface(Buildable::class));
 
         return $this
             ->set($typeName, new $typeClassName($this, $typeName, $params))
