@@ -10,6 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
 use Exception;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
@@ -30,6 +31,8 @@ class InputFactory extends AbstractContainer
      *                              This allows specific fields per mutation.
      * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
      *                              This allows specific fields per mutation.
+     *
+     * @throws Error
      */
     public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
     {

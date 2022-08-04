@@ -39,8 +39,6 @@ class Entity
 
     protected CriteriaFactory $criteriaFactory;
 
-    protected Connection $connection;
-
     /**
      * @param mixed[] $metadataConfig
      */
@@ -53,7 +51,6 @@ class Entity
         $this->metadata          = $container->get(Metadata::class);
         $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
-        $this->connection        = $container->get(Connection::class);
         $this->metadataConfig    = $metadataConfig;
     }
 
@@ -143,7 +140,11 @@ class Entity
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
                         return [
-                            'type' => $this->connection->get($entity->getGraphQLType(), $shortName),
+                            'type' => $this->typeManager->build(
+                                Connection::class,
+                                $shortName . '_Connection',
+                                $entity->getGraphQLType()
+                            ),
                             'args' => [
                                 'filter' => $this->criteriaFactory->get(
                                     $entity,

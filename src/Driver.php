@@ -116,18 +116,13 @@ class Driver extends AbstractContainer
                         $container->get(Metadata::class)
                     );
                 }
-            )
-            ->set(
-                Connection::class,
-                static function (ContainerInterface $container) {
-                    return new Connection($container->get(TypeManager::class));
-                }
             );
     }
 
     public function connection(ObjectType $objectType): ObjectType
     {
-        return $this->get(Connection::class)->get($objectType);
+        return $this->get(TypeManager::class)
+            ->build(Connection::class, $objectType->name . '_Connection', $objectType);
     }
 
     public function type(string $entityClass): ObjectType

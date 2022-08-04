@@ -7,27 +7,30 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
-class Connection
-{
-    public function __construct(
-        private TypeManager $typeManager
-    ) {
-    }
+use function assert;
 
-    public function get(ObjectType $objectType, ?string $objectName = null): ObjectType
+class Connection extends ObjectType implements
+    Buildable
+{
+    /**
+     * @param mixed[] $params
+     */
+    public function __construct(TypeManager $typeManager, string $typeName, array $params)
     {
-        $objectName ??= $objectType->name;
+        assert($params[0] instanceof ObjectType);
+        $objectType = $params[0];
 
         $configuration = [
-            'name' => $objectName . '_Connection',
-            'description' => 'Connection for ' . $objectName,
+            'name' => $typeName,
+            'description' => 'Connection for ' . $typeName,
             'fields' => [
-                'edges' => Type::listOf($this->typeManager->getNode($objectType, $objectName)),
+                'edges' => Type::listOf($typeManager
+                        ->build(Node::class, $typeName . '_Node', $objectType)),
                 'totalCount' => Type::nonNull(Type::int()),
-                'pageInfo' => $this->typeManager->get('PageInfo'),
+                'pageInfo' => $typeManager->get('PageInfo'),
             ],
         ];
 
-        return new ObjectType($configuration);
+        parent::__construct($configuration);
     }
 }
