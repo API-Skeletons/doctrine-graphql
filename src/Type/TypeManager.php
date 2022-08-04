@@ -9,6 +9,10 @@ use ApiSkeletons\Doctrine\GraphQL\Type\DateTime as DateTimeType;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use ReflectionClass;
+use ReflectionException;
+
+use function assert;
 
 class TypeManager extends AbstractContainer
 {
@@ -30,16 +34,23 @@ class TypeManager extends AbstractContainer
             ->set('PageInfo', static fn () => new PageInfo());
     }
 
-    public function getNode(ObjectType $objectType, string $objectName): ObjectType
+    /**
+     * @param mixed[] $params
+     *
+     * @throws Error
+     * @throws ReflectionException
+     */
+    public function build(string $typeClassName, string $typeName, mixed ...$params): ObjectType
     {
-        $typeName = $objectName . '_Node';
-
-        try {
-            return $this->get($typeName);
-        } catch (Error $e) {
-            $this->set($typeName, new Node($objectType, $objectName));
-
+        if ($this->has($typeName)) {
             return $this->get($typeName);
         }
+
+        $typeClass = new ReflectionClass($typeClassName);
+        assert($typeClass->implementsInterface(Buildable::class));
+
+        return $this
+            ->set($typeName, new $typeClassName($this, $typeName, $params))
+            ->get($typeName);
     }
 }
