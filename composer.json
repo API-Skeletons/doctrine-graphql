@@ -1,6 +1,6 @@
 {
     "name": "api-skeletons/doctrine-graphql",
-    "description": "GraphQL for Doctrine using Attributes",
+    "description": "GraphQL for Doctrine",
     "type": "library",
     "license": "MIT",
     "authors": [
