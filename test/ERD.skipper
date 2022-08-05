@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<skipper version="3.2.36.1775" mvc="Without MVC" orm="Doctrine2" name="doctrine-querybuilder-filter" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
-  <module name="\Doctrine GraphQL" local-name="Doctrine GraphQL" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2Xml" export-path="config" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
+<skipper version="3.3.0.1781" mvc="Without MVC" orm="Doctrine2" name="doctrine-querybuilder-filter" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
+  <module name="\GraphQL for Doctrine" local-name="GraphQL for Doctrine" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2Xml" export-path="config" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" local-name="Artist" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="9d8eb724-b4f3-414c-9d1a-48bd61008f33"/>
       <field name="name" type="string" required="true" uuid="b5bf5f02-5032-4637-9d89-af0c6748d4fc"/>
@@ -51,14 +51,12 @@
       <field name="testText" type="text" required="true" uuid="91a00ff4-54db-49d0-8e9f-63105943cc75"/>
       <field name="testArray" type="array" required="true" uuid="233c305b-3219-418c-b48b-0d3d2aff6b90"/>
     </entity>
-  </module>
-  <module name="\Legend" local-name="Legend" namespace="\" export-format="Doctrine2Xml" export-path="." uuid="a3247f01-c373-4510-b1e8-6b0d0fa632ea">
     <comment caption="Author" description="Tom H Anderson&#10;API Skeletons&#10;&lt;contact@apiskeletons.com&gt;" uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b"/>
   </module>
   <visual-data>
     <association uuid="4f0247e2-6d76-42f9-b56b-52306c2fa201" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="ab34ba86-e61e-458a-87e7-9dfa2aa1f391" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <comment uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b" bg-color="#FFFFE0" position-x="266" position-y="77" size-x="6" size-x2="128" size-y="-3" size-y2="63" txt-color="#000000"/>
+    <comment uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b" bg-color="#FFFFE0" position-x="495" position-y="-68" size-x="6" size-x2="128" size-y="-3" size-y2="63" txt-color="#000000"/>
     <entity uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="117" position-y="-9" size-x="0" size-x2="77" size-y="0" size-y2="45"/>
     <entity uuid="568a03b7-3dd5-435a-9bc8-869bc673923c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-13" position-y="44" size-x="0" size-x2="77" size-y="0" size-y2="59"/>
     <entity uuid="8a04b312-72bb-4723-baac-75502524ae38" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="317" position-y="-37" size-x="0" size-x2="136" size-y="0" size-y2="101"/>
@@ -66,8 +64,7 @@
     <entity uuid="d1836028-90d0-4d9e-b281-d792cd95d906" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="506" position-y="72" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
     <entity uuid="e5603f71-6798-480b-bcf8-0d185a08e653" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="97" position-y="163" size-x="0" size-x2="109" size-y="0" size-y2="60"/>
     <many-to-many-association uuid="e4936d0d-1d1f-4fb8-af31-fa1d0665ccf7" color="#969696"/>
-    <module uuid="a3247f01-c373-4510-b1e8-6b0d0fa632ea" bg-color="#E7F5FD" position-x="40" position-y="40" size-x="0" size-x2="407" size-y="0" size-y2="154"/>
-    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#EAE4F1" position-x="83" position-y="297" size-x="43" size-x2="646" size-y="84" size-y2="283"/>
-    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="0" size-x2="909" size-y="0" size-y2="660"/>
+    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#FFD6FF" position-x="63" position-y="104" size-x="43" size-x2="646" size-y="84" size-y2="283"/>
+    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="30" size-x2="759" size-y="30" size-y2="437"/>
   </visual-data>
 </skipper>
