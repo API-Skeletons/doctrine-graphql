@@ -29,8 +29,8 @@ Entity Relationship Diagram
 ![Entity Relationship Diagram](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/test/ERD.png)
 
 
-Quickest Start
---------------
+Enable GraphQL on an entire Entity Manager (quicket start)
+----------------------------------------------------------
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -81,7 +81,7 @@ $output = $result->toArray();
 
 ```
 
-This Quickest Start example uses a feature of this library that turns an entire Doctrine schema
+This quickest start example uses a feature of this library that turns an entire Doctrine schema
 into GraphQL without any configuration of the entities by enabling [globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable), intended only for development, in the driver configuration.
 
 
