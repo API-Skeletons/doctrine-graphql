@@ -8,9 +8,9 @@ GraphQL for Doctrine Using Attributes
 [![License](https://poser.pugx.org/api-skeletons/doctrine-graphql/license)](//packagist.org/packages/api-skeletons/doctrine-graphql)
 
 
-This library is framework agnostic.  Using PHP 8 attributes on your entities, this library will create a 
-Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  The goal of this library
-is to enable GraphQL on Doctrine data with a minimum amount of configuration.  
+Using PHP 8 attributes on your entities, this library will create a 
+Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  This library
+enables GraphQL on Doctrine with a minimum amount of configuration.  
 
 This README file describes how to start.   [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/)
 is also available.
@@ -24,16 +24,69 @@ Run the following to install this library using [Composer](https://getcomposer.o
 composer require api-skeletons/doctrine-graphql
 ```
 
+Quickest Start
+--------------
+
+```php
+use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Driver;
+use GraphQL\GraphQL;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Schema;
+
+$driver = new Driver($entityManager, new Config([
+    'globalEnable' => true,
+]);
+
+$schema = new Schema([
+    'query' => new ObjectType([
+        'name' => 'query',
+        'fields' => [
+            'artist' => [
+                'type' => $driver->connection($driver->type(Artist::class)),
+                'args' => [
+                    'filter' => $driver->filter(Artist::class),
+                ],
+                'resolve' => $driver->resolve(Artist::class),
+            ],
+        ],
+    ]),
+]);
+
+$query = '{ 
+    artist { 
+        edges { 
+            node { 
+                id 
+                name 
+                performances { 
+                    edges { 
+                        node { 
+                            venue 
+                        } 
+                    } 
+                } 
+            } 
+        } 
+    }
+}';
+
+$result = GraphQL::executeQuery($schema, $query);
+$output = $result->toArray();
+
+```
+
+This Quickest Start example uses a feature of this library that turns an entire Doctrine schema
+into GraphQL without any configuration of the entities by enabling  
+[globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable),
+intended only for development, in the driver configuration.
+
+
 
 Quick Start
 -----------
 
-The quickest way to use this library is to use the 
-[globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable)
-configuration flag.  This flag will turn an entire Doctrine ORM into GraphQL.  This flag is intended
-for development only
-
-For finer control over your GraphQL add attributes to your Doctrine entities (Doctrine metadata not listed)
+For finer control over your GraphQL, add attributes to your Doctrine entities
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
