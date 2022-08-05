@@ -1,3 +1,5 @@
+![GraphQL for Doctrine](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/banner.png)
+
 GraphQL for Doctrine
 ====================
 
