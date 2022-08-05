@@ -29,7 +29,7 @@ Entity Relationship Diagram
 ![Entity Relationship Diagram](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/test/ERD.png)
 
 
-Enable GraphQL on an entire Entity Manager (quicket start)
+Enable GraphQL on an entire Entity Manager (quickest start)
 ----------------------------------------------------------
 
 ```php
