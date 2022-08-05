@@ -24,10 +24,9 @@ composer require api-skeletons/doctrine-graphql
 Entity Relationship Diagram
 ---------------------------
 
-This ERD is used for the query examples below.
+This Entity Relationship Diagram, created with [Skipper](https://skipper18.com), is used for the query examples below.
 
 ![Entity Relationship Diagram](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/test/ERD.png)
-Entity Relationship Diagram created with [Skipper](https://skipper18.com)
 
 
 Quickest Start
