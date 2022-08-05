@@ -1,5 +1,5 @@
-GraphQL for Doctrine Using Attributes
-=====================================
+GraphQL for Doctrine
+====================
 
 [![Build Status](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main/graphs/badge.svg)](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main)
@@ -8,7 +8,7 @@ GraphQL for Doctrine Using Attributes
 [![License](https://poser.pugx.org/api-skeletons/doctrine-graphql/license)](//packagist.org/packages/api-skeletons/doctrine-graphql)
 
 
-This library provides a GraphQL driver for Doctrine for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  Configuration is available from zero to verbose.  
+This library provides a GraphQL driver for Doctrine for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  Configuration is available from zero to verbose.  Multiple configurations for multiple drivers is supported.
 
 [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/) is available.
 
