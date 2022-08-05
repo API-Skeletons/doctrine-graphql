@@ -8,6 +8,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrategy;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * User
@@ -18,6 +19,7 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrate
 #[GraphQL\Entity(group: 'NamingStrategyTest', namingStrategy: CustomNamingStrategy::class)]
 #[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
 #[GraphQL\Entity(group: 'InputFactoryTest')]
+#[ORM\Entity]
 class User
 {
     /**
@@ -29,6 +31,7 @@ class User
     #[GraphQL\Field(group: 'NamingStrategyTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest', strategy: ToBoolean::class)]
     #[GraphQL\Field(group: 'InputFactoryTest')]
+    #[ORM\Column(type: "string", nullable: false)]
     private $name;
 
     /**
@@ -37,6 +40,7 @@ class User
     #[GraphQL\Field(description: 'User email')]
     #[GraphQL\Field(group: 'NamingStrategyTest')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
+    #[ORM\Column(type: "string", nullable: false)]
     private $email;
 
     /**
@@ -45,6 +49,7 @@ class User
     #[GraphQL\Field(description: 'User password')]
     #[GraphQL\Field(description: 'User password', group: 'testPasswordFilter')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
+    #[ORM\Column(type: "string", nullable: false)]
     private $password;
 
     /**
@@ -53,6 +58,9 @@ class User
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(description: 'Primary key', group: 'testNonDefaultGroup')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
+    #[ORM\Id]
+    #[ORM\Column(type: "integer")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     private $id;
 
     /**
@@ -60,6 +68,10 @@ class User
      */
     #[GraphQL\Association(description: 'Recordings')]
     #[GraphQL\Association(group: 'CustomFieldStrategyTest', strategy: AssociationDefault::class)]
+    #[ORM\ManyToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording", inversedBy: "users")]
+    #[ORM\JoinTable(name: "RecordingToUser",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "recording_id", referencedColumnName: "id", nullable: false)])]
     private $recordings;
 
     /**

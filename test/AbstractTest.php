@@ -18,7 +18,7 @@ abstract class AbstractTest extends TestCase
     {
         // Create a simple "default" Doctrine ORM configuration for Annotations
         $isDevMode = true;
-        $config = Setup::createXMLMetadataConfiguration(array(__DIR__ . "/config"), $isDevMode);
+        $config = Setup::createAttributeMetadataConfiguration([__DIR__ . '/Entity'], $isDevMode);
 
         // database configuration parameters
         $conn = array(

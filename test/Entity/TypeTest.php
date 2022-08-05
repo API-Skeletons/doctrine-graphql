@@ -4,6 +4,7 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TypeTest
@@ -11,6 +12,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
 #[GraphQL\Entity(typeName: 'typeTest', description: 'Type test')]
 #[GraphQL\Entity(group: 'DataTypesTest')]
 #[GraphQL\Entity(group: 'CustomTypeTest')]
+#[ORM\Entity]
 class TypeTest
 {
     /**
@@ -18,6 +20,7 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "integer", nullable: false)]
     private $testInt;
 
     /**
@@ -25,6 +28,7 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "datetime", nullable: false)]
     private $testDateTime;
 
     /**
@@ -33,6 +37,7 @@ class TypeTest
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
     #[GraphQL\Field(group: 'CustomTypeTest', type: "customType")]
+    #[ORM\Column(type: "float", nullable: false)]
     private $testFloat;
 
     /**
@@ -40,6 +45,7 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "boolean", nullable: false)]
     private $testBool;
 
     /**
@@ -47,6 +53,7 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "text", nullable: false)]
     private $testText;
 
     /**
@@ -54,9 +61,13 @@ class TypeTest
      */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Id]
+    #[ORM\Column(type: "bigint")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     private $id;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "array", nullable: false)]
     private $testArray = [];
 
     public function setTestArray(array $value)

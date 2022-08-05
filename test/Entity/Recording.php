@@ -4,6 +4,7 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Recording
@@ -11,6 +12,7 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 #[GraphQL\Entity(typeName: 'recording', description: 'Performance recordings')]
 #[GraphQL\Entity(typeName: 'entitytestrecording', description: 'Entity Test Recordings', group: 'entityTest')]
 #[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
+#[ORM\Entity]
 class Recording
 {
     /**
@@ -19,6 +21,7 @@ class Recording
     #[GraphQL\Field(description: 'Source')]
     #[GraphQL\Field(description: 'Entity Test Source', group: 'entityTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest')]
+    #[ORM\Column(type: "text", nullable: false)]
     private $source;
 
     /**
@@ -26,6 +29,9 @@ class Recording
      */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(description: 'Entity Test ID', group: 'entityTest')]
+    #[ORM\Id]
+    #[ORM\Column(type: "integer")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     private $id;
 
     /**
@@ -33,6 +39,8 @@ class Recording
      */
     #[GraphQL\Association(description: 'Performance entity')]
     #[GraphQL\Association(description: 'Entity Test Performance', group: 'entityTest')]
+    #[ORM\ManyToOne(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance", inversedBy: "recordings")]
+    #[ORM\JoinColumn(name: "performance_id", referencedColumnName: "id", nullable: false)]
     private $performance;
 
     /**
@@ -40,6 +48,7 @@ class Recording
      */
     #[GraphQL\Association(description: 'Users')]
     #[GraphQL\Association(description: 'Entity Test Users', group: 'entityTest')]
+    #[ORM\ManyToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\User", mappedBy: "recordings")]
     private $users;
 
     /**

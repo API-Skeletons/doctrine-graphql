@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <skipper version="3.3.0.1781" mvc="Without MVC" orm="Doctrine2" name="doctrine-querybuilder-filter" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
-  <module name="\GraphQL for Doctrine" local-name="GraphQL for Doctrine" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2Xml" export-path="config" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
+  <module name="\GraphQL for Doctrine" local-name="GraphQL for Doctrine" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2PhpAttributes" export-path="Entity2" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" local-name="Artist" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="9d8eb724-b4f3-414c-9d1a-48bd61008f33"/>
       <field name="name" type="string" required="true" uuid="b5bf5f02-5032-4637-9d89-af0c6748d4fc"/>
@@ -52,6 +52,10 @@
       <field name="testArray" type="array" required="true" uuid="233c305b-3219-418c-b48b-0d3d2aff6b90"/>
     </entity>
     <comment caption="Author" description="Tom H Anderson&#10;API Skeletons&#10;&lt;contact@apiskeletons.com&gt;" uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b"/>
+    <orm-attributes>
+      <attribute name="db-naming-strategy">default</attribute>
+      <attribute name="filename-format">entity-name-only</attribute>
+    </orm-attributes>
   </module>
   <visual-data>
     <association uuid="4f0247e2-6d76-42f9-b56b-52306c2fa201" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
