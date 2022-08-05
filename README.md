@@ -8,9 +8,7 @@ GraphQL for Doctrine Using Attributes
 [![License](https://poser.pugx.org/api-skeletons/doctrine-graphql/license)](//packagist.org/packages/api-skeletons/doctrine-graphql)
 
 
-Using PHP 8 attributes on your entities, this library will create a 
-Doctrine driver for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  This library
-enables GraphQL on Doctrine.  Configuration is available from zero to verbose.  
+This library will creates a GraphQL driver for Doctrine for use with [webonyx/graphql-php](https://github.com/webonyx/graphql-php).  Configuration is available from zero to verbose.  
 
 [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/) is available.
 
