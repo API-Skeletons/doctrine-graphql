@@ -1,4 +1,4 @@
-<img src="https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/banner.png" width="790">
+<img src="https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/banner.png" width="790px">
 
 GraphQL for Doctrine
 ====================
