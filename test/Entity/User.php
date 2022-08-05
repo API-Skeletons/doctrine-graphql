@@ -69,9 +69,9 @@ class User
     #[GraphQL\Association(description: 'Recordings')]
     #[GraphQL\Association(group: 'CustomFieldStrategyTest', strategy: AssociationDefault::class)]
     #[ORM\ManyToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording", inversedBy: "users")]
-    #[ORM\JoinTable(name: "RecordingToUser",
-        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)],
-        inverseJoinColumns: [new ORM\JoinColumn(name: "recording_id", referencedColumnName: "id", nullable: false)])]
+    #[ORM\JoinTable(name: "RecordingToUser")]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
+    #[ORM\InverseJoinColumn(name: "recording_id", referencedColumnName: "id", nullable: false)]
     private $recordings;
 
     /**
