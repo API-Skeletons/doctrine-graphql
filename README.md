@@ -77,10 +77,7 @@ $output = $result->toArray();
 ```
 
 This Quickest Start example uses a feature of this library that turns an entire Doctrine schema
-into GraphQL without any configuration of the entities by enabling  
-[globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable),
-intended only for development, in the driver configuration.
-
+into GraphQL without any configuration of the entities by enabling [globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable), intended only for development, in the driver configuration.
 
 
 Quick Start
