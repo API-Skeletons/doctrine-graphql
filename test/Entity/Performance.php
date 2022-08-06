@@ -3,12 +3,14 @@
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Performance
  */
 #[GraphQL\Entity(typeName: 'performance', description: 'Performances')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest', excludeCriteria: ['contains'])]
+#[ORM\Entity]
 class Performance
 {
     /**
@@ -16,24 +18,28 @@ class Performance
      */
     #[GraphQL\Field(description: 'Venue name')]
     #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
+    #[ORM\Column(type: "string", nullable: true)]
     private $venue;
 
     /**
      * @var string|null
      */
     #[GraphQL\Field(description: 'City name')]
+    #[ORM\Column(type: "string", nullable: true)]
     private $city;
 
     /**
      * @var string|null
      */
     #[GraphQL\Field(description: 'State name')]
+    #[ORM\Column(type: "string", nullable: true)]
     private $state;
 
     /**
      * @var \DateTime
      */
     #[GraphQL\Field(description: 'Performance date')]
+    #[ORM\Column(type: "datetime", nullable: false)]
     private $performanceDate;
 
     /**
@@ -41,18 +47,24 @@ class Performance
      */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[ORM\Id]
+    #[ORM\Column(type: "integer")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     private $id;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
     #[GraphQL\Association(description: 'Recordings by artist')]
+    #[ORM\OneToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording", mappedBy: "performance")]
     private $recordings;
 
     /**
      * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist
      */
     #[GraphQL\Association(description: 'Artist entity')]
+    #[ORM\ManyToOne(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist", inversedBy: "performances")]
+    #[ORM\JoinColumn(name: "artist_id", referencedColumnName: "id", nullable: false)]
     private $artist;
 
     /**

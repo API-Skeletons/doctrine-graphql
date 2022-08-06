@@ -3,12 +3,14 @@
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Artist
  */
 #[GraphQL\Entity(typeName: 'artist', description: 'Artists')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest')]
+#[ORM\Entity]
 class Artist
 {
     /**
@@ -16,6 +18,7 @@ class Artist
      */
     #[GraphQL\Field(description: 'Artist name')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[ORM\Column(type: "string", nullable: false)]
     private $name;
 
     /**
@@ -23,6 +26,9 @@ class Artist
      */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[ORM\Id]
+    #[ORM\Column(type: "bigint")]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
     private $id;
 
     /**
@@ -30,6 +36,7 @@ class Artist
      */
     #[GraphQL\Association(description: 'Performances')]
     #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
+    #[ORM\OneToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance", mappedBy: "artist")]
     private $performances;
 
     /**
