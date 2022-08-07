@@ -179,7 +179,23 @@ Run GraphQL queries
 ```php
 use GraphQL\GraphQL;
 
-$query = '{ artist { edges { node { id name performances { edges { node { venue } } } } } } }';
+$query = '{ 
+    artist { 
+        edges { 
+            node { 
+                id 
+                name 
+                performances { 
+                    edges { 
+                        node { 
+                            venue 
+                        } 
+                    } 
+                } 
+            } 
+        } 
+    }
+}';
 
 $result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
