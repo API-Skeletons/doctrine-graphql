@@ -33,7 +33,8 @@
         "doctrine/dbal": "^3.1.1",
         "phpunit/phpunit": "^9.5",
         "vimeo/psalm": "^4.21",
-        "symfony/cache": "^5.3"
+        "symfony/cache": "^5.3",
+        "ramsey/uuid": "^4.4"
     },
     "scripts": {
         "test": "vendor/bin/phpcs && vendor/bin/phpunit && vendor/bin/psalm",

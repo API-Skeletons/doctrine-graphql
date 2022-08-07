@@ -3,6 +3,7 @@
 namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
@@ -154,6 +155,19 @@ abstract class AbstractTest extends TestCase
             ->setTestInt(12345)
             ->setTestText('Now is the time for all good men')
             ->setTestArray(['test', 'doctrine', 'array'])
+            ->setTestBigint('1234567890123')
+            ->setTestDateTimeImmutable(new DateTimeImmutable())
+            ->setTestDate(new DateTime(date('Y-m-d')))
+            ->setTestDateImmutable(new DateTimeImmutable(date('Y-m-d')))
+            ->setTestDateTimeTZ(new DateTime())
+            ->setTestDateTimeTZImmutable(new DateTimeImmutable())
+            ->setTestDecimal(314.15)
+            ->setTestJson(['to' => 'json'])
+            ->setTestSimpleArray(['one','two','three'])
+            ->setTestSmallInt(123)
+            ->setTestTime(new DateTime(date('Y-m-d H:i:s')))
+            ->setTestTimeImmutable(new DateTimeImmutable(date('Y-m-d H:i:s')))
+            ->setTestGuid(\Ramsey\Uuid\Uuid::uuid4())
             ;
         $this->entityManager->persist($typeTest);
 

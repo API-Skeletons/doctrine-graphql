@@ -50,6 +50,19 @@
       <field name="testBool" type="boolean" required="true" uuid="25733635-da4c-47ff-91d9-89e62c1479c0"/>
       <field name="testText" type="text" required="true" uuid="91a00ff4-54db-49d0-8e9f-63105943cc75"/>
       <field name="testArray" type="array" required="true" uuid="233c305b-3219-418c-b48b-0d3d2aff6b90"/>
+      <field name="testBigint" type="bigint" required="true" uuid="3a2f1362-52d6-42d4-9d5a-57ce1736ba8e"/>
+      <field name="testDate" type="date" required="true" uuid="fd6a69aa-945d-496d-95d2-6cd646aa42cf"/>
+      <field name="testDateImmutable" type="date_immutable" required="true" uuid="75288b75-dbe8-4eac-bef0-5b8a1a05459c"/>
+      <field name="testDateTimeImmutable" type="datetime_immutable" required="true" uuid="ee77aa83-cab9-4698-a690-627e0479ac1f"/>
+      <field name="testDateTimeTZ" type="datetimetz" required="true" uuid="76b8ed50-5f23-4ab3-8ff8-2df7cf75b1f9"/>
+      <field name="testDateTimeTZImmutable" type="datetimetz_immutable" required="true" uuid="1c371482-28d8-4f0b-af0b-e85dfbe87985"/>
+      <field name="testDecimal" type="decimal" required="true" uuid="4f9a79a2-1c8e-4cde-8912-316b3bfc5aec"/>
+      <field name="testGuid" type="guid" required="true" uuid="c39eb567-2943-4bb3-b78f-99dca8c9f0a7"/>
+      <field name="testJson" type="json" required="true" uuid="70d73e7b-12e3-4053-8403-a5b463b5ad7d"/>
+      <field name="testSimpleArray" type="simple_array" required="true" uuid="58f99f3e-3768-46b0-899e-a811c306aa7a"/>
+      <field name="testSmallInt" type="smallint" required="true" uuid="3e059077-1378-465f-bb10-ac770cb7c43d"/>
+      <field name="testTime" type="time" required="true" uuid="896263ba-5b4b-4e2f-b14d-29d4ae9aea26"/>
+      <field name="testTimeImmutable" type="time_immutable" required="true" uuid="669be252-2f24-4b79-a6c8-f0f99ceafd8d"/>
     </entity>
     <comment caption="Author" description="Tom H Anderson&#10;API Skeletons&#10;&lt;contact@apiskeletons.com&gt;" uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b"/>
     <orm-attributes>
@@ -68,7 +81,7 @@
     <entity uuid="d1836028-90d0-4d9e-b281-d792cd95d906" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="506" position-y="72" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
     <entity uuid="e5603f71-6798-480b-bcf8-0d185a08e653" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="97" position-y="163" size-x="0" size-x2="109" size-y="0" size-y2="60"/>
     <many-to-many-association uuid="e4936d0d-1d1f-4fb8-af31-fa1d0665ccf7" color="#969696"/>
-    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#FFD6FF" position-x="63" position-y="104" size-x="43" size-x2="646" size-y="84" size-y2="283"/>
-    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="30" size-x2="759" size-y="30" size-y2="437"/>
+    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#FFD6FF" position-x="63" position-y="104" size-x="43" size-x2="752" size-y="84" size-y2="431"/>
+    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="30" size-x2="865" size-y="30" size-y2="585"/>
   </visual-data>
 </skipper>

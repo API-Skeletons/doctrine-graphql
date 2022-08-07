@@ -70,6 +70,279 @@ class TypeTest
     #[ORM\Column(type: "array", nullable: false)]
     private $testArray = [];
 
+    #[ORM\Column(type: "bigint", nullable: false)]
+    private $testBigint;
+
+    #[ORM\Column(type: "date", nullable: false)]
+    private $testDate;
+
+    #[ORM\Column(type: "date_immutable", nullable: false)]
+    private $testDateImmutable;
+
+    #[ORM\Column(type: "datetime_immutable", nullable: false)]
+    private $testDateTimeImmutable;
+
+    #[ORM\Column(type: "datetimetz", nullable: false)]
+    private $testDateTimeTZ;
+
+    #[ORM\Column(type: "datetimetz_immutable", nullable: false)]
+    private $testDateTimeTZImmutable;
+
+    #[ORM\Column(type: "decimal", nullable: false)]
+    private $testDecimal;
+
+    #[ORM\Column(type: "guid", nullable: false)]
+    private $testGuid;
+
+    #[ORM\Column(type: "json", nullable: false)]
+    private $testJson;
+
+    #[ORM\Column(type: "simple_array", nullable: false)]
+    private $testSimpleArray;
+
+    #[ORM\Column(type: "smallint", nullable: false)]
+    private $testSmallInt;
+
+    #[ORM\Column(type: "time", nullable: false)]
+    private $testTime;
+
+    #[ORM\Column(type: "time_immutable", nullable: false)]
+    private $testTimeImmutable;
+
+    /**
+     * @return mixed
+     */
+    public function getTestBigint()
+    {
+        return $this->testBigint;
+    }
+
+    /**
+     * @param mixed $testBigint
+     */
+    public function setTestBigint($testBigint): self
+    {
+        $this->testBigint = $testBigint;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDate()
+    {
+        return $this->testDate;
+    }
+
+    /**
+     * @param mixed $testDate
+     */
+    public function setTestDate($testDate): self
+    {
+        $this->testDate = $testDate;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDateImmutable()
+    {
+        return $this->testDateImmutable;
+    }
+
+    /**
+     * @param mixed $testDateImmutable
+     */
+    public function setTestDateImmutable($testDateImmutable): self
+    {
+        $this->testDateImmutable = $testDateImmutable;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDateTimeImmutable()
+    {
+        return $this->testDateTimeImmutable;
+    }
+
+    /**
+     * @param mixed $testDateTimeImmutable
+     */
+    public function setTestDateTimeImmutable($testDateTimeImmutable): self
+    {
+        $this->testDateTimeImmutable = $testDateTimeImmutable;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDateTimeTZ()
+    {
+        return $this->testDateTimeTZ;
+    }
+
+    /**
+     * @param mixed $testDateTimeTZ
+     */
+    public function setTestDateTimeTZ($testDateTimeTZ): self
+    {
+        $this->testDateTimeTZ = $testDateTimeTZ;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDateTimeTZImmutable()
+    {
+        return $this->testDateTimeTZImmutable;
+    }
+
+    /**
+     * @param mixed $testDateTimeTZImmutable
+     */
+    public function setTestDateTimeTZImmutable($testDateTimeTZImmutable): self
+    {
+        $this->testDateTimeTZImmutable = $testDateTimeTZImmutable;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestDecimal()
+    {
+        return $this->testDecimal;
+    }
+
+    /**
+     * @param mixed $testDecimal
+     */
+    public function setTestDecimal($testDecimal): self
+    {
+        $this->testDecimal = $testDecimal;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestGuid()
+    {
+        return $this->testGuid;
+    }
+
+    /**
+     * @param mixed $testGuid
+     */
+    public function setTestGuid($testGuid): self
+    {
+        $this->testGuid = $testGuid;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestJson()
+    {
+        return $this->testJson;
+    }
+
+    /**
+     * @param mixed $testJson
+     */
+    public function setTestJson($testJson): self
+    {
+        $this->testJson = $testJson;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestSimpleArray()
+    {
+        return $this->testSimpleArray;
+    }
+
+    /**
+     * @param mixed $testSimpleArray
+     */
+    public function setTestSimpleArray($testSimpleArray): self
+    {
+        $this->testSimpleArray = $testSimpleArray;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestSmallInt()
+    {
+        return $this->testSmallInt;
+    }
+
+    /**
+     * @param mixed $testSmallInt
+     */
+    public function setTestSmallInt($testSmallInt): self
+    {
+        $this->testSmallInt = $testSmallInt;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestTime()
+    {
+        return $this->testTime;
+    }
+
+    /**
+     * @param mixed $testTime
+     */
+    public function setTestTime($testTime): self
+    {
+        $this->testTime = $testTime;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTestTimeImmutable()
+    {
+        return $this->testTimeImmutable;
+    }
+
+    /**
+     * @param mixed $testTimeImmutable
+     */
+    public function setTestTimeImmutable($testTimeImmutable): self
+    {
+        $this->testTimeImmutable = $testTimeImmutable;
+
+        return $this;
+    }
+
     public function setTestArray(array $value)
     {
         $this->testArray = $value;
