@@ -11,6 +11,8 @@ use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ScalarType;
 
 use function is_string;
+use function json_decode;
+use function json_encode;
 
 class Json extends ScalarType
 {

@@ -30,7 +30,7 @@ class TimeImmutable extends ScalarType
         return $valueNode->value;
     }
 
-    public function parseValue(mixed $value): PHPDateTime
+    public function parseValue(mixed $value): PHPDateTime|false
     {
         if (! is_string($value)) {
             throw new Error('Time is not a string: ' . $value);
