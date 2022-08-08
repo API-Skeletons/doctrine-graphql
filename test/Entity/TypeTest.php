@@ -70,44 +70,57 @@ class TypeTest
     #[ORM\Column(type: "array", nullable: false)]
     private $testArray = [];
 
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "bigint", nullable: false)]
     private $testBigint;
 
-    #[ORM\Column(type: "date", nullable: false)]
-    private $testDate;
-
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "date_immutable", nullable: false)]
     private $testDateImmutable;
 
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "date", nullable: false)]
+    private $testDate;
+
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "datetime_immutable", nullable: false)]
     private $testDateTimeImmutable;
 
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "datetimetz", nullable: false)]
     private $testDateTimeTZ;
 
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "datetimetz_immutable", nullable: false)]
     private $testDateTimeTZImmutable;
 
-    #[ORM\Column(type: "decimal", nullable: false)]
-    private $testDecimal;
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "time_immutable", nullable: false)]
+    private $testTimeImmutable;
 
-    #[ORM\Column(type: "guid", nullable: false)]
-    private $testGuid;
-
-    #[ORM\Column(type: "json", nullable: false)]
-    private $testJson;
-
-    #[ORM\Column(type: "simple_array", nullable: false)]
-    private $testSimpleArray;
-
-    #[ORM\Column(type: "smallint", nullable: false)]
-    private $testSmallInt;
-
+    #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Column(type: "time", nullable: false)]
     private $testTime;
 
-    #[ORM\Column(type: "time_immutable", nullable: false)]
-    private $testTimeImmutable;
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "decimal", nullable: false)]
+    private $testDecimal;
+
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "guid", nullable: false)]
+    private $testGuid;
+
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "json", nullable: false)]
+    private $testJson;
+
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "simple_array", nullable: false)]
+    private $testSimpleArray;
+
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: "smallint", nullable: false)]
+    private $testSmallInt;
 
     /**
      * @return mixed

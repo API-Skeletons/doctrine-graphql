@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
-use ApiSkeletons\Doctrine\GraphQL\Type\DateTime as DateTimeType;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\Type;
 use ReflectionClass;
@@ -29,7 +28,17 @@ class TypeManager extends AbstractContainer
             ->set('string', static fn () => Type::string())
             ->set('text', static fn () => Type::string())
             ->set('array', static fn () => Type::listOf(Type::string()))
-            ->set('datetime', static fn () => new DateTimeType())
+            ->set('simple_array', static fn () => Type::listOf(Type::string()))
+            ->set('guid', static fn () => Type::string())
+            ->set('json', static fn () => new Json())
+            ->set('date', static fn () => new Date())
+            ->set('datetime', static fn () => new DateTime())
+            ->set('datetimetz', static fn () => new DateTimeTZ())
+            ->set('time', static fn () => new Time())
+            ->set('date_immutable', static fn () => new DateImmutable())
+            ->set('datetime_immutable', static fn () => new DateTimeImmutable())
+            ->set('datetimetz_immutable', static fn () => new DateTimeTZImmutable())
+            ->set('time_immutable', static fn () => new TimeImmutable())
             ->set('PageInfo', static fn () => new PageInfo());
     }
 
