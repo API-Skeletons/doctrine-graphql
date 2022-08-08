@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
@@ -18,9 +19,7 @@ class CriteriaTypeCollisionTest extends AbstractTest
     {
         $config1 = new Config();
 
-        $config2 = new Config([
-            'group' => 'ExcludeCriteriaTest',
-        ]);
+        $config2 = new Config(['group' => 'ExcludeCriteriaTest']);
 
         $driver1 = new Driver($this->getEntityManager(), $config1);
         $driver2 = new Driver($this->getEntityManager(), $config2);
@@ -47,7 +46,7 @@ class CriteriaTypeCollisionTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ one: performance1 ( filter: {id: 2} ) { id }, two: performance2 ( filter: {id: 2} ) { id }}';
+        $query  = '{ one: performance1 ( filter: {id: 2} ) { id }, two: performance2 ( filter: {id: 2} ) { id }}';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

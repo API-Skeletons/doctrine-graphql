@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -10,16 +12,13 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
 use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrategy;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
 class NamingStrategyTest extends AbstractTest
 {
     public function testNamingStrategy(): void
     {
-        $config = new Config([
-            'group' => 'NamingStrategyTest',
-        ]);
+        $config = new Config(['group' => 'NamingStrategyTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
         $driver->get(HydratorFactory::class)

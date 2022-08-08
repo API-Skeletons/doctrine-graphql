@@ -1,26 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Type\Date;
+use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
 use DateTime as PHPDateTime;
-use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
-use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
+
+use function count;
 
 class DateTest extends AbstractTest
 {
     public function testParseValue(): void
     {
         $dateTimeType = new Date();
-        $control = PHPDateTime::createFromFormat('Y-m-d\TH:i:sP', '2020-03-01T00:00:00+00:00');
-        $result = $dateTimeType->parseValue('2020-03-01');
+        $control      = PHPDateTime::createFromFormat('Y-m-d\TH:i:sP', '2020-03-01T00:00:00+00:00');
+        $result       = $dateTimeType->parseValue('2020-03-01');
 
         $this->assertEquals($control->format('Y-m-d'), $result->format('Y-m-d'));
     }
@@ -30,14 +33,12 @@ class DateTest extends AbstractTest
         $this->expectException(Error::class);
 
         $dateType = new Date();
-        $result = $dateType->parseValue(true);
+        $result   = $dateType->parseValue(true);
     }
 
     public function testBetween(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'group' => 'DataTypesTest',
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DataTypesTest']));
         $schema = new Schema([
             'query' => new ObjectType([
                 'name' => 'query',
@@ -53,8 +54,8 @@ class DateTest extends AbstractTest
             ]),
         ]);
 
-        $now = (new \DateTime())->format('Y-m-d');
-        $query = '{ typetest ( filter: { testDate_between: { from: "2022-08-06" to: "' . $now . '" } } ) { edges { node { id testDate } } } }';
+        $now    = (new PHPDateTime())->format('Y-m-d');
+        $query  = '{ typetest ( filter: { testDate_between: { from: "2022-08-06" to: "' . $now . '" } } ) { edges { node { id testDate } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

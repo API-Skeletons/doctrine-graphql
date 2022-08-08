@@ -1,25 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
 class FieldStrategyTest extends AbstractTest
 {
     public function testCustomFieldStrategy(): void
     {
-        $config = new Config([
-            'group' => 'CustomFieldStrategyTest',
-        ]);
+        $config = new Config(['group' => 'CustomFieldStrategyTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

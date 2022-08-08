@@ -1,20 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Type\Date;
 use ApiSkeletons\Doctrine\GraphQL\Type\Json;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
-use DateTime as PHPDateTime;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
+use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
-use GraphQL\Language\AST\Node;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
+
+use function count;
 
 class JsonTest extends AbstractTest
 {
@@ -22,8 +23,8 @@ class JsonTest extends AbstractTest
     {
         $jsonType = new Json();
 
-        $control = ['array' => 'test', 'in' => [ 'json' ]];
-        $result = $jsonType->parseValue('{"array": "test", "in": ["json"]}');
+        $control = ['array' => 'test', 'in' => ['json']];
+        $result  = $jsonType->parseValue('{"array": "test", "in": ["json"]}');
 
         $this->assertEquals($control, $result);
     }
@@ -33,24 +34,22 @@ class JsonTest extends AbstractTest
         $this->expectException(Error::class);
 
         $jsonType = new Json();
-        $result = $jsonType->parseValue(true);
+        $result   = $jsonType->parseValue(true);
     }
 
     public function testParseLiteral(): void
     {
         $this->expectException(Error::class);
 
-        $jsonType = new Json();
-        $node = new StringValueNode([]);
-        $node->value = "search string";
-        $result = $jsonType->parseLiteral($node);
+        $jsonType    = new Json();
+        $node        = new StringValueNode([]);
+        $node->value = 'search string';
+        $result      = $jsonType->parseLiteral($node);
     }
 
     public function testContains(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'group' => 'DataTypesTest',
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DataTypesTest']));
         $schema = new Schema([
             'query' => new ObjectType([
                 'name' => 'query',
@@ -66,8 +65,7 @@ class JsonTest extends AbstractTest
             ]),
         ]);
 
-        $now = (new \DateTime())->format('Y-m-d');
-        $query = '{ typetest ( filter: { testJson_sort: "ASC" } ) { edges { node { id testJson } } } }';
+        $query  = '{ typetest ( filter: { testJson_sort: "ASC" } ) { edges { node { id testJson } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

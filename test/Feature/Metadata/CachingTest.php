@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
@@ -40,9 +42,8 @@ class CachingTest extends AbstractTest
                         'strategy' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault',
                         'excludeCriteria' => ['eq'],
                         'documentation' => '',
-                    ]
+                    ],
                 ],
-
 
                 'strategies' => [
                     'name' => 'ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault',
@@ -52,7 +53,7 @@ class CachingTest extends AbstractTest
                 ],
                 'filters' => [],
                 'typeName' => 'User',
-            ]
+            ],
         ];
 
         $driver = new Driver($this->getEntityManager(), null, $metadataConfig);

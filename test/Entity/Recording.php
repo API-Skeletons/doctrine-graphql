@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -15,58 +18,43 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Recording
 {
-    /**
-     * @var string
-     */
     #[GraphQL\Field(description: 'Source')]
     #[GraphQL\Field(description: 'Entity Test Source', group: 'entityTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest')]
-    #[ORM\Column(type: "text", nullable: false)]
-    private $source;
+    #[ORM\Column(type: 'text', nullable: false)]
+    private string $source;
 
-    /**
-     * @var int
-     */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(description: 'Entity Test ID', group: 'entityTest')]
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private int $id;
 
-    /**
-     * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance
-     */
     #[GraphQL\Association(description: 'Performance entity')]
     #[GraphQL\Association(description: 'Entity Test Performance', group: 'entityTest')]
-    #[ORM\ManyToOne(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance", inversedBy: "recordings")]
-    #[ORM\JoinColumn(name: "performance_id", referencedColumnName: "id", nullable: false)]
-    private $performance;
+    #[ORM\ManyToOne(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance', inversedBy: 'recordings')]
+    #[ORM\JoinColumn(name: 'performance_id', referencedColumnName: 'id', nullable: false)]
+    private Performance $performance;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
+    /** @var Collection<id, User> */
     #[GraphQL\Association(description: 'Users')]
     #[GraphQL\Association(description: 'Entity Test Users', group: 'entityTest')]
-    #[ORM\ManyToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\User", mappedBy: "recordings")]
-    private $users;
+    #[ORM\ManyToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User', mappedBy: 'recordings')]
+    private Collection $users;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     /**
      * Set source.
-     *
-     * @param string $source
-     *
-     * @return Recording
      */
-    public function setSource($source)
+    public function setSource(string $source): Recording
     {
         $this->source = $source;
 
@@ -75,32 +63,24 @@ class Recording
 
     /**
      * Get source.
-     *
-     * @return string
      */
-    public function getSource()
+    public function getSource(): string
     {
         return $this->source;
     }
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
      * Set performance.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance
-     *
-     * @return Recording
      */
-    public function setPerformance(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance)
+    public function setPerformance(Performance $performance): Recording
     {
         $this->performance = $performance;
 
@@ -109,22 +89,16 @@ class Recording
 
     /**
      * Get performance.
-     *
-     * @return \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance
      */
-    public function getPerformance()
+    public function getPerformance(): Performance
     {
         return $this->performance;
     }
 
     /**
      * Add user.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\User $user
-     *
-     * @return Recording
      */
-    public function addUser(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\User $user)
+    public function addUser(User $user): Recording
     {
         $this->users[] = $user;
 
@@ -134,11 +108,9 @@ class Recording
     /**
      * Remove user.
      *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\User $user
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     * @return bool TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeUser(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\User $user)
+    public function removeUser(User $user): bool
     {
         return $this->users->removeElement($user);
     }
@@ -146,9 +118,9 @@ class Recording
     /**
      * Get users.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<id, User>
      */
-    public function getUsers()
+    public function getUsers(): Collection
     {
         return $this->users;
     }

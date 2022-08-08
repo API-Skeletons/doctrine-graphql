@@ -1,28 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Type\Date;
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTimeImmutable;
-use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
+use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
 use DateTime as PHPDateTime;
-use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
-use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
+
+use function count;
 
 class DateTimeImmutableTest extends AbstractTest
 {
     public function testParseValue(): void
     {
         $dateImmutableType = new DateTimeImmutable();
-        $control = PHPDateTime::createFromFormat('Y-m-d\TH:i:sP', '2020-03-01T00:00:00+00:00');
-        $result = $dateImmutableType->parseValue('2020-03-01T00:00:00+00:00');
+        $control           = PHPDateTime::createFromFormat('Y-m-d\TH:i:sP', '2020-03-01T00:00:00+00:00');
+        $result            = $dateImmutableType->parseValue('2020-03-01T00:00:00+00:00');
 
         $this->assertEquals($control, $result);
     }
@@ -32,14 +33,12 @@ class DateTimeImmutableTest extends AbstractTest
         $this->expectException(Error::class);
 
         $dateType = new DateTimeImmutable();
-        $result = $dateType->parseValue(true);
+        $result   = $dateType->parseValue(true);
     }
 
     public function testBetween(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'group' => 'DataTypesTest',
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DataTypesTest']));
         $schema = new Schema([
             'query' => new ObjectType([
                 'name' => 'query',
@@ -55,8 +54,8 @@ class DateTimeImmutableTest extends AbstractTest
             ]),
         ]);
 
-        $now = (new \DateTime())->format('c');
-        $query = '{ typetest ( filter: { testDateTimeImmutable_between: { from: "2022-08-06T00:00:00+00:00" to: "' . $now . '" } } ) { edges { node { id testDateTimeImmutable } } } }';
+        $now    = (new PHPDateTime())->format('c');
+        $query  = '{ typetest ( filter: { testDateTimeImmutable_between: { from: "2022-08-06T00:00:00+00:00" to: "' . $now . '" } } ) { edges { node { id testDateTimeImmutable } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

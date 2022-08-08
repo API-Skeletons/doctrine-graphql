@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,48 +17,36 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Artist
 {
-    /**
-     * @var string
-     */
     #[GraphQL\Field(description: 'Artist name')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
-    #[ORM\Column(type: "string", nullable: false)]
-    private $name;
+    #[ORM\Column(type: 'string', nullable: false)]
+    private string $name;
 
-    /**
-     * @var int
-     */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     #[ORM\Id]
-    #[ORM\Column(type: "bigint")]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    private $id;
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private int $id;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
+    /** @var Collection<id, Performance> */
     #[GraphQL\Association(description: 'Performances')]
     #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
-    #[ORM\OneToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance", mappedBy: "artist")]
-    private $performances;
+    #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance', mappedBy: 'artist')]
+    private Collection $performances;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->performances = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->performances = new ArrayCollection();
     }
 
     /**
      * Set name.
-     *
-     * @param string $name
-     *
-     * @return Artist
      */
-    public function setName($name)
+    public function setName(string $name): Artist
     {
         $this->name = $name;
 
@@ -63,32 +55,24 @@ class Artist
 
     /**
      * Get name.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
      * Add performance.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance
-     *
-     * @return Artist
      */
-    public function addPerformance(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance)
+    public function addPerformance(Performance $performance): Artist
     {
         $this->performances[] = $performance;
 
@@ -98,11 +82,9 @@ class Artist
     /**
      * Remove performance.
      *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     * @return bool TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removePerformance(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance $performance)
+    public function removePerformance(Performance $performance): bool
     {
         return $this->performances->removeElement($performance);
     }
@@ -110,9 +92,9 @@ class Artist
     /**
      * Get performances.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<id, Performance>
      */
-    public function getPerformances()
+    public function getPerformances(): Collection
     {
         return $this->performances;
     }
