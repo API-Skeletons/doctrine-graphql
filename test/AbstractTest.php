@@ -147,7 +147,7 @@ abstract class AbstractTest extends TestCase
             }
         }
 
-        $immutableDateTime = new DateTimeImmutable();
+        $immutableDateTime = new DateTimeImmutable('2022-08-07T20:10:15.123456');
 
         $typeTest = new Entity\TypeTest();
         $typeTest
@@ -164,10 +164,10 @@ abstract class AbstractTest extends TestCase
             ->setTestDateTimeTZ(new DateTime())
             ->setTestDateTimeTZImmutable($immutableDateTime)
             ->setTestDecimal(314.15)
-            ->setTestJson(['to' => 'json'])
+            ->setTestJson(['to' => 'json', ['test' => 'testing']])
             ->setTestSimpleArray(['one','two','three'])
             ->setTestSmallInt(123)
-            ->setTestTime(new DateTime(date('Y-m-d H:i:s')))
+            ->setTestTime(new DateTime('2022-08-07T20:10:15.123456'))
             ->setTestTimeImmutable($immutableDateTime)
             ->setTestGuid(\Ramsey\Uuid\Uuid::uuid4())
             ;
