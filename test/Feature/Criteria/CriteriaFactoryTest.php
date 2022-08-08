@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -11,9 +13,7 @@ class CriteriaFactoryTest extends AbstractTest
 {
     public function testExcludeCriteria(): void
     {
-        $config = new Config([
-            'group' => 'ExcludeCriteriaTest',
-        ]);
+        $config = new Config(['group' => 'ExcludeCriteriaTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

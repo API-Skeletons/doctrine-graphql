@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -29,14 +31,22 @@ class EntityTest extends AbstractTest
         $this->assertEquals(1, $metadataConfig['byValue']);
         $this->assertEquals(null, $metadataConfig['namingStrategy']);
 
-        $this->assertEquals(ToInteger::class,
-            $metadataConfig['fields']['id']['strategy']);
-        $this->assertEquals(FieldDefault::class,
-            $metadataConfig['fields']['source']['strategy']);
-        $this->assertEquals(AssociationDefault::class,
-            $metadataConfig['fields']['performance']['strategy']);
-        $this->assertEquals(AssociationDefault::class,
-            $metadataConfig['fields']['users']['strategy']);
+        $this->assertEquals(
+            ToInteger::class,
+            $metadataConfig['fields']['id']['strategy']
+        );
+        $this->assertEquals(
+            FieldDefault::class,
+            $metadataConfig['fields']['source']['strategy']
+        );
+        $this->assertEquals(
+            AssociationDefault::class,
+            $metadataConfig['fields']['performance']['strategy']
+        );
+        $this->assertEquals(
+            AssociationDefault::class,
+            $metadataConfig['fields']['users']['strategy']
+        );
 
         $this->assertEquals([], $metadataConfig['filters']);
 

@@ -1,13 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToJson;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TypeTest
+ *
+ * @phpcs:ignoreFile
  */
 #[GraphQL\Entity(typeName: 'typeTest', description: 'Type test')]
 #[GraphQL\Entity(group: 'DataTypesTest')]
@@ -15,354 +19,281 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class TypeTest
 {
-    /**
-     * @var int
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "integer", nullable: false)]
-    private $testInt;
+    #[ORM\Column(type: 'integer', nullable: false)]
+    private int $testInt;
 
-    /**
-     * @var \DateTime
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "datetime", nullable: false)]
-    private $testDateTime;
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    private DateTime $testDateTime;
 
-    /**
-     * @var float
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[GraphQL\Field(group: 'CustomTypeTest', type: "customType")]
-    #[ORM\Column(type: "float", nullable: false)]
-    private $testFloat;
+    #[GraphQL\Field(group: 'CustomTypeTest', type: 'customType')]
+    #[ORM\Column(type: 'float', nullable: false)]
+    private float $testFloat;
 
-    /**
-     * @var bool
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "boolean", nullable: false)]
-    private $testBool;
+    #[ORM\Column(type: 'boolean', nullable: false)]
+    private bool $testBool;
 
-    /**
-     * @var string
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "text", nullable: false)]
-    private $testText;
+    #[ORM\Column(type: 'text', nullable: false)]
+    private string $testText;
 
-    /**
-     * @var int
-     */
     #[GraphQL\Field]
     #[GraphQL\Field(group: 'DataTypesTest')]
     #[ORM\Id]
-    #[ORM\Column(type: "bigint")]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    private $id;
+    #[ORM\Column(type: 'bigint')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private int $id;
+
+    /** @var mixed[] */
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: 'array', nullable: false)]
+    private array $testArray = [];
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "array", nullable: false)]
-    private $testArray = [];
+    #[ORM\Column(type: 'bigint', nullable: false)]
+    private string $testBigint;
 
+    /**
+     * @var DateTimeImmutable
+     */
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "bigint", nullable: false)]
-    private $testBigint;
-
-    #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "date_immutable", nullable: false)]
+    #[ORM\Column(type: 'date_immutable', nullable: false)]
     private $testDateImmutable;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "date", nullable: false)]
-    private $testDate;
+    #[ORM\Column(type: 'date', nullable: false)]
+    private DateTime $testDate;
 
+    /**
+     * @var DateTimeImmutable
+     */
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "datetime_immutable", nullable: false)]
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private $testDateTimeImmutable;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "datetimetz", nullable: false)]
-    private $testDateTimeTZ;
+    #[ORM\Column(type: 'datetimetz', nullable: false)]
+    private DateTime $testDateTimeTZ;
 
+    /**
+     * @var DateTimeImmutable
+     */
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "datetimetz_immutable", nullable: false)]
+    #[ORM\Column(type: 'datetimetz_immutable', nullable: false)]
     private $testDateTimeTZImmutable;
 
+    /**
+     * @var DateTimeImmutable
+     */
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "time_immutable", nullable: false)]
+    #[ORM\Column(type: 'time_immutable', nullable: false)]
     private $testTimeImmutable;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "time", nullable: false)]
-    private $testTime;
+    #[ORM\Column(type: 'time', nullable: false)]
+    private DateTime $testTime;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "decimal", nullable: false)]
-    private $testDecimal;
+    #[ORM\Column(type: 'decimal', nullable: false)]
+    private float $testDecimal;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "guid", nullable: false)]
-    private $testGuid;
+    #[ORM\Column(type: 'guid', nullable: false)]
+    private string $testGuid;
+
+    /** @var mixed[] */
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: 'json', nullable: false)]
+    private array $testJson;
+
+    /** @var string[] */
+    #[GraphQL\Field(group: 'DataTypesTest')]
+    #[ORM\Column(type: 'simple_array', nullable: false)]
+    private array $testSimpleArray;
 
     #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "json", nullable: false)]
-    private $testJson;
+    #[ORM\Column(type: 'smallint', nullable: false)]
+    private int $testSmallInt;
 
-    #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "simple_array", nullable: false)]
-    private $testSimpleArray;
-
-    #[GraphQL\Field(group: 'DataTypesTest')]
-    #[ORM\Column(type: "smallint", nullable: false)]
-    private $testSmallInt;
-
-    /**
-     * @return mixed
-     */
-    public function getTestBigint()
+    public function getTestBigint(): mixed
     {
         return $this->testBigint;
     }
 
-    /**
-     * @param mixed $testBigint
-     */
-    public function setTestBigint($testBigint): self
+    public function setTestBigint(mixed $testBigint): self
     {
         $this->testBigint = $testBigint;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDate()
+    public function getTestDate(): mixed
     {
         return $this->testDate;
     }
 
-    /**
-     * @param mixed $testDate
-     */
-    public function setTestDate($testDate): self
+    public function setTestDate(mixed $testDate): self
     {
         $this->testDate = $testDate;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDateImmutable()
+    public function getTestDateImmutable(): mixed
     {
         return $this->testDateImmutable;
     }
 
-    /**
-     * @param mixed $testDateImmutable
-     */
-    public function setTestDateImmutable($testDateImmutable): self
+    public function setTestDateImmutable(mixed $testDateImmutable): self
     {
         $this->testDateImmutable = $testDateImmutable;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDateTimeImmutable()
+    public function getTestDateTimeImmutable(): mixed
     {
         return $this->testDateTimeImmutable;
     }
 
-    /**
-     * @param mixed $testDateTimeImmutable
-     */
-    public function setTestDateTimeImmutable($testDateTimeImmutable): self
+    public function setTestDateTimeImmutable(mixed $testDateTimeImmutable): self
     {
         $this->testDateTimeImmutable = $testDateTimeImmutable;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDateTimeTZ()
+    public function getTestDateTimeTZ(): mixed
     {
         return $this->testDateTimeTZ;
     }
 
-    /**
-     * @param mixed $testDateTimeTZ
-     */
-    public function setTestDateTimeTZ($testDateTimeTZ): self
+    public function setTestDateTimeTZ(mixed $testDateTimeTZ): self
     {
         $this->testDateTimeTZ = $testDateTimeTZ;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDateTimeTZImmutable()
+    public function getTestDateTimeTZImmutable(): mixed
     {
         return $this->testDateTimeTZImmutable;
     }
 
-    /**
-     * @param mixed $testDateTimeTZImmutable
-     */
-    public function setTestDateTimeTZImmutable($testDateTimeTZImmutable): self
+    public function setTestDateTimeTZImmutable(mixed $testDateTimeTZImmutable): self
     {
         $this->testDateTimeTZImmutable = $testDateTimeTZImmutable;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestDecimal()
+    public function getTestDecimal(): mixed
     {
         return $this->testDecimal;
     }
 
-    /**
-     * @param mixed $testDecimal
-     */
-    public function setTestDecimal($testDecimal): self
+    public function setTestDecimal(mixed $testDecimal): self
     {
         $this->testDecimal = $testDecimal;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestGuid()
+    public function getTestGuid(): mixed
     {
         return $this->testGuid;
     }
 
-    /**
-     * @param mixed $testGuid
-     */
-    public function setTestGuid($testGuid): self
+    public function setTestGuid(mixed $testGuid): self
     {
         $this->testGuid = $testGuid;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestJson()
+    public function getTestJson(): mixed
     {
         return $this->testJson;
     }
 
-    /**
-     * @param mixed $testJson
-     */
-    public function setTestJson($testJson): self
+    public function setTestJson(mixed $testJson): self
     {
         $this->testJson = $testJson;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestSimpleArray()
+    public function getTestSimpleArray(): mixed
     {
         return $this->testSimpleArray;
     }
 
-    /**
-     * @param mixed $testSimpleArray
-     */
-    public function setTestSimpleArray($testSimpleArray): self
+    public function setTestSimpleArray(mixed $testSimpleArray): self
     {
         $this->testSimpleArray = $testSimpleArray;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestSmallInt()
+    public function getTestSmallInt(): mixed
     {
         return $this->testSmallInt;
     }
 
-    /**
-     * @param mixed $testSmallInt
-     */
-    public function setTestSmallInt($testSmallInt): self
+    public function setTestSmallInt(mixed $testSmallInt): self
     {
         $this->testSmallInt = $testSmallInt;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestTime()
+    public function getTestTime(): mixed
     {
         return $this->testTime;
     }
 
-    /**
-     * @param mixed $testTime
-     */
-    public function setTestTime($testTime): self
+    public function setTestTime(mixed $testTime): self
     {
         $this->testTime = $testTime;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTestTimeImmutable()
+    public function getTestTimeImmutable(): mixed
     {
         return $this->testTimeImmutable;
     }
 
-    /**
-     * @param mixed $testTimeImmutable
-     */
-    public function setTestTimeImmutable($testTimeImmutable): self
+    public function setTestTimeImmutable(mixed $testTimeImmutable): self
     {
         $this->testTimeImmutable = $testTimeImmutable;
 
         return $this;
     }
 
-    public function setTestArray(array $value)
+    /**
+     * @param mixed[] $value
+     *
+     * @return $this
+     */
+    public function setTestArray(array $value): self
     {
         $this->testArray = $value;
 
         return $this;
     }
 
+    /**
+     * @return mixed[]|null
+     */
     public function getTestArray(): ?array
     {
         return $this->testArray;
@@ -370,12 +301,8 @@ class TypeTest
 
     /**
      * Set testInt.
-     *
-     * @param int $testInt
-     *
-     * @return TypeTest
      */
-    public function setTestInt($testInt)
+    public function setTestInt(int $testInt): TypeTest
     {
         $this->testInt = $testInt;
 
@@ -384,22 +311,16 @@ class TypeTest
 
     /**
      * Get testInt.
-     *
-     * @return int
      */
-    public function getTestInt()
+    public function getTestInt(): int
     {
         return $this->testInt;
     }
 
     /**
      * Set testDateTime.
-     *
-     * @param \DateTime $testDateTime
-     *
-     * @return TypeTest
      */
-    public function setTestDateTime($testDateTime)
+    public function setTestDateTime(DateTime $testDateTime): TypeTest
     {
         $this->testDateTime = $testDateTime;
 
@@ -408,22 +329,16 @@ class TypeTest
 
     /**
      * Get testDateTime.
-     *
-     * @return \DateTime
      */
-    public function getTestDateTime()
+    public function getTestDateTime(): DateTime
     {
         return $this->testDateTime;
     }
 
     /**
      * Set testFloat.
-     *
-     * @param float $testFloat
-     *
-     * @return TypeTest
      */
-    public function setTestFloat($testFloat)
+    public function setTestFloat(float $testFloat): TypeTest
     {
         $this->testFloat = $testFloat;
 
@@ -432,22 +347,16 @@ class TypeTest
 
     /**
      * Get testFloat.
-     *
-     * @return float
      */
-    public function getTestFloat()
+    public function getTestFloat(): float
     {
         return $this->testFloat;
     }
 
     /**
      * Set testBool.
-     *
-     * @param bool $testBool
-     *
-     * @return TypeTest
      */
-    public function setTestBool($testBool)
+    public function setTestBool(bool $testBool): TypeTest
     {
         $this->testBool = $testBool;
 
@@ -456,22 +365,16 @@ class TypeTest
 
     /**
      * Get testBool.
-     *
-     * @return bool
      */
-    public function getTestBool()
+    public function getTestBool(): bool
     {
         return $this->testBool;
     }
 
     /**
      * Set testText.
-     *
-     * @param string $testText
-     *
-     * @return TypeTest
      */
-    public function setTestText($testText)
+    public function setTestText(string $testText): TypeTest
     {
         $this->testText = $testText;
 
@@ -480,20 +383,16 @@ class TypeTest
 
     /**
      * Get testText.
-     *
-     * @return string
      */
-    public function getTestText()
+    public function getTestText(): string
     {
         return $this->testText;
     }
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }

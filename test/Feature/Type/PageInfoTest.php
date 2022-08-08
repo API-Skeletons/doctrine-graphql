@@ -1,14 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Resolve;
 
-use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
 use function count;
@@ -33,7 +33,7 @@ class PageInfoTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{
+        $query  = '{
             performance {
                 pageInfo {
                     hasNextPage
@@ -83,7 +83,7 @@ class PageInfoTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{
+        $query  = '{
             performance (filter: {_first:2}) {
                 pageInfo {
                     hasNextPage
@@ -122,7 +122,7 @@ class PageInfoTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{
+        $query  = '{
             performance (filter: {_last:2}) {
                 pageInfo {
                     hasNextPage

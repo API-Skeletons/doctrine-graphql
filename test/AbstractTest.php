@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
 use DateTime;
@@ -8,6 +10,9 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+
+use function date;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -19,18 +24,18 @@ abstract class AbstractTest extends TestCase
     {
         // Create a simple "default" Doctrine ORM configuration for Annotations
         $isDevMode = true;
-        $config = Setup::createAttributeMetadataConfiguration([__DIR__ . '/Entity'], $isDevMode);
+        $config    = Setup::createAttributeMetadataConfiguration([__DIR__ . '/Entity'], $isDevMode);
 
         // database configuration parameters
-        $conn = array(
+        $conn = [
             'driver' => 'pdo_sqlite',
             'memory' => true,
-        );
+        ];
 
         // obtaining the entity manager
         $this->entityManager = EntityManager::create($conn, $config);
-        $tool = new SchemaTool($this->entityManager);
-        $res = $tool->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
+        $tool                = new SchemaTool($this->entityManager);
+        $res                 = $tool->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
 
         $this->populateData();
     }
@@ -40,7 +45,7 @@ abstract class AbstractTest extends TestCase
         return $this->entityManager;
     }
 
-    protected function populateData()
+    protected function populateData(): void
     {
         $users = [
             [
@@ -51,7 +56,7 @@ abstract class AbstractTest extends TestCase
             [
                 'name' => 'User two',
                 'email' => 'userTwo@gmail.com',
-                'password' => 'fdsa'
+                'password' => 'fdsa',
             ],
         ];
 
@@ -66,7 +71,7 @@ abstract class AbstractTest extends TestCase
                           . 'Walker; see info file and pub comments for notes; '
                           . 'possibly "click track" audible on a couple tracks',
                         'DSBD > 1C > DAT; Seeded to etree by Dan Stephens',
-                    ]
+                    ],
                 ],
                 '1969-11-08T00:00:00+00:00' => [
                     'venue' => 'Fillmore Auditorium',
@@ -74,9 +79,9 @@ abstract class AbstractTest extends TestCase
                     'state' => 'California',
                 ],
                 '1977-05-08T00:00:00+00:00' => [
-                  'venue' => 'Barton Hall, Cornell University',
-                  'city' => 'Ithaca',
-                  'state' => 'New York',
+                    'venue' => 'Barton Hall, Cornell University',
+                    'city' => 'Ithaca',
+                    'state' => 'New York',
                 ],
                 '1995-07-09T00:00:00+00:00' => [
                     'venue' => 'Soldier Field',
@@ -94,9 +99,7 @@ abstract class AbstractTest extends TestCase
                     'venue' => 'E Center',
                     'city' => 'West Valley City',
                     'state' => 'Utah',
-                    'recordings' => [
-                        'AKG480 > Aerco preamp > SBM-1',
-                    ],
+                    'recordings' => ['AKG480 > Aerco preamp > SBM-1'],
                 ],
                 '1999-12-31T00:00:00+00:00' => [
                     'venue' => null,
@@ -135,19 +138,20 @@ abstract class AbstractTest extends TestCase
                     ->setArtist($artist);
                 $this->entityManager->persist($performance);
 
-                if (isset($location['recordings'])) {
-                    foreach ($location['recordings'] as $source) {
-                        $recording = (new Entity\Recording())
-                            ->setSource($source)
-                            ->setPerformance($performance);
-                        $this->entityManager->persist($recording);
-                    }
+                if (! isset($location['recordings'])) {
+                    continue;
+                }
 
+                foreach ($location['recordings'] as $source) {
+                    $recording = (new Entity\Recording())
+                        ->setSource($source)
+                        ->setPerformance($performance);
+                    $this->entityManager->persist($recording);
                 }
             }
         }
 
-        $immutableDateTime = new DateTimeImmutable();
+        $immutableDateTime = new DateTimeImmutable('2022-08-07T20:10:15.123456');
 
         $typeTest = new Entity\TypeTest();
         $typeTest
@@ -164,15 +168,13 @@ abstract class AbstractTest extends TestCase
             ->setTestDateTimeTZ(new DateTime())
             ->setTestDateTimeTZImmutable($immutableDateTime)
             ->setTestDecimal(314.15)
-            ->setTestJson(['to' => 'json'])
-            ->setTestSimpleArray(['one','two','three'])
+            ->setTestJson(['to' => 'json', ['test' => 'testing']])
+            ->setTestSimpleArray(['one', 'two', 'three'])
             ->setTestSmallInt(123)
-            ->setTestTime(new DateTime(date('Y-m-d H:i:s')))
+            ->setTestTime(new DateTime('2022-08-07T20:10:15.123456'))
             ->setTestTimeImmutable($immutableDateTime)
-            ->setTestGuid(\Ramsey\Uuid\Uuid::uuid4())
-            ;
+            ->setTestGuid(Uuid::uuid4()->toString());
         $this->entityManager->persist($typeTest);
-
 
         $this->entityManager->flush();
         $this->entityManager->clear();

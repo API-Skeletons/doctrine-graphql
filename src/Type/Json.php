@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
-use DateTime as PHPDateTime;
 use GraphQL\Error\Error;
 use GraphQL\Language\AST\Node;
-use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ScalarType;
 
 use function is_string;
@@ -21,23 +19,21 @@ class Json extends ScalarType
 
     public function parseLiteral(Node $valueNode, ?array $variables = null): string
     {
-        // @codeCoverageIgnoreStart
-        if (! $valueNode instanceof StringValueNode) {
-            throw new Error('Query error: Can only parse strings got: ' . $valueNode->kind, $valueNode);
-        }
-
-        // @codeCoverageIgnoreEnd
-
-        return json_decode($valueNode->value);
+        throw new Error('JSON fields are not searchable', $valueNode);
     }
 
-    public function parseValue(mixed $value): PHPDateTime
+    /**
+     * @return mixed[]|null
+     *
+     * @throws Error
+     */
+    public function parseValue(mixed $value): ?array
     {
         if (! is_string($value)) {
             throw new Error('Json is not a string: ' . $value);
         }
 
-        return json_decode($value);
+        return json_decode($value, true);
     }
 
     public function serialize(mixed $value): ?string

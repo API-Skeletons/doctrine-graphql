@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletonsTest\Doctrine\GraphQL\Hydrator\NamingStrategy\CustomNamingStrategy;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,74 +25,56 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class User
 {
-    /**
-     * @var string
-     */
     #[GraphQL\Field(description: 'User name')]
     #[GraphQL\Field(description: 'User name', group: 'testNonDefaultGroup')]
     #[GraphQL\Field(description: 'User name', group: 'testPasswordFilter')]
     #[GraphQL\Field(group: 'NamingStrategyTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest', strategy: ToBoolean::class)]
     #[GraphQL\Field(group: 'InputFactoryTest')]
-    #[ORM\Column(type: "string", nullable: false)]
-    private $name;
+    #[ORM\Column(type: 'string', nullable: false)]
+    private string $name;
 
-    /**
-     * @var string
-     */
     #[GraphQL\Field(description: 'User email')]
     #[GraphQL\Field(group: 'NamingStrategyTest')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
-    #[ORM\Column(type: "string", nullable: false)]
-    private $email;
+    #[ORM\Column(type: 'string', nullable: false)]
+    private string $email;
 
-    /**
-     * @var string
-     */
     #[GraphQL\Field(description: 'User password')]
     #[GraphQL\Field(description: 'User password', group: 'testPasswordFilter')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
-    #[ORM\Column(type: "string", nullable: false)]
-    private $password;
+    #[ORM\Column(type: 'string', nullable: false)]
+    private string $password;
 
-    /**
-     * @var int
-     */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(description: 'Primary key', group: 'testNonDefaultGroup')]
     #[GraphQL\Field(group: 'InputFactoryTest')]
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private int $id;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
+    /** @var Collection<id, Recording> */
     #[GraphQL\Association(description: 'Recordings')]
     #[GraphQL\Association(group: 'CustomFieldStrategyTest', strategy: AssociationDefault::class)]
-    #[ORM\ManyToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording", inversedBy: "users")]
-    #[ORM\JoinTable(name: "RecordingToUser")]
-    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
-    #[ORM\InverseJoinColumn(name: "recording_id", referencedColumnName: "id", nullable: false)]
-    private $recordings;
+    #[ORM\ManyToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording', inversedBy: 'users')]
+    #[ORM\JoinTable(name: 'RecordingToUser')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: false)]
+    #[ORM\InverseJoinColumn(name: 'recording_id', referencedColumnName: 'id', nullable: false)]
+    private Collection $recordings;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->recordings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->recordings = new ArrayCollection();
     }
 
     /**
      * Set name.
-     *
-     * @param string $name
-     *
-     * @return User
      */
-    public function setName($name)
+    public function setName(string $name): User
     {
         $this->name = $name;
 
@@ -98,22 +83,16 @@ class User
 
     /**
      * Get name.
-     *
-     * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
     /**
      * Set email.
-     *
-     * @param string $email
-     *
-     * @return User
      */
-    public function setEmail($email)
+    public function setEmail(string $email): User
     {
         $this->email = $email;
 
@@ -122,22 +101,16 @@ class User
 
     /**
      * Get email.
-     *
-     * @return string
      */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
      * Set password.
-     *
-     * @param string $password
-     *
-     * @return User
      */
-    public function setPassword($password)
+    public function setPassword(string $password): User
     {
         $this->password = $password;
 
@@ -146,32 +119,24 @@ class User
 
     /**
      * Get password.
-     *
-     * @return string
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
      * Add recording.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording
-     *
-     * @return User
      */
-    public function addRecording(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording)
+    public function addRecording(Recording $recording): User
     {
         $this->recordings[] = $recording;
 
@@ -181,11 +146,9 @@ class User
     /**
      * Remove recording.
      *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     * @return bool TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeRecording(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording)
+    public function removeRecording(Recording $recording): bool
     {
         return $this->recordings->removeElement($recording);
     }
@@ -193,9 +156,9 @@ class User
     /**
      * Get recordings.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<id, Recording>
      */
-    public function getRecordings()
+    public function getRecordings(): Collection
     {
         return $this->recordings;
     }

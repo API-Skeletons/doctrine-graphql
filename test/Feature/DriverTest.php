@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -14,7 +16,6 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use Psr\Container\ContainerInterface;
 
@@ -43,7 +44,7 @@ class DriverTest extends AbstractTest
     public function testCreateDriverWithConfig(): void
     {
         $container = $this->createMock(ContainerInterface::class);
-        $config = new Config([
+        $config    = new Config([
             'group' => 'default',
             'useHydratorCache' => true,
             'limit' => 1000,
@@ -108,9 +109,7 @@ class DriverTest extends AbstractTest
 
     public function testUseHydratorCache(): void
     {
-        $config = new Config([
-           'useHydratorCache' => true,
-        ]);
+        $config = new Config(['useHydratorCache' => true]);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

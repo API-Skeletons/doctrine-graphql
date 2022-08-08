@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -10,14 +12,13 @@ use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use Throwable;
 
 class InputFactoryTest extends AbstractTest
 {
     public function testInputWithRequiredField(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 
@@ -66,13 +67,11 @@ class InputFactoryTest extends AbstractTest
 
     public function testInputExcludesIdentifier(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Throwable::class);
         $this->expectExceptionMessage('Identifier id is an invalid input.');
 
         $schema = new Schema([
@@ -85,8 +84,7 @@ class InputFactoryTest extends AbstractTest
                             'id' => Type::nonNull(Type::id()),
                             'input' => Type::nonNull($driver->input(User::class, ['id'])),
                         ],
-                        'resolve' => function ($root, $args): void {
-
+                        'resolve' => static function ($root, $args): void {
                         },
                     ],
                 ],
@@ -96,9 +94,7 @@ class InputFactoryTest extends AbstractTest
 
     public function testInputWithOptionalField(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 
@@ -147,9 +143,7 @@ class InputFactoryTest extends AbstractTest
 
     public function testInputWithAllFieldsRequired(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 
@@ -198,9 +192,7 @@ class InputFactoryTest extends AbstractTest
 
     public function testInputWithAllFieldsRequiredExplicitly(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 
@@ -249,9 +241,7 @@ class InputFactoryTest extends AbstractTest
 
     public function testInputWithAllFieldsOptional(): void
     {
-        $config = new Config([
-            'group' => 'InputFactoryTest',
-        ]);
+        $config = new Config(['group' => 'InputFactoryTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Event;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
@@ -9,20 +11,23 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use Doctrine\ORM\QueryBuilder;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
 
+use function array_keys;
+use function reset;
+
 class FilterQueryBuilderTest extends AbstractTest
 {
-    public function testEvent()
+    public function testEvent(): void
     {
         $driver = new Driver($this->getEntityManager());
-        $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
-            function(FilterQueryBuilder $event) {
+        $driver->get(EventDispatcher::class)->subscribeTo(
+            'filter.querybuilder',
+            function (FilterQueryBuilder $event): void {
                 $this->assertInstanceOf(QueryBuilder::class, $event->getQueryBuilder());
 
-                $entityAliasMap = $event->getEntityAliasMap();
+                $entityAliasMap     = $event->getEntityAliasMap();
                 $entityAliasMapKeys = array_keys($event->getEntityAliasMap());
 
                 $this->assertEquals(Artist::class, reset($entityAliasMap));

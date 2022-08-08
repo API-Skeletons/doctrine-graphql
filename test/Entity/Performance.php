@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -13,76 +18,52 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity]
 class Performance
 {
-    /**
-     * @var string|null
-     */
     #[GraphQL\Field(description: 'Venue name')]
     #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
-    #[ORM\Column(type: "string", nullable: true)]
-    private $venue;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $venue = null;
 
-    /**
-     * @var string|null
-     */
     #[GraphQL\Field(description: 'City name')]
-    #[ORM\Column(type: "string", nullable: true)]
-    private $city;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $city = null;
 
-    /**
-     * @var string|null
-     */
     #[GraphQL\Field(description: 'State name')]
-    #[ORM\Column(type: "string", nullable: true)]
-    private $state;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $state = null;
 
-    /**
-     * @var \DateTime
-     */
     #[GraphQL\Field(description: 'Performance date')]
-    #[ORM\Column(type: "datetime", nullable: false)]
-    private $performanceDate;
+    #[ORM\Column(type: 'datetime', nullable: false)]
+    private DateTime $performanceDate;
 
-    /**
-     * @var int
-     */
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     #[ORM\Id]
-    #[ORM\Column(type: "integer")]
-    #[ORM\GeneratedValue(strategy: "AUTO")]
-    private $id;
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    private int $id;
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
+    /** @var Collection<id, Recording> */
     #[GraphQL\Association(description: 'Recordings by artist')]
-    #[ORM\OneToMany(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording", mappedBy: "performance")]
-    private $recordings;
+    #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording', mappedBy: 'performance')]
+    private Collection $recordings;
 
-    /**
-     * @var \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist
-     */
     #[GraphQL\Association(description: 'Artist entity')]
-    #[ORM\ManyToOne(targetEntity: "ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist", inversedBy: "performances")]
-    #[ORM\JoinColumn(name: "artist_id", referencedColumnName: "id", nullable: false)]
-    private $artist;
+    #[ORM\ManyToOne(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist', inversedBy: 'performances')]
+    #[ORM\JoinColumn(name: 'artist_id', referencedColumnName: 'id', nullable: false)]
+    private Artist $artist;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->recordings = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->recordings = new ArrayCollection();
     }
 
     /**
      * Set venue.
-     *
-     * @param string|null $venue
-     *
-     * @return Performance
      */
-    public function setVenue($venue = null)
+    public function setVenue(?string $venue = null): Performance
     {
         $this->venue = $venue;
 
@@ -91,22 +72,16 @@ class Performance
 
     /**
      * Get venue.
-     *
-     * @return string|null
      */
-    public function getVenue()
+    public function getVenue(): ?string
     {
         return $this->venue;
     }
 
     /**
      * Set city.
-     *
-     * @param string|null $city
-     *
-     * @return Performance
      */
-    public function setCity($city = null)
+    public function setCity(?string $city = null): Performance
     {
         $this->city = $city;
 
@@ -115,22 +90,16 @@ class Performance
 
     /**
      * Get city.
-     *
-     * @return string|null
      */
-    public function getCity()
+    public function getCity(): ?string
     {
         return $this->city;
     }
 
     /**
      * Set state.
-     *
-     * @param string|null $state
-     *
-     * @return Performance
      */
-    public function setState($state = null)
+    public function setState(?string $state = null): Performance
     {
         $this->state = $state;
 
@@ -139,22 +108,16 @@ class Performance
 
     /**
      * Get state.
-     *
-     * @return string|null
      */
-    public function getState()
+    public function getState(): ?string
     {
         return $this->state;
     }
 
     /**
      * Set performanceDate.
-     *
-     * @param \DateTime $performanceDate
-     *
-     * @return Performance
      */
-    public function setPerformanceDate($performanceDate)
+    public function setPerformanceDate(DateTime $performanceDate): Performance
     {
         $this->performanceDate = $performanceDate;
 
@@ -163,32 +126,24 @@ class Performance
 
     /**
      * Get performanceDate.
-     *
-     * @return \DateTime
      */
-    public function getPerformanceDate()
+    public function getPerformanceDate(): DateTime
     {
         return $this->performanceDate;
     }
 
     /**
      * Get id.
-     *
-     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
      * Add recording.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording
-     *
-     * @return Performance
      */
-    public function addRecording(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording)
+    public function addRecording(Recording $recording): Performance
     {
         $this->recordings[] = $recording;
 
@@ -198,11 +153,9 @@ class Performance
     /**
      * Remove recording.
      *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     * @return bool TRUE if this collection contained the specified element, FALSE otherwise.
      */
-    public function removeRecording(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording $recording)
+    public function removeRecording(Recording $recording): bool
     {
         return $this->recordings->removeElement($recording);
     }
@@ -210,21 +163,17 @@ class Performance
     /**
      * Get recordings.
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection<id, Recording>
      */
-    public function getRecordings()
+    public function getRecordings(): Collection
     {
         return $this->recordings;
     }
 
     /**
      * Set artist.
-     *
-     * @param \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist $artist
-     *
-     * @return Performance
      */
-    public function setArtist(\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist $artist)
+    public function setArtist(Artist $artist): Performance
     {
         $this->artist = $artist;
 
@@ -233,10 +182,8 @@ class Performance
 
     /**
      * Get artist.
-     *
-     * @return \ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist
      */
-    public function getArtist()
+    public function getArtist(): Artist
     {
         return $this->artist;
     }

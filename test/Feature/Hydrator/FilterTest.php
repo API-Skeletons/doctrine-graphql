@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
@@ -8,16 +10,13 @@ use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 
 class FilterTest extends AbstractTest
 {
     public function testPasswordFilter(): void
     {
-        $config = new Config([
-            'group' => 'testPasswordFilter',
-        ]);
+        $config = new Config(['group' => 'testPasswordFilter']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

@@ -1,24 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\TypeTest;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+
+use function count;
 
 class DataTypesTest extends AbstractTest
 {
     public function testDataTypes(): void
     {
-        $config = new Config([
-            'group' => 'DataTypesTest',
-        ]);
+        $config = new Config(['group' => 'DataTypesTest']);
 
         $driver = new Driver($this->getEntityManager(), $config);
 

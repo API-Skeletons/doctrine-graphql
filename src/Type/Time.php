@@ -36,13 +36,13 @@ class Time extends ScalarType
             throw new Error('Time is not a string: ' . $value);
         }
 
-        return PHPDateTime::createFromFormat('H:i:s', $value);
+        return PHPDateTime::createFromFormat('H:i:s.u', $value);
     }
 
     public function serialize(mixed $value): ?string
     {
         if ($value instanceof PHPDateTime) {
-            $value = $value->format('H:i:s');
+            $value = $value->format('H:i:s.u');
         }
 
         return $value;
