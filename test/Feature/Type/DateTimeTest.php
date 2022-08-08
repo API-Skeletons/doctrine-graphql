@@ -2,6 +2,7 @@
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
 
+use ApiSkeletons\Doctrine\GraphQL\Type\DateTimeType;
 use DateTime as PHPDateTime;
 use ApiSkeletons\Doctrine\GraphQL\Type\DateTime;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;

@@ -37,9 +37,39 @@ class DataTypesTest extends AbstractTest
             ]),
         ]);
 
-        $query = '{ typetest { edges { node { testInt testDateTime testFloat testBool testText testArray } } } }';
+        $query = '{
+            typetest {
+                edges {
+                     node {
+                        testInt
+                        testFloat
+                        testBool
+                        testText
+                        testArray
+                        testBigint
+                        testDecimal
+                        testGuid
+                        testJson
+                        testSimpleArray
+                        testSmallInt
+
+                        testDate
+                        testDateTime
+                        testDateTimeTZ
+                        testTime
+
+                        testDateTimeImmutable
+                        testDateImmutable
+                        testDateTimeTZImmutable
+                        testTimeImmutable
+
+                    }
+                }
+            }
+        }';
 
         $result = GraphQL::executeQuery($schema, $query);
+
         $data = $result->toArray()['data'];
 
         $this->assertEquals(1, count($data['typetest']));
