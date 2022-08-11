@@ -18,7 +18,7 @@ This library provides a GraphQL driver for Doctrine for use with [webonyx/graphq
 
 Some reasons this library is superior to others:
 
-* Written by a member of the Doctrine team
+* Written by a [Doctrine Maintainer](https://www.doctrine-project.org/team/maintainers.html)
 * PSR-11 containers used throughout
 * PSR-14 events
 * Uses the Doctrine Coding Standard
