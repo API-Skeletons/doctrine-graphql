@@ -16,7 +16,7 @@ This library provides a GraphQL driver for Doctrine for use with [webonyx/graphq
 
 [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/) is available.
 
-Some reasons this library is superior to others:
+**Some reasons this library is superior to others**
 
 * Written by a [Doctrine Maintainer](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/about.html)
 * Uses [PHP 8 Attributes](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/attributes.html)
