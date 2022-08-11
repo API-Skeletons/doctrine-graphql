@@ -19,14 +19,14 @@ This library provides a GraphQL driver for Doctrine for use with [webonyx/graphq
 Some reasons this library is superior to others:
 
 * Written by a [Doctrine Maintainer](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/about.html)
+* Uses [PHP 8 Attributes](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/attributes.html)
+* [Multiple independent configurations](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html)
+* Support for the [GraphQL Complete Connection Model](https://graphql.org/learn/pagination/#complete-connection-model)
+* Supports [filtering of sub-collections](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/queries.html)
 * [PSR-11 containers](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/containers.html) used throughout
 * [PSR-14 events](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html)
 * Uses the [Doctrine Coding Standard](https://www.doctrine-project.org/projects/doctrine-coding-standard/en/9.0/index.html)
 * Uses the [Doctrine Laminas Hydrator](https://www.doctrine-project.org/projects/doctrine-laminas-hydrator/en/3.1/index.html) for extraction
-* Uses [PHP 8 Attributes](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/attributes.html)
-* Supports [filtering of sub-collections](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/queries.html)
-* [Multiple independent configurations](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html)
-* Full support of the [GraphQL Complete Connection Model](https://graphql.org/learn/pagination/#complete-connection-model)
 
 Installation
 ------------
