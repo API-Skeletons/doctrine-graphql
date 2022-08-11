@@ -16,6 +16,17 @@ This library provides a GraphQL driver for Doctrine for use with [webonyx/graphq
 
 [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/) is available.
 
+Some reasons this library is superior to others:
+
+* Written by a member of the Doctrine team
+* PSR-11 containers used throughout
+* PSR-14 events
+* Uses the Doctrine Coding Standard
+* Uses an official Doctrine hydrator for extraction
+* Uses PHP 8 Attributes
+* Supports filtering of sub-collections
+
+
 Installation
 ------------
 
