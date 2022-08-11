@@ -26,7 +26,7 @@ Some reasons this library is superior to others:
 * Uses [PHP 8 Attributes](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/attributes.html)
 * Supports [filtering of sub-collections](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/queries.html)
 * [Multiple independent configurations](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html)
-
+* Full support of the [GraphQL Complete Connection Model](https://graphql.org/learn/pagination/#complete-connection-model)
 
 Installation
 ------------
