@@ -35,16 +35,16 @@ library.
 Custom Types
 ------------
 
-For instance, if your schema has a ``date`` type, that datatype is not suppored
+For instance, if your schema has a ``timestamp`` type, that data type is not suppored
 by default in this library.  But adding the type is just a matter of creating a 
-new Date type (modifying the DateTime class is uncomplicated) then adding the 
+new Timestamp type (modifying the DateTime class is uncomplicated) then adding the 
 type to the type manager.
 
   .. code-block:: php
     :linenos:
 
     $driver->get(TypeManager::class)
-        ->set('date', fn() => new Type\Date());
+        ->set('timestamp', fn() => new Type\Timestamp());
 
 
 Custom Hydrators
