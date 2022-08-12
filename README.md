@@ -23,6 +23,7 @@ Library Highlights
 * Written by a [Doctrine Maintainer](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/about.html)
 * Uses [PHP 8 Attributes](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/attributes.html)
 * [Multiple independent configurations](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html)
+* Support for all default [Doctrine Types](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html)
 * Support for the [GraphQL Complete Connection Model](https://graphql.org/learn/pagination/#complete-connection-model)
 * Supports [filtering of sub-collections](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/queries.html)
 * [PSR-11 containers](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/containers.html) used throughout
