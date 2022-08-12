@@ -28,7 +28,7 @@ Library Highlights
 * [PSR-11 containers](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/containers.html) used throughout
 * [PSR-14 events](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html)
 * Uses the [Doctrine Laminas Hydrator](https://www.doctrine-project.org/projects/doctrine-laminas-hydrator/en/3.1/index.html) for extraction
-* Uses the [Doctrine Coding Standard](https://www.doctrine-project.org/projects/doctrine-coding-standard/en/9.0/index.html)
+* Conforms to the [Doctrine Coding Standard](https://www.doctrine-project.org/projects/doctrine-coding-standard/en/9.0/index.html)
 
 Installation
 ------------
