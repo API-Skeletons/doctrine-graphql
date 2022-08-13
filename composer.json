@@ -1,6 +1,6 @@
 {
     "name": "api-skeletons/doctrine-graphql",
-    "description": "GraphQL for Doctrine",
+    "description": "GraphQL Type Driver for Doctrine ORM",
     "type": "library",
     "license": "MIT",
     "authors": [
