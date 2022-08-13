@@ -2,8 +2,8 @@
     <img src="https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/banner.png" width="450px">
 </p>
 
-GraphQL for Doctrine
-====================
+GraphQL Type Driver for Doctrine ORM
+====================================
 
 [![Build Status](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main/graphs/badge.svg)](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main)
