@@ -174,7 +174,7 @@ $schema = new Schema([
                     'id' => Type::nonNull(Type::id()),
                     'input' => Type::nonNull($driver->input(Artist::class, ['name'])),
                 ],
-                'resolve' => function ($root, $args): User {
+                'resolve' => function ($root, $args): Artist {
                     $artist = $this->getEntityManager()->getRepository(Artist::class)
                         ->find($args['id']);
 
