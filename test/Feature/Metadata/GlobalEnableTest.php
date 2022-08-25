@@ -41,4 +41,36 @@ class GlobalEnableTest extends AbstractTest
 
         $this->assertTrue($driver->get(Config::class)->getGlobalEnable());
     }
+
+    public function testGlobalIgnore(): void
+    {
+        $driver = new Driver($this->getEntityManager(), new Config([
+            'group' => 'globalEnable',
+            'globalEnable' => true,
+            'globalIgnore' => ['name'],
+        ]));
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => $driver->connection($driver->type(Artist::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Artist::class),
+                        ],
+                        'resolve' => $driver->resolve(Artist::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query  = '{ artist { edges { node { name performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        $this->assertEquals(
+            'Cannot query field "name" on type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_globalEnable".',
+            $result->toArray()['errors'][0]['message']
+        );
+    }
 }

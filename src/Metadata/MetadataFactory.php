@@ -56,6 +56,8 @@ class MetadataFactory
      */
     private function globalEnable(array $entityClasses): Metadata
     {
+        $globalIgnore = $this->config->getGlobalIgnore();
+
         foreach ($entityClasses as $entityClass) {
             // Save entity-level metadata
             $this->metadataConfig[$entityClass] = [
@@ -78,6 +80,10 @@ class MetadataFactory
             $fieldNames          = $entityClassMetadata->getFieldNames();
 
             foreach ($fieldNames as $fieldName) {
+                if (in_array($fieldName, $globalIgnore)) {
+                    continue;
+                }
+
                 $this->metadataConfig[$entityClass]['fields'][$fieldName]['description'] =
                     $fieldName;
 
@@ -94,6 +100,10 @@ class MetadataFactory
                 ->getMetadataFor($entityClass)->getAssociationNames();
 
             foreach ($associationNames as $associationName) {
+                if (in_array($associationName, $globalIgnore)) {
+                    continue;
+                }
+
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $associationName;
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = [];
 
