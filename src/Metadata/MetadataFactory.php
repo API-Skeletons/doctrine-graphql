@@ -13,6 +13,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 use function assert;
+use function in_array;
 use function str_replace;
 
 class MetadataFactory

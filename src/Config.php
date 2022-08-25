@@ -34,9 +34,7 @@ class Config
      */
     protected bool $globalEnable = false;
 
-    /**
-     * @var string[] An array if field names to ignore when using globalEnable.
-     */
+    /** @var string[] An array if field names to ignore when using globalEnable. */
     protected array $globalIgnore = [];
 
     /**
@@ -112,6 +110,9 @@ class Config
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getGlobalIgnore(): array
     {
         return $this->globalIgnore;
