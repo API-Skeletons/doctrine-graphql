@@ -95,7 +95,12 @@ $query = '{
     }
 }';
 
-$result = GraphQL::executeQuery($schema, $query);
+$result = GraphQL::executeQuery(
+    schema: $schema,
+    source: $query,
+    variableValues: null,
+    operationName: null
+);
 $output = $result->toArray();
 
 ```
@@ -211,6 +216,13 @@ $query = '{
         } 
     }
 }';
+
+$result = GraphQL::executeQuery(
+    schema: $schema,
+    source: $query,
+    variableValues: null,
+    operationName: null
+);
 
 $result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
