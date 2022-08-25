@@ -19,6 +19,12 @@ When set to true all fields and all associations will be
 enabled.  This is best used as a development setting when
 the entities are subject to change.
 
+``globalIgnore``
+----------------
+When ``globalEnable`` is set to true, this array of field and associations names
+will be excluded from the schema.  For instance ``['password']`` is a good choice
+to ignore globally.
+
 ``limit``
 --------- 
 A hard limit for all queries throughout the entities.  Use this
