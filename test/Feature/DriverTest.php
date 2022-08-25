@@ -48,7 +48,6 @@ class DriverTest extends AbstractTest
             'group' => 'default',
             'useHydratorCache' => true,
             'limit' => 1000,
-            'usePartials' => true,
         ]);
 
         $driver = new Driver($this->getEntityManager(), $config, null, $container);
@@ -63,7 +62,6 @@ class DriverTest extends AbstractTest
             'group' => 'testNonDefaultGroup',
             'useHydratorCache' => true,
             'limit' => 1000,
-            'usePartials' => true,
         ]);
 
         $driver = new Driver($this->getEntityManager(), $config);
