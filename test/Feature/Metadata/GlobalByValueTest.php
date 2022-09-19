@@ -45,9 +45,7 @@ class GlobalByValueTest extends AbstractTest
 
     public function testGlobalByValueFalse(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'globalByValue' => false,
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['globalByValue' => false]));
 
         $schema = new Schema([
             'query' => new ObjectType([
