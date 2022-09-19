@@ -60,10 +60,13 @@ class MetadataFactory
         $globalIgnore = $this->config->getGlobalIgnore();
 
         foreach ($entityClasses as $entityClass) {
+            // Get extract by value or reference
+            $byValue = $this->config->getGlobalByValue() ?? true;
+
             // Save entity-level metadata
             $this->metadataConfig[$entityClass] = [
                 'entityClass' => $entityClass,
-                'byValue' => true,
+                'byValue' => $byValue,
                 'namingStrategy' => null,
                 'fields' => [],
                 'filters' => [],
@@ -163,10 +166,13 @@ class MetadataFactory
 
                 $entityInstance = $instance;
 
+                // Get extract by value or reference
+                $byValue = $this->config->getGlobalByValue() ?? $instance->getByValue();
+
                 // Save entity-level metadata
                 $this->metadataConfig[$entityClass] = [
                     'entityClass' => $entityClass,
-                    'byValue' => $instance->getByValue(),
+                    'byValue' => $byValue,
                     'namingStrategy' => $instance->getNamingStrategy(),
                     'fields' => [],
                     'filters' => $instance->getFilters(),

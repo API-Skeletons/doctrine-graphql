@@ -38,6 +38,14 @@ class Config
     protected array $globalIgnore = [];
 
     /**
+     * @var bool When set to true, all entities will be extracted by value
+     *           across all hydrators in the driver.  When set to false,
+     *           all hydrators will extract by reference.  This overrides
+     *           per-entity attribute configuration.
+     */
+    protected ?bool $globalByValue = null;
+
+    /**
      * @param mixed[] $config
      */
     public function __construct(array $config = [])
@@ -116,5 +124,17 @@ class Config
     public function getGlobalIgnore(): array
     {
         return $this->globalIgnore;
+    }
+
+    public function setGlobalByValue(?bool $globalByValue): self
+    {
+        $this->globalByValue = $globalByValue;
+
+        return $this;
+    }
+
+    public function getGlobalByValue(): ?bool
+    {
+        return $this->globalByValue;
     }
 }
