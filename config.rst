@@ -25,6 +25,13 @@ When ``globalEnable`` is set to true, this array of field and associations names
 will be excluded from the schema.  For instance ``['password']`` is a good choice
 to ignore globally.
 
+``globalByValue``
+-----------------
+This overrides the ``byValue`` entity attribute globally.  When set to true 
+all hydrators will extract by value.  When set to false all hydrators will
+extract by reference.  When not set the individual entity attribute value
+is used and that is, by default, extract by value.
+
 ``limit``
 --------- 
 A hard limit for all queries throughout the entities.  Use this
