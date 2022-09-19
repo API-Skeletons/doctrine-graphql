@@ -56,6 +56,8 @@ Creating a ``Driver`` with all config options:
   $driver = new Driver($entityManager, new Config[
       'group' => 'customGroup',
       'globalEnable' => true,
+      'globalIgnore' => ['password'],
+      'globalByValue' => true,
       'limit' => 500,
       'useHydratorCache' => true,
   ]);
