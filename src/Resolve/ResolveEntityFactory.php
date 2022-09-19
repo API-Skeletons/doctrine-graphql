@@ -119,7 +119,7 @@ class ResolveEntityFactory
 
             $offset        = 0;
             $limit         = $this->config->getLimit();
-            $adjustedLimit = $first ?: $last ?: 0;
+            $adjustedLimit = $first ?: $last ?: $limit;
             if ($adjustedLimit < $limit) {
                 $limit = $adjustedLimit;
             }
