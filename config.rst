@@ -17,7 +17,9 @@ for multiple configurations within the entities.  Specify the group in the
 ----------------
 When set to true all fields and all associations will be
 enabled.  This is best used as a development setting when
-the entities are subject to change.
+the entities are subject to change.  Note that the strategy
+NullifyOwningAssociation is not automatically applied to many
+to many relationships when using ``globalEnable``.
 
 ``globalIgnore``
 ----------------
