@@ -113,14 +113,9 @@ class MetadataFactory
 
                 $mapping = $entityClassMetadata->getAssociationMapping($associationName);
 
-                // See comment on NullifyOwningAssociation for details of why this is done
-                if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
-                    $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
-                        Strategy\NullifyOwningAssociation::class;
-                } else {
-                    $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
-                        Strategy\AssociationDefault::class;
-                }
+                // NullifyOwningAssociation is not used for globalEnable
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
+                    Strategy\AssociationDefault::class;
             }
         }
 
