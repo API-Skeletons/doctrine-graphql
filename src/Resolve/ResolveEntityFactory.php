@@ -83,13 +83,13 @@ class ResolveEntityFactory
 
                     switch ($filter) {
                         case 'contains':
-                            $filterArray[$field . '|like'] = '%' . $value . '%';
+                            $filterArray[$field . '|like'] = $value;
                             break;
                         case 'startswith':
-                            $filterArray[$field . '|like'] = $value . '%';
+                            $filterArray[$field . '|startswith'] = $value;
                             break;
                         case 'endswith':
-                            $filterArray[$field . '|like'] = '%' . $value;
+                            $filterArray[$field . '|endswith'] = $value;
                             break;
                         case 'isnull':
                             $filterArray[$field . '|isnull'] = 'true';
