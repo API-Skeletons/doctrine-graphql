@@ -7,8 +7,9 @@ Filtering Query Builders
 ------------------------
 
 Each top level type uses a QueryBuilder object.  This QueryBuilder
-object should be modified to filter the data for the logged in user.  This is
-the security layer.  QueryBuilders are built then triggered through an event.
+object should be modified to filter the data for the logged in user.  This can be
+used as a security layer and can be used to make customizations to QueryBuilder 
+objects.  QueryBuilders are built then triggered through an event.
 Listen to this event and modify the passed QueryBuilder to apply your security.
 
 .. code-block:: php
@@ -21,16 +22,20 @@ Listen to this event and modify the passed QueryBuilder to apply your security.
   use Doctrine\ORM\QueryBuilder;
   use League\Event\EventDispatcher;
 
+  $operationName = $request->get('operationName');
+
   $driver = new Driver($this->getEntityManager());
 
-  $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
-      function(FilterQueryBuilder $event) {
-          assert(QueryBuilder::class, $event->getQueryBuilder());
-          assert([
-              'entity' => 'App\ORM\Entity\Artist'
-          ] === $event->getEntityAliasMap());
-      }
-  );
+  if ($operationName === 'RunEvent') {
+      $driver->get(EventDispatcher::class)->subscribeTo('filter.querybuilder',
+          function(FilterQueryBuilder $event) {
+              assert(QueryBuilder::class, $event->getQueryBuilder());
+              assert([
+                  'entity' => 'App\ORM\Entity\Artist'
+              ] === $event->getEntityAliasMap());
+          }
+     );
+   }
 
 The ``FilterQueryBuilder`` event has two functions:
 
