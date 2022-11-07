@@ -7,11 +7,29 @@ an array parameter.
 
 The parameter options are:
 
+``entityPrefix``
+----------------
+This is a common namespace prefix for all entities in a group.  When specified,
+the ``entityPrefix`` will be stripped from type Type name.  So
+``App_ORM_Entity_Artist_groupName``
+becomes
+``Artist_groupName``
+See also ``groupSuffix``
+
 ``group``
 --------- 
 Each attribute has an optional ``group`` parameter that allows
 for multiple configurations within the entities.  Specify the group in the
 ``Config`` to load only those attributes with the same ``group``.
+
+``groupSuffix``
+---------------
+By default, the group name is appended to GraphQL types.  You may specify
+a different suffix or an empty suffix.  When used in combination with
+``entityPrefix`` your type names can be changed from 
+``App_ORM_Entity_Artist_groupname``
+to 
+``Artist``
 
 ``globalEnable``
 ----------------
@@ -58,7 +76,9 @@ Creating a ``Driver`` with all config options:
   use ApiSkeletons\Doctrine\GraphQL\Driver;
 
   $driver = new Driver($entityManager, new Config[
+      'entityPrefix' => 'App\\ORM\\Entity\\',
       'group' => 'customGroup',
+      'groupSuffix' => 'customGroupSuffix',
       'globalEnable' => true,
       'globalIgnore' => ['password'],
       'globalByValue' => true,
