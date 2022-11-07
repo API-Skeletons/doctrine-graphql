@@ -14,16 +14,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[GraphQL\Entity(typeName: 'artist', description: 'Artists')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest')]
+#[GraphQL\Entity(group: 'TypeNameTest')]
 #[ORM\Entity]
 class Artist
 {
     #[GraphQL\Field(description: 'Artist name')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'TypeNameTest')]
     #[ORM\Column(type: 'string', nullable: false)]
     private string $name;
 
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'TypeNameTest')]
     #[ORM\Id]
     #[ORM\Column(type: 'bigint')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]

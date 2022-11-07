@@ -18,6 +18,15 @@ class Config
     protected string $group = 'default';
 
     /**
+     * @var string|null The group is usually suffixed to GraphQL type names.
+     *                  You may specify a different string for the group suffix
+     *                  or you my supply an empty string to exclude the suffix.
+     *                  Be warned, using the same groupSuffix with two different
+     *                  groups can cause collisions.
+     */
+    protected ?string $groupSuffix = null;
+
+    /**
      * @var bool When set to true hydrator results will be cached for the
      *           duration of the request thereby saving multiple extracts for
      *           the same entity.
@@ -38,12 +47,19 @@ class Config
     protected array $globalIgnore = [];
 
     /**
-     * @var bool When set to true, all entities will be extracted by value
+     * @var bool|null When set to true, all entities will be extracted by value
      *           across all hydrators in the driver.  When set to false,
      *           all hydrators will extract by reference.  This overrides
      *           per-entity attribute configuration.
      */
     protected ?bool $globalByValue = null;
+
+    /**
+     * @var string|null When set, the entityPrefix will be removed from each
+     *                  type name.  This simplifies type names and makes reading
+     *                  the GraphQL documentation easier.
+     */
+    protected ?string $entityPrefix = null;
 
     /**
      * @param mixed[] $config
@@ -70,6 +86,18 @@ class Config
     public function getGroup(): string
     {
         return $this->group;
+    }
+
+    protected function setGroupSuffix(?string $groupSuffix): self
+    {
+        $this->groupSuffix = $groupSuffix;
+
+        return $this;
+    }
+
+    public function getGroupSuffix(): ?string
+    {
+        return $this->groupSuffix;
     }
 
     protected function setUseHydratorCache(bool $useHydratorCache): self
@@ -126,7 +154,7 @@ class Config
         return $this->globalIgnore;
     }
 
-    public function setGlobalByValue(?bool $globalByValue): self
+    protected function setGlobalByValue(?bool $globalByValue): self
     {
         $this->globalByValue = $globalByValue;
 
@@ -136,5 +164,17 @@ class Config
     public function getGlobalByValue(): ?bool
     {
         return $this->globalByValue;
+    }
+
+    protected function setEntityPrefix(?string $entityPrefix): self
+    {
+        $this->entityPrefix = $entityPrefix;
+
+        return $this;
+    }
+
+    public function getEntityPrefix(): ?string
+    {
+        return $this->entityPrefix;
     }
 }
