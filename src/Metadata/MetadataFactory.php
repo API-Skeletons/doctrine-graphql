@@ -15,6 +15,9 @@ use ReflectionClass;
 use function assert;
 use function in_array;
 use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
 
 class MetadataFactory
 {
@@ -72,11 +75,8 @@ class MetadataFactory
                 'filters' => [],
                 'excludeCriteria' => [],
                 'description' => $entityClass,
-                'typeName' => str_replace('\\', '_', $entityClass),
+                'typeName' => $this->getTypeName($entityClass),
             ];
-
-            // Append group to all type names
-            $this->metadataConfig[$entityClass]['typeName'] .= '_' . $this->config->getGroup();
 
             // Fetch fields
             $entityClassMetadata = $this->entityManager
@@ -174,11 +174,9 @@ class MetadataFactory
                     'excludeCriteria' => $instance->getExcludeCriteria(),
                     'description' => $instance->getDescription(),
                     'typeName' => $instance->getTypeName()
-                        ?: str_replace('\\', '_', $entityClass),
+                        ? $this->appendGroupSuffix($instance->getTypeName()) :
+                          $this->getTypeName($entityClass),
                 ];
-
-                // Append group to all type names
-                $this->metadataConfig[$entityClass]['typeName'] .= '_' . $this->config->getGroup();
             }
 
             // Fetch attributes for fields
@@ -275,6 +273,36 @@ class MetadataFactory
         $this->metadata = new Metadata($this->container, $this->metadataConfig);
 
         return $this->metadata;
+    }
+
+    private function stripEntityPrefix(string $entityClass): string
+    {
+        if ($this->config->getEntityPrefix() !== null) {
+            if (strpos($entityClass, $this->config->getEntityPrefix()) === 0) {
+                $entityClass = substr($entityClass, strlen($this->config->getEntityPrefix()));
+            }
+        }
+
+        return str_replace('\\', '_', $entityClass);
+    }
+
+    private function appendGroupSuffix(string $entityClass): string
+    {
+        // Append group suffix or group to all type names
+        if ($this->config->getGroupSuffix() !== null) {
+            if ($this->config->getGroupSuffix()) {
+                $entityClass .= '_' . $this->config->getGroupSuffix();
+            }
+        } else {
+            $entityClass .= '_' . $this->config->getGroup();
+        }
+
+        return $entityClass;
+    }
+
+    private function getTypeName(string $entityClass): string
+    {
+        return $this->appendGroupSuffix($this->stripEntityPrefix($entityClass));
     }
 
     private function getDefaultStrategy(string $fieldType): string
