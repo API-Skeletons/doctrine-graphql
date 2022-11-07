@@ -15,6 +15,9 @@ use ReflectionClass;
 use function assert;
 use function in_array;
 use function str_replace;
+use function strlen;
+use function strpos;
+use function substr;
 
 class MetadataFactory
 {
@@ -171,7 +174,7 @@ class MetadataFactory
                     'excludeCriteria' => $instance->getExcludeCriteria(),
                     'description' => $instance->getDescription(),
                     'typeName' => $instance->getTypeName()
-                        ? $this->appendGroupSuffix($instance->getTypeName()):
+                        ? $this->appendGroupSuffix($instance->getTypeName()) :
                           $this->getTypeName($entityClass),
                 ];
             }
@@ -272,7 +275,7 @@ class MetadataFactory
         return $this->metadata;
     }
 
-    private function stripEntityPrefix($entityClass): string
+    private function stripEntityPrefix(string $entityClass): string
     {
         if ($this->config->getEntityPrefix() !== null) {
             if (strpos($entityClass, $this->config->getEntityPrefix()) === 0) {
@@ -283,7 +286,7 @@ class MetadataFactory
         return str_replace('\\', '_', $entityClass);
     }
 
-    private function appendGroupSuffix($entityClass): string
+    private function appendGroupSuffix(string $entityClass): string
     {
         // Append group suffix or group to all type names
         if ($this->config->getGroupSuffix() !== null) {
@@ -297,7 +300,7 @@ class MetadataFactory
         return $entityClass;
     }
 
-    private function getTypeName($entityClass): string
+    private function getTypeName(string $entityClass): string
     {
         return $this->appendGroupSuffix($this->stripEntityPrefix($entityClass));
     }
