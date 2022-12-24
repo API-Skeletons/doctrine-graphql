@@ -16,9 +16,9 @@ use Psr\Container\ContainerInterface;
 class Services extends AbstractContainer
 {
     /**
-     * @param Driver        $driver             required
-     * @param string        $entityManagerAlias required
-     * @param Config        $config             required
+     * @param Driver                 $driver             required
+     * @param string                 $entityManagerAlias required
+     * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
      */
     public function __construct(
