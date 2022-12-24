@@ -6,14 +6,15 @@ namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Closure;
 use Doctrine\ORM\EntityManager;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 
 class Driver extends AbstractContainer
 {
     /**
-     * @param string        $entityManagerAlias required
-     * @param Config        $config             required
+     * @param string                 $entityManagerAlias required
+     * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
      */
     public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null)
@@ -25,9 +26,7 @@ class Driver extends AbstractContainer
     /**
      * Return a connection wrapper for a type
      *
-     * @param ObjectType $objectType
-     * @return ObjectType
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
     public function connection(ObjectType $objectType): ObjectType
     {
@@ -38,9 +37,7 @@ class Driver extends AbstractContainer
     /**
      * Return a GraphQL type for the entity class
      *
-     * @param string $entityClass
-     * @return ObjectType
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
     public function type(string $entityClass): ObjectType
     {
@@ -50,9 +47,7 @@ class Driver extends AbstractContainer
     /**
      * Filters for a connection
      *
-     * @param string $entityClass
-     * @return object
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
     public function filter(string $entityClass): object
     {
@@ -63,9 +58,7 @@ class Driver extends AbstractContainer
     /**
      * Resolve a connection
      *
-     * @param string $entityClass
-     * @return Closure
-     * @throws \GraphQL\Error\Error
+     * @throws Error
      */
     public function resolve(string $entityClass): Closure
     {
