@@ -248,8 +248,8 @@ $output = $result->toArray();
 Events
 ------
 
-You may modify the query builder used to fetch any connection by subscribing to events.
-Each connection may have a unique event name.
+You may modify the query builder used to resolve any connection by subscribing to events.
+Each connection may have a unique event name.  Pass as the second parameter to `$driver->resolve()`
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
