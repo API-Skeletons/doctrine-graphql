@@ -15,18 +15,21 @@ class FilterQueryBuilder implements
     /** @var string[] */
     protected array $entityAliasMap;
 
+    protected string $eventName;
+
     /**
      * @param string[] $entityAliasMap
      */
-    public function __construct(QueryBuilder $queryBuilder, array $entityAliasMap)
+    public function __construct(QueryBuilder $queryBuilder, array $entityAliasMap, string $eventName)
     {
         $this->queryBuilder   = $queryBuilder;
         $this->entityAliasMap = $entityAliasMap;
+        $this->eventName      = $eventName;
     }
 
     public function eventName(): string
     {
-        return 'filter.querybuilder';
+        return $this->eventName;
     }
 
     public function getQueryBuilder(): QueryBuilder
