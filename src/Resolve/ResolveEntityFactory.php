@@ -35,9 +35,9 @@ class ResolveEntityFactory
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function get(Entity $entity): Closure
+    public function get(Entity $entity, string $eventName): Closure
     {
-        return function ($obj, $args, $context, ResolveInfo $info) use ($entity) {
+        return function ($obj, $args, $context, ResolveInfo $info) use ($entity, $eventName) {
             $entityClass = $entity->getEntityClass();
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
@@ -143,8 +143,11 @@ class ResolveEntityFactory
                 $queryBuilder->setMaxResults($limit);
             }
 
+            /**
+             * Fire the event dispatcher using the passed event name
+             */
             $this->eventDispatcher->dispatch(
-                new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap())
+                new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap(), $eventName)
             );
 
             $paginator = new Paginator($queryBuilder->getQuery());

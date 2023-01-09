@@ -60,10 +60,10 @@ class Driver extends AbstractContainer
      *
      * @throws Error
      */
-    public function resolve(string $entityClass): Closure
+    public function resolve(string $entityClass, string $eventName = 'filter.querybuilder'): Closure
     {
         return $this->get(Resolve\ResolveEntityFactory::class)
-            ->get($this->get(Metadata\Metadata::class)->get($entityClass));
+            ->get($this->get(Metadata\Metadata::class)->get($entityClass), $eventName);
     }
 
     /**
