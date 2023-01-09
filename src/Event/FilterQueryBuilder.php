@@ -24,7 +24,7 @@ class FilterQueryBuilder implements
     {
         $this->queryBuilder   = $queryBuilder;
         $this->entityAliasMap = $entityAliasMap;
-        $this->eventName = $eventName;
+        $this->eventName      = $eventName;
     }
 
     public function eventName(): string
