@@ -245,6 +245,45 @@ $output = $result->toArray();
 ```
 
 
+Events
+------
+
+You may modify the query builder used to fetch any connection by subscribing to events.
+Each connection may have a unique event name.
+
+```php
+use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
+use App\ORM\Entity\Artist;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Schema;
+use League\Event\EventDispatcher;
+
+$schema = new Schema([
+  'query' => new ObjectType([
+      'name' => 'query',
+      'fields' => [
+          'artist' => [
+              'type' => $driver->connection($driver->type(Artist::class)),
+              'args' => [
+                  'filter' => $driver->filter(Artist::class),
+              ],
+              'resolve' => $driver->resolve(Artist::class, 'artist.specific.event'),
+          ],
+      ],
+  ]),
+]);
+
+$driver->get(EventDispatcher::class)->subscribeTo('artist.specific.event',
+    function(FilterQueryBuilder $event) {
+        $event->getQueryBuilder()
+            ->innerJoin('artist.user', 'user')
+            ->andWhere($event->getQueryBuilder()->expr()->eq('user.id', ':userId'))
+            ->setParameter('userId', currentUser()->getId())
+            ;
+    }
+);
+```
+
 
 Filtering
 ---------
