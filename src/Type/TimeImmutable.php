@@ -15,7 +15,7 @@ use function is_string;
 class TimeImmutable extends ScalarType
 {
     // phpcs:disable SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
-    public $description = 'The `Time` scalar type represents time data.'
+    public string|null $description = 'The `Time` scalar type represents time data.'
     . 'The format is e.g. 24 hour:minutes:seconds';
 
     public function parseLiteral(Node $valueNode, array|null $variables = null): string

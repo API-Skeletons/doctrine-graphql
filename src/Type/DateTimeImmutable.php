@@ -15,7 +15,7 @@ use function is_string;
 class DateTimeImmutable extends ScalarType
 {
     // phpcs:disable SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
-    public $description = 'The `datetime_immutable` scalar type represents datetime data.'
+    public string|null $description = 'The `datetime_immutable` scalar type represents datetime data.'
     . 'The format is ISO-8601 e.g. 2004-02-12T15:19:21+00:00';
 
     public function parseLiteral(Node $valueNode, array|null $variables = null): string
