@@ -248,6 +248,8 @@ $output = $result->toArray();
 Events
 ------
 
+### Filter Query Builder
+
 You may modify the query builder used to resolve any connection by subscribing to events.
 Each connection may have a unique event name.  `Entity::class . '.filterQueryBuilder'` is recommended.
 Pass as the second parameter to `$driver->resolve()`.
@@ -284,6 +286,8 @@ $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryB
     }
 );
 ```
+
+### Entity ObjectType Definition
 
 You may also modify the ObjectType definition for any entity.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-definition).
 
