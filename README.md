@@ -289,7 +289,39 @@ $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryB
 
 ### Entity ObjectType Definition
 
-You may also modify the ObjectType definition for any entity.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-definition).
+You may modify the array used to define an entity type before it is created. This can be used for generated data and the like. 
+You must attach to events before defining your GraphQL schema.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-definition) for details.
+
+```php
+use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
+use App\ORM\Entity\Artist;
+use GraphQL\Type\Definition\ResolveInfo;
+use League\Event\EventDispatcher;
+
+$driver = new Driver($entityManager);
+
+$driver->get(EventDispatcher::class)->subscribeTo(
+    Artist::class . '.definition',
+    static function (EntityDefinition $event): void {
+        $definition = $event->getDefinition();
+
+        // In order to modify the fields you must resovle the closure
+        $fields = $definition['fields']();
+
+        // Add a custom field to show the name without a prefix of 'The'
+        $fields['nameUnprefix'] = [
+            'type' => Type::string(),
+            'description' => 'A computed dynamically added field',
+            'resolve' => static function ($objectValue, array $args, $context, ResolveInfo $info): mixed {
+                return trim(str_replace('The', '', $objectValue->getName()));
+            },
+        ];
+
+        $definition['fields'] = $fields;
+    }
+);
+```
 
 
 Filtering
