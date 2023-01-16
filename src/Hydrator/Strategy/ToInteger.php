@@ -16,7 +16,7 @@ use function intval;
 class ToInteger extends AbstractCollectionStrategy implements
     StrategyInterface
 {
-    public function extract(mixed $value, ?object $object = null): mixed
+    public function extract(mixed $value, object|null $object = null): mixed
     {
         if ($value === null) {
             // @codeCoverageIgnoreStart
@@ -32,7 +32,7 @@ class ToInteger extends AbstractCollectionStrategy implements
      *
      * @codeCoverageIgnore
      */
-    public function hydrate(mixed $value, ?array $data): mixed
+    public function hydrate(mixed $value, array|null $data): mixed
     {
         if ($value === null) {
             return $value;

@@ -18,7 +18,7 @@ class Date extends ScalarType
     public $description = 'The `Date` scalar type represents datetime data.'
     . 'The format is e.g. 2004-02-12';
 
-    public function parseLiteral(Node $valueNode, ?array $variables = null): string
+    public function parseLiteral(Node $valueNode, array|null $variables = null): string
     {
         // @codeCoverageIgnoreStart
         if (! $valueNode instanceof StringValueNode) {
@@ -39,7 +39,7 @@ class Date extends ScalarType
         return PHPDateTime::createFromFormat('Y-m-d', $value);
     }
 
-    public function serialize(mixed $value): ?string
+    public function serialize(mixed $value): string|null
     {
         if ($value instanceof PHPDateTime) {
             $value = $value->format('Y-m-d');

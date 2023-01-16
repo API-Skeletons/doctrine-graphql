@@ -15,9 +15,7 @@ use function assert;
 class Connection extends ObjectType implements
     Buildable
 {
-    /**
-     * @param mixed[] $params
-     */
+    /** @param mixed[] $params */
     public function __construct(TypeManager $typeManager, string $typeName, array $params)
     {
         assert($params[0] instanceof ObjectType);

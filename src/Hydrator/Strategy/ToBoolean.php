@@ -14,7 +14,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class ToBoolean extends AbstractCollectionStrategy implements
     StrategyInterface
 {
-    public function extract(mixed $value, ?object $object = null): ?bool
+    public function extract(mixed $value, object|null $object = null): bool|null
     {
         if ($value === null) {
             // @codeCoverageIgnoreStart
@@ -30,7 +30,7 @@ class ToBoolean extends AbstractCollectionStrategy implements
      *
      * @codeCoverageIgnore
      */
-    public function hydrate(mixed $value, ?array $data): ?bool
+    public function hydrate(mixed $value, array|null $data): bool|null
     {
         if ($value === null) {
             return $value;

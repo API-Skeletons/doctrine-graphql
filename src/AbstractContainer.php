@@ -20,9 +20,7 @@ abstract class AbstractContainer implements ContainerInterface
         return isset($this->register[strtolower($id)]);
     }
 
-    /**
-     * @throws Error
-     */
+    /** @throws Error */
     public function get(string $id): mixed
     {
         $id = strtolower($id);

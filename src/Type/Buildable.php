@@ -9,8 +9,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
  */
 interface Buildable
 {
-    /**
-     * @param mixed[] $params
-     */
+    /** @param mixed[] $params */
     public function __construct(TypeManager $typeManager, string $typeName, array $params);
 }

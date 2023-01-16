@@ -11,24 +11,16 @@ use Psr\Container\ContainerInterface;
 
 class Metadata extends AbstractContainer
 {
-    protected ContainerInterface $container;
-    /** @var mixed[]|null */
-    protected ?array $metadataConfig;
-
-    public function __construct(ContainerInterface $container, ?array $metadataConfig)
+    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig)
     {
-        $this->container      = $container;
-        $this->metadataConfig = $metadataConfig;
     }
 
-    /**
-     * @throws Error
-     */
+    /** @throws Error */
     public function get(string $id): Entity
     {
         if (! isset($this->metadataConfig[$id])) {
             throw new Error(
-                'Entity ' . $id . ' is not mapped in the metadata'
+                'Entity ' . $id . ' is not mapped in the metadata',
             );
         }
 

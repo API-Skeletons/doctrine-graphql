@@ -21,15 +21,15 @@ class Performance
     #[GraphQL\Field(description: 'Venue name')]
     #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $venue = null;
+    private string|null $venue = null;
 
     #[GraphQL\Field(description: 'City name')]
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $city = null;
+    private string|null $city = null;
 
     #[GraphQL\Field(description: 'State name')]
     #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $state = null;
+    private string|null $state = null;
 
     #[GraphQL\Field(description: 'Performance date')]
     #[ORM\Column(type: 'datetime', nullable: false)]
@@ -63,7 +63,7 @@ class Performance
     /**
      * Set venue.
      */
-    public function setVenue(?string $venue = null): Performance
+    public function setVenue(string|null $venue = null): Performance
     {
         $this->venue = $venue;
 
@@ -73,7 +73,7 @@ class Performance
     /**
      * Get venue.
      */
-    public function getVenue(): ?string
+    public function getVenue(): string|null
     {
         return $this->venue;
     }
@@ -81,7 +81,7 @@ class Performance
     /**
      * Set city.
      */
-    public function setCity(?string $city = null): Performance
+    public function setCity(string|null $city = null): Performance
     {
         $this->city = $city;
 
@@ -91,7 +91,7 @@ class Performance
     /**
      * Get city.
      */
-    public function getCity(): ?string
+    public function getCity(): string|null
     {
         return $this->city;
     }
@@ -99,7 +99,7 @@ class Performance
     /**
      * Set state.
      */
-    public function setState(?string $state = null): Performance
+    public function setState(string|null $state = null): Performance
     {
         $this->state = $state;
 
@@ -109,7 +109,7 @@ class Performance
     /**
      * Get state.
      */
-    public function getState(): ?string
+    public function getState(): string|null
     {
         return $this->state;
     }

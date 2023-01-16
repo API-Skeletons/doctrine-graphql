@@ -16,9 +16,7 @@ final class Entity
     private bool $byValue;
 
     /** @var string|null Documentation for the entity within GraphQL */
-    private ?string $description = null;
-
-    private ?string $typeName;
+    private string|null $description = null;
 
     /**
      * @var mixed[] An array of filters as
@@ -29,11 +27,6 @@ final class Entity
      */
     private array $filters = [];
 
-    private ?string $namingStrategy;
-
-    /** @var string[] */
-    private array $excludeCriteria;
-
     /**
      * @param mixed[]  $filters
      * @param string[] $excludeCriteria
@@ -41,22 +34,19 @@ final class Entity
     public function __construct(
         string $group = 'default',
         bool $byValue = true,
-        ?string $description = null,
-        ?string $typeName = null,
+        string|null $description = null,
+        private string|null $typeName = null,
         array $filters = [],
-        ?string $namingStrategy = null,
-        array $excludeCriteria = [],
+        private string|null $namingStrategy = null,
+        private array $excludeCriteria = [],
     ) {
-        $this->group           = $group;
-        $this->byValue         = $byValue;
-        $this->description     = $description;
-        $this->typeName        = $typeName;
-        $this->filters         = $filters;
-        $this->namingStrategy  = $namingStrategy;
-        $this->excludeCriteria = $excludeCriteria;
+        $this->group       = $group;
+        $this->byValue     = $byValue;
+        $this->description = $description;
+        $this->filters     = $filters;
     }
 
-    public function getGroup(): ?string
+    public function getGroup(): string|null
     {
         return $this->group;
     }
@@ -66,32 +56,28 @@ final class Entity
         return $this->byValue;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
 
-    public function getTypeName(): ?string
+    public function getTypeName(): string|null
     {
         return $this->typeName;
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getFilters(): array
     {
         return $this->filters;
     }
 
-    public function getNamingStrategy(): ?string
+    public function getNamingStrategy(): string|null
     {
         return $this->namingStrategy;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getExcludeCriteria(): array
     {
         return $this->excludeCriteria;

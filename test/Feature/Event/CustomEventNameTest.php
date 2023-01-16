@@ -32,7 +32,7 @@ class CustomEventNameTest extends AbstractTest
 
                 $this->assertEquals(Artist::class, reset($entityAliasMap));
                 $this->assertEquals('entity', reset($entityAliasMapKeys));
-            }
+            },
         );
 
         $schema = new Schema([

@@ -22,7 +22,7 @@ class InputFactory extends AbstractContainer
         protected Config $config,
         protected EntityManager $entityManager,
         protected TypeManager $typeManager,
-        protected Metadata $metadata
+        protected Metadata $metadata,
     ) {
     }
 

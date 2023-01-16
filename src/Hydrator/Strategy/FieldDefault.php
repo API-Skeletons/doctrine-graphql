@@ -12,7 +12,7 @@ use Laminas\Hydrator\Strategy\StrategyInterface;
 class FieldDefault extends AbstractCollectionStrategy implements
     StrategyInterface
 {
-    public function extract(mixed $value, ?object $object = null): mixed
+    public function extract(mixed $value, object|null $object = null): mixed
     {
         return $value;
     }
@@ -22,7 +22,7 @@ class FieldDefault extends AbstractCollectionStrategy implements
      *
      * @codeCoverageIgnore
      */
-    public function hydrate(mixed $value, ?array $data): mixed
+    public function hydrate(mixed $value, array|null $data): mixed
     {
         return $value;
     }

@@ -10,21 +10,9 @@ use League\Event\HasEventName;
 class FilterQueryBuilder implements
     HasEventName
 {
-    protected QueryBuilder $queryBuilder;
-
-    /** @var string[] */
-    protected array $entityAliasMap;
-
-    protected string $eventName;
-
-    /**
-     * @param string[] $entityAliasMap
-     */
-    public function __construct(QueryBuilder $queryBuilder, array $entityAliasMap, string $eventName)
+    /** @param string[] $entityAliasMap */
+    public function __construct(protected QueryBuilder $queryBuilder, protected array $entityAliasMap, protected string $eventName)
     {
-        $this->queryBuilder   = $queryBuilder;
-        $this->entityAliasMap = $entityAliasMap;
-        $this->eventName      = $eventName;
     }
 
     public function eventName(): string
@@ -37,9 +25,7 @@ class FilterQueryBuilder implements
         return $this->queryBuilder;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getEntityAliasMap(): array
     {
         return $this->entityAliasMap;

@@ -18,7 +18,7 @@ class Time extends ScalarType
     public $description = 'The `Time` scalar type represents time data.'
     . 'The format is e.g. 24 hour:minutes:seconds';
 
-    public function parseLiteral(Node $valueNode, ?array $variables = null): string
+    public function parseLiteral(Node $valueNode, array|null $variables = null): string
     {
         // @codeCoverageIgnoreStart
         if (! $valueNode instanceof StringValueNode) {
@@ -39,7 +39,7 @@ class Time extends ScalarType
         return PHPDateTime::createFromFormat('H:i:s.u', $value);
     }
 
-    public function serialize(mixed $value): ?string
+    public function serialize(mixed $value): string|null
     {
         if ($value instanceof PHPDateTime) {
             $value = $value->format('H:i:s.u');

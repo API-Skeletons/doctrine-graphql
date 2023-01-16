@@ -34,15 +34,8 @@ use function in_array;
  */
 class HydratorFactory extends AbstractContainer
 {
-    protected EntityManager $entityManager;
-
-    protected Metadata $metadata;
-
-    public function __construct(EntityManager $entityManager, Metadata $metadata)
+    public function __construct(protected EntityManager $entityManager, protected Metadata $metadata)
     {
-        $this->entityManager = $entityManager;
-        $this->metadata      = $metadata;
-
         // Register project defaults
         $this
             ->set(AssociationDefault::class, new AssociationDefault())
@@ -54,9 +47,7 @@ class HydratorFactory extends AbstractContainer
             ->set(Password::class, new Password());
     }
 
-    /**
-     * @throws Error
-     */
+    /** @throws Error */
     public function get(string $id): mixed
     {
         // Custom hydrators should already be registered
@@ -73,7 +64,7 @@ class HydratorFactory extends AbstractContainer
             foreach ($config['fields'] as $fieldName => $fieldMetadata) {
                 assert(
                     in_array(StrategyInterface::class, class_implements($fieldMetadata['strategy'])),
-                    'Strategy must implement ' . StrategyInterface::class
+                    'Strategy must implement ' . StrategyInterface::class,
                 );
 
                 $hydrator->addStrategy($fieldName, $this->get($fieldMetadata['strategy']));
@@ -88,7 +79,7 @@ class HydratorFactory extends AbstractContainer
                 $filterClass = $filterConfig['filter'];
                 assert(
                     in_array(FilterInterface::class, class_implements($filterClass)),
-                    'Filter must implement ' . StrategyInterface::class
+                    'Filter must implement ' . StrategyInterface::class,
                 );
 
                 $hydrator->addFilter($name, $this->get($filterClass), $condition);
@@ -101,7 +92,7 @@ class HydratorFactory extends AbstractContainer
 
             assert(
                 in_array(NamingStrategyInterface::class, class_implements($namingStrategyClass)),
-                'Naming Strategy must implement ' . NamingStrategyInterface::class
+                'Naming Strategy must implement ' . NamingStrategyInterface::class,
             );
 
             $hydrator->setNamingStrategy($this->get($namingStrategyClass));

@@ -33,19 +33,19 @@ class EntityTest extends AbstractTest
 
         $this->assertEquals(
             ToInteger::class,
-            $metadataConfig['fields']['id']['strategy']
+            $metadataConfig['fields']['id']['strategy'],
         );
         $this->assertEquals(
             FieldDefault::class,
-            $metadataConfig['fields']['source']['strategy']
+            $metadataConfig['fields']['source']['strategy'],
         );
         $this->assertEquals(
             AssociationDefault::class,
-            $metadataConfig['fields']['performance']['strategy']
+            $metadataConfig['fields']['performance']['strategy'],
         );
         $this->assertEquals(
             AssociationDefault::class,
-            $metadataConfig['fields']['users']['strategy']
+            $metadataConfig['fields']['users']['strategy'],
         );
 
         $this->assertEquals([], $metadataConfig['filters']);

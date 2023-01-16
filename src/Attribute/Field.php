@@ -9,24 +9,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Field
 {
-    protected string $group;
-
-    protected ?string $strategy;
-
-    protected ?string $description;
-
-    protected ?string $type;
-
     public function __construct(
-        string $group = 'default',
-        ?string $strategy = null,
-        ?string $description = null,
-        ?string $type = null
+        protected string $group = 'default',
+        protected string|null $strategy = null,
+        protected string|null $description = null,
+        protected string|null $type = null,
     ) {
-        $this->group       = $group;
-        $this->strategy    = $strategy;
-        $this->description = $description;
-        $this->type        = $type;
     }
 
     public function getGroup(): string
@@ -34,17 +22,17 @@ class Field
         return $this->group;
     }
 
-    public function getStrategy(): ?string
+    public function getStrategy(): string|null
     {
         return $this->strategy;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
 
-    public function getType(): ?string
+    public function getType(): string|null
     {
         return $this->type;
     }

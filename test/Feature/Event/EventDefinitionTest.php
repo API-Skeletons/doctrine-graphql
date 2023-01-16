@@ -42,7 +42,7 @@ class EventDefinitionTest extends AbstractTest
                 ];
 
                 $definition['fields'] = $fields;
-            }
+            },
         );
 
         $schema = new Schema([

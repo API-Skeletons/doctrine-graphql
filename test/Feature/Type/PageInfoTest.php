@@ -57,11 +57,11 @@ class PageInfoTest extends AbstractTest
         $this->assertFalse($data['performance']['pageInfo']['hasPreviousPage']);
         $this->assertEquals(
             $data['performance']['edges'][0]['cursor'],
-            $data['performance']['pageInfo']['startCursor']
+            $data['performance']['pageInfo']['startCursor'],
         );
         $this->assertEquals(
             $data['performance']['edges'][count($data['performance']['edges']) - 1]['cursor'],
-            $data['performance']['pageInfo']['endCursor']
+            $data['performance']['pageInfo']['endCursor'],
         );
     }
 

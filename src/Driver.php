@@ -17,7 +17,7 @@ class Driver extends AbstractContainer
      * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
      */
-    public function __construct(EntityManager $entityManager, ?Config $config = null, ?array $metadataConfig = null)
+    public function __construct(EntityManager $entityManager, Config|null $config = null, array|null $metadataConfig = null)
     {
         // Services for this container are initialized in the Services class
         new Services($this, $entityManager, $config, $metadataConfig);

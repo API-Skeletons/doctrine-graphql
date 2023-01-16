@@ -24,8 +24,8 @@ class Services extends AbstractContainer
     public function __construct(
         Driver $driver,
         EntityManager $entityManager,
-        ?Config $config = null,
-        ?array $metadataConfig = null
+        Config|null $config = null,
+        array|null $metadataConfig = null,
     ) {
         $driver
             // Plain classes
@@ -38,7 +38,7 @@ class Services extends AbstractContainer
                     }
 
                     return $config;
-                }
+                },
             )
             ->set(
                 EventDispatcher::class,
@@ -52,16 +52,16 @@ class Services extends AbstractContainer
                 Metadata\Metadata::class,
                 static function (ContainerInterface $container) use ($metadataConfig) {
                     return (new Metadata\MetadataFactory($container, $metadataConfig))->getMetadata();
-                }
+                },
             )
             ->set(
                 Resolve\FieldResolver::class,
                 static function (ContainerInterface $container) {
                     return new Resolve\FieldResolver(
                         $container->get(Config::class),
-                        $container->get(Metadata\Metadata::class)
+                        $container->get(Metadata\Metadata::class),
                     );
-                }
+                },
             )
             ->set(
                 Resolve\ResolveCollectionFactory::class,
@@ -70,9 +70,9 @@ class Services extends AbstractContainer
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
                         $container->get(Resolve\FieldResolver::class),
-                        $container->get(Type\TypeManager::class)
+                        $container->get(Type\TypeManager::class),
                     );
-                }
+                },
             )
             ->set(
                 Resolve\ResolveEntityFactory::class,
@@ -80,9 +80,9 @@ class Services extends AbstractContainer
                     return new Resolve\ResolveEntityFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
-                        $container->get(EventDispatcher::class)
+                        $container->get(EventDispatcher::class),
                     );
-                }
+                },
             )
             ->set(
                 Criteria\CriteriaFactory::class,
@@ -90,18 +90,18 @@ class Services extends AbstractContainer
                     return new Criteria\CriteriaFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
-                        $container->get(Type\TypeManager::class)
+                        $container->get(Type\TypeManager::class),
                     );
-                }
+                },
             )
             ->set(
                 Hydrator\HydratorFactory::class,
                 static function (ContainerInterface $container) {
                     return new Hydrator\HydratorFactory(
                         $container->get(EntityManager::class),
-                        $container->get(Metadata\Metadata::class)
+                        $container->get(Metadata\Metadata::class),
                     );
-                }
+                },
             )
             ->set(
                 Input\InputFactory::class,
@@ -110,9 +110,9 @@ class Services extends AbstractContainer
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(Type\TypeManager::class),
-                        $container->get(Metadata\Metadata::class)
+                        $container->get(Metadata\Metadata::class),
                     );
-                }
+                },
             );
     }
 }
