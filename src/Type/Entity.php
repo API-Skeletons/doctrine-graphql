@@ -5,15 +5,18 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
+use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
+use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
 use Laminas\Hydrator\HydratorInterface;
+use League\Event\EventDispatcher;
 use Psr\Container\ContainerInterface;
 
 use function array_keys;
@@ -25,19 +28,21 @@ class Entity
     /** @var mixed[] */
     protected array $metadataConfig;
 
-    protected ResolveCollectionFactory $collectionFactory;
-
-    protected HydratorFactory $hydratorFactory;
-
-    protected TypeManager $typeManager;
+    protected CriteriaFactory $criteriaFactory;
 
     protected EntityManager $entityManager;
 
-    protected Metadata $metadata;
+    protected EventDispatcher $eventDispatcher;
 
     protected FieldResolver $fieldResolver;
 
-    protected CriteriaFactory $criteriaFactory;
+    protected HydratorFactory $hydratorFactory;
+
+    protected Metadata $metadata;
+
+    protected ResolveCollectionFactory $collectionFactory;
+
+    protected TypeManager $typeManager;
 
     /**
      * @param mixed[] $metadataConfig
@@ -45,13 +50,15 @@ class Entity
     public function __construct(ContainerInterface $container, array $metadataConfig)
     {
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
-        $this->hydratorFactory   = $container->get(HydratorFactory::class);
-        $this->typeManager       = $container->get(TypeManager::class);
-        $this->entityManager     = $container->get(EntityManager::class);
-        $this->metadata          = $container->get(Metadata::class);
-        $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
-        $this->metadataConfig    = $metadataConfig;
+        $this->entityManager     = $container->get(EntityManager::class);
+        $this->eventDispatcher   = $container->get(EventDispatcher::class);
+        $this->fieldResolver     = $container->get(FieldResolver::class);
+        $this->hydratorFactory   = $container->get(HydratorFactory::class);
+        $this->metadata          = $container->get(Metadata::class);
+        $this->typeManager       = $container->get(TypeManager::class);
+
+        $this->metadataConfig = $metadataConfig;
     }
 
     public function getHydrator(): HydratorInterface
@@ -161,7 +168,7 @@ class Entity
             }
         }
 
-        $objectType = new ObjectType([
+        $arrayObject = new ArrayObject([
             'name' => $this->getTypeName(),
             'description' => $this->getDescription(),
             'fields' => static function () use ($graphQLFields) {
@@ -169,6 +176,15 @@ class Entity
             },
             'resolveField' => $this->fieldResolver,
         ]);
+
+        /**
+         * Dispatch event to allow modifications to the ObjectType definition
+         */
+        $this->eventDispatcher->dispatch(
+            new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition')
+        );
+
+        $objectType = new ObjectType($arrayObject->getArrayCopy());
 
         $this->typeManager->set($this->getTypeName(), $objectType);
 

@@ -267,13 +267,13 @@ $schema = new Schema([
               'args' => [
                   'filter' => $driver->filter(Artist::class),
               ],
-              'resolve' => $driver->resolve(Artist::class, 'artist.specific.event'),
+              'resolve' => $driver->resolve(Artist::class, Artist::class . 'filterQueryBuilder'),
           ],
       ],
   ]),
 ]);
 
-$driver->get(EventDispatcher::class)->subscribeTo('artist.specific.event',
+$driver->get(EventDispatcher::class)->subscribeTo(Artist::class . 'filterQueryBuilder',
     function(FilterQueryBuilder $event) {
         $event->getQueryBuilder()
             ->innerJoin('artist.user', 'user')
@@ -283,6 +283,9 @@ $driver->get(EventDispatcher::class)->subscribeTo('artist.specific.event',
     }
 );
 ```
+
+You may also modify the ObjectType definition for any entity.  
+See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html).
 
 
 Filtering
