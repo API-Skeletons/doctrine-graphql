@@ -25,6 +25,11 @@ In the code below the custom event ``Artist::class . '.filterQueryBuilder'`` wil
 
   <?php
 
+  use ApiSkeletons\Doctrine\GraphQL\Driver;
+  use App\ORM\Entity\Artist;
+  use GraphQL\Type\Definition\ObjectType;
+  use GraphQL\Type\Schema;
+
   $schema = new Schema([
     'query' => new ObjectType([
         'name' => 'query',
@@ -86,6 +91,7 @@ name cannot be modified.
   use ApiSkeletons\Doctrine\GraphQL\Driver;
   use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
   use App\ORM\Entity\Artist;
+  use GraphQL\Type\Definition\ResolveInfo;
   use League\Event\EventDispatcher;
 
   $driver = new Driver($entityManager);
