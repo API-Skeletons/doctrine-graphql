@@ -173,6 +173,7 @@ class CriteriaFactory
                 ];
             }
 
+            /** @psalm-suppress InvalidTemplateParam */
             if (in_array(Filters::IN, $allowedFilters)) {
                 $fields[$fieldName . '_in'] = [
                     'name' => $fieldName . '_in',
@@ -181,6 +182,7 @@ class CriteriaFactory
                 ];
             }
 
+            /** @psalm-suppress InvalidTemplateParam */
             if (in_array(Filters::NOTIN, $allowedFilters)) {
                 $fields[$fieldName . '_notin'] = [
                     'name' => $fieldName . '_notin',
@@ -276,6 +278,7 @@ class CriteriaFactory
             'documentation' => 'Cursor from which the items are returned, from a backwards point of view.',
         ];
 
+        /** @psalm-suppress InvalidArgument */
         $inputObject = new InputObjectType([
             'name' => $typeName,
             'fields' => static function () use ($fields) {

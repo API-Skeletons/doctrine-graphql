@@ -38,6 +38,7 @@ class InputFactory extends AbstractContainer
     {
         $targetEntity = $this->metadata->get($id);
 
+        /** @psalm-suppress InvalidArgument */
         return new InputObjectType([
             'name' => $targetEntity->getTypeName() . '_Input',
             'description' => $targetEntity->getDescription(),
