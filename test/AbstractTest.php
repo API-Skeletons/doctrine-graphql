@@ -114,6 +114,13 @@ abstract class AbstractTest extends TestCase
                     'state' => 'Tennessee',
                 ],
             ],
+            'The Beatles' => [
+                '1964-02-09T00:00:00+00:00' => [
+                    'venue' => 'Studio 50',
+                    'city' => 'New York City',
+                    'state' => 'New York',
+                ],
+            ],
         ];
 
         foreach ($users as $userData) {

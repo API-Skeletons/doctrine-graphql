@@ -312,7 +312,7 @@ class EntityFilterTest extends AbstractTest
         $data = $result->toArray()['data'];
 
         $this->assertEquals(3, count($data['performance']['edges']));
-        $this->assertEquals(6, $data['performance']['edges'][0]['node']['id']);
+        $this->assertEquals(7, $data['performance']['edges'][0]['node']['id']);
     }
 
     /**
@@ -340,7 +340,7 @@ class EntityFilterTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertEquals(8, count($data['performance']['edges']));
+        $this->assertEquals(9, count($data['performance']['edges']));
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 }
