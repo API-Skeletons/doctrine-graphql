@@ -297,6 +297,7 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use App\ORM\Entity\Artist;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Definition\Type;
 use League\Event\EventDispatcher;
 
 $driver = new Driver($entityManager);
