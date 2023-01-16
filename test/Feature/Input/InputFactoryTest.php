@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Input;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
@@ -90,6 +90,15 @@ class InputFactoryTest extends AbstractTest
                 ],
             ]),
         ]);
+
+        $query = 'mutation {
+            testInput(id: 1, input: { name: "inputTest" }) {
+                id
+                name
+            }
+        }';
+
+        $result = GraphQL::executeQuery($schema, $query);
     }
 
     public function testInputWithOptionalField(): void

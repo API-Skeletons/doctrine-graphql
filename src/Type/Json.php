@@ -15,7 +15,7 @@ use function json_encode;
 class Json extends ScalarType
 {
     // phpcs:disable SlevomatCodingStandard.TypeHints.PropertyTypeHint.MissingAnyTypeHint
-    public $description = 'The `JSON` scalar type represents json data.';
+    public string|null $description = 'The `JSON` scalar type represents json data.';
 
     public function parseLiteral(Node $valueNode, array|null $variables = null): string
     {

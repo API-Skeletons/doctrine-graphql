@@ -39,14 +39,14 @@ class ExcludeCriteriaTest extends AbstractTest
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {
-            $this->assertEquals('Field "venue_neq" is not defined by type ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_Filter; Did you mean venue_eq, venue_lt, venue_lte, venue_gt, or venue_gte?', $error->getMessage());
+            $this->assertEquals('Field "venue_neq" is not defined by type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_Filter". Did you mean "venue_eq", "venue_gt", "venue_gte", "venue_in", or "venue_lt"?', $error->getMessage());
         }
 
         $query  = '{ artist { edges { node { performances ( filter: {venue_contains: "test"} ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {
-            $this->assertEquals('Field "venue_contains" is not defined by type ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_Filter; Did you mean venue_notin, venue_sort, or venue_in?', $error->getMessage());
+            $this->assertEquals('Field "venue_contains" is not defined by type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_Filter". Did you mean "venue_notin", "venue_in", or "venue_sort"?', $error->getMessage());
         }
     }
 }
