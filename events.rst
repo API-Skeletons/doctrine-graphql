@@ -114,9 +114,9 @@ name cannot be modified.
 The ``EntityDefinition`` event has one function:
 
 * ``getDefinition`` - Will return an ArrayObject with the ObjectType definition.
-                      Because this is an ArrayObject you may manipulate it as
-                      needed and the value is set by reference, just like the
-                      QueryBuilder event above.
+  Because this is an ArrayObject you may manipulate it as
+  needed and the value is set by reference, just like the
+  QueryBuilder event above.
 
 .. role:: raw-html(raw)
    :format: html
