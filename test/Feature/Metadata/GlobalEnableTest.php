@@ -70,7 +70,7 @@ class GlobalEnableTest extends AbstractTest
 
         $this->assertEquals(
             'Cannot query field "name" on type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_globalEnable".',
-            $result->toArray()['errors'][0]['message']
+            $result->toArray()['errors'][0]['message'],
         );
     }
 
@@ -102,7 +102,7 @@ class GlobalEnableTest extends AbstractTest
 
         $this->assertEquals(
             'Cannot query field "performances" on type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_globalEnable".',
-            $result->toArray()['errors'][0]['message']
+            $result->toArray()['errors'][0]['message'],
         );
     }
 }

@@ -24,19 +24,11 @@ class FieldResolver
      */
     private array $extractValues = [];
 
-    protected Config $config;
-
-    protected Metadata $metadata;
-
-    public function __construct(Config $config, Metadata $metadata)
+    public function __construct(protected Config $config, protected Metadata $metadata)
     {
-        $this->config   = $config;
-        $this->metadata = $metadata;
     }
 
-    /**
-     * @throws Error
-     */
+    /** @throws Error */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
         $entityClass   = ClassUtils::getRealClass($source::class);

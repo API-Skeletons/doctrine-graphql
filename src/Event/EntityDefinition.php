@@ -10,16 +10,9 @@ use League\Event\HasEventName;
 class EntityDefinition implements
     HasEventName
 {
-    protected ArrayObject $definition;
-    protected string $eventName;
-
-    /**
-     * @param string[] $entityAliasMap
-     */
-    public function __construct(ArrayObject $definition, string $eventName)
+    /** @param string[] $entityAliasMap */
+    public function __construct(protected ArrayObject $definition, protected string $eventName)
     {
-        $this->definition = $definition;
-        $this->eventName  = $eventName;
     }
 
     public function eventName(): string

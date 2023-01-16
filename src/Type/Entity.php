@@ -25,9 +25,6 @@ use function in_array;
 class Entity
 {
 //    protected Driver $driver;
-    /** @var mixed[] */
-    protected array $metadataConfig;
-
     protected CriteriaFactory $criteriaFactory;
 
     protected EntityManager $entityManager;
@@ -44,10 +41,8 @@ class Entity
 
     protected TypeManager $typeManager;
 
-    /**
-     * @param mixed[] $metadataConfig
-     */
-    public function __construct(ContainerInterface $container, array $metadataConfig)
+    /** @param mixed[] $metadataConfig */
+    public function __construct(ContainerInterface $container, protected array $metadataConfig)
     {
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
@@ -57,8 +52,6 @@ class Entity
         $this->hydratorFactory   = $container->get(HydratorFactory::class);
         $this->metadata          = $container->get(Metadata::class);
         $this->typeManager       = $container->get(TypeManager::class);
-
-        $this->metadataConfig = $metadataConfig;
     }
 
     public function getHydrator(): HydratorInterface
@@ -71,14 +64,12 @@ class Entity
         return $this->metadataConfig['typeName'];
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string|null
     {
         return $this->metadataConfig['description'];
     }
 
-    /**
-     * @return mixed[]
-     */
+    /** @return mixed[] */
     public function getMetadataConfig(): array
     {
         return $this->metadataConfig;
@@ -150,7 +141,7 @@ class Entity
                             'type' => $this->typeManager->build(
                                 Connection::class,
                                 $shortName . '_Connection',
-                                $entity->getGraphQLType()
+                                $entity->getGraphQLType(),
                             ),
                             'args' => [
                                 'filter' => $this->criteriaFactory->get(
@@ -181,7 +172,7 @@ class Entity
          * Dispatch event to allow modifications to the ObjectType definition
          */
         $this->eventDispatcher->dispatch(
-            new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition')
+            new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition'),
         );
 
         $objectType = new ObjectType($arrayObject->getArrayCopy());

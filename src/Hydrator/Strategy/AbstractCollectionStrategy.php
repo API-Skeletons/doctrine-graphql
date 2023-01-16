@@ -26,15 +26,15 @@ use function sprintf;
  */
 abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
 {
-    private ?string $collectionName = null;
+    private string|null $collectionName = null;
 
-    private ?ClassMetadata $metadata = null;
+    private ClassMetadata|null $metadata = null;
 
-    private ?object $object = null;
+    private object|null $object = null;
 
     private Inflector $inflector;
 
-    public function __construct(?Inflector $inflector = null)
+    public function __construct(Inflector|null $inflector = null)
     {
         $this->inflector = $inflector ?? InflectorFactory::create()->build();
     }
@@ -89,7 +89,7 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
      *
      * @return mixed       Returns the value that should be extracted.
      */
-    public function extract(mixed $value, ?object $object = null): mixed
+    public function extract(mixed $value, object|null $object = null): mixed
     {
         return $value;
     }
@@ -117,8 +117,8 @@ abstract class AbstractCollectionStrategy implements CollectionStrategyInterface
                     'The getter %s to access collection %s in object %s does not exist',
                     $getter,
                     $this->getCollectionName(),
-                    $object::class
-                )
+                    $object::class,
+                ),
             );
         }
 

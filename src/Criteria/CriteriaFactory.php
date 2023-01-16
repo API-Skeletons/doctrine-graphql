@@ -23,18 +23,16 @@ class CriteriaFactory
     public function __construct(
         protected Config $config,
         protected EntityManager $entityManager,
-        protected TypeManager $typeManager
+        protected TypeManager $typeManager,
     ) {
     }
 
-    /**
-     * @param mixed[]|null $associationMetadata
-     */
+    /** @param mixed[]|null $associationMetadata */
     public function get(
         Entity $targetEntity,
-        ?Entity $owningEntity = null,
-        ?string $associationName = null,
-        ?array $associationMetadata = null
+        Entity|null $owningEntity = null,
+        string|null $associationName = null,
+        array|null $associationMetadata = null,
     ): InputObjectType {
         if ($owningEntity) {
             $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_Filter';
@@ -93,9 +91,7 @@ class CriteriaFactory
                 continue;
             }
 
-            /**
-             * @psalm-suppress UndefinedDocblockClass
-             */
+            /** @psalm-suppress UndefinedDocblockClass */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
             $graphQLType = $this->typeManager
@@ -234,9 +230,7 @@ class CriteriaFactory
                 continue;
             }
 
-            /**
-             * @psalm-suppress UndefinedDocblockClass
-             */
+            /** @psalm-suppress UndefinedDocblockClass */
             $associationMetadata = $classMetadata->getAssociationMapping($associationName);
             $graphQLType         = Type::id();
             switch ($associationMetadata['type']) {

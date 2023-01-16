@@ -12,9 +12,7 @@ use function uniqid;
 
 class Between extends InputObjectType
 {
-    /**
-     * @param mixed[] $config
-     */
+    /** @param mixed[] $config */
     public function __construct(array $config = [])
     {
         $config['fields'] ??= [];

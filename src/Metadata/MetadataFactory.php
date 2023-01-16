@@ -21,23 +21,15 @@ use function substr;
 
 class MetadataFactory
 {
-    protected ContainerInterface $container;
-    protected ?Metadata $metadata;
+    protected Metadata|null $metadata;
     protected EntityManager $entityManager;
     protected Config $config;
 
-    /** @var array|mixed[]|null */
-    protected ?array $metadataConfig;
-
-    /**
-     * @param mixed|null $metadataConfig
-     */
-    public function __construct(ContainerInterface $container, ?array $metadataConfig)
+    /** @param mixed|null $metadataConfig */
+    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig)
     {
-        $this->container      = $container;
-        $this->metadataConfig = $metadataConfig;
-        $this->entityManager  = $container->get(EntityManager::class);
-        $this->config         = $container->get(Config::class);
+        $this->entityManager = $container->get(EntityManager::class);
+        $this->config        = $container->get(Config::class);
 
         if ($metadataConfig) {
             $this->metadata = new Metadata($this->container, $metadataConfig);
@@ -55,9 +47,7 @@ class MetadataFactory
         return $this->buildMetadata();
     }
 
-    /**
-     * @param string[] $entityClasses
-     */
+    /** @param string[] $entityClasses */
     private function globalEnable(array $entityClasses): Metadata
     {
         $globalIgnore = $this->config->getGlobalIgnore();
@@ -156,7 +146,7 @@ class MetadataFactory
                 assert(
                     ! $entityInstance,
                     'Duplicate attribute found for entity '
-                    . $entityClass . ', group ' . $instance->getGroup()
+                    . $entityClass . ', group ' . $instance->getGroup(),
                 );
 
                 $entityInstance = $instance;
@@ -200,7 +190,7 @@ class MetadataFactory
                     assert(
                         ! $fieldInstance,
                         'Duplicate attribute found for field '
-                        . $fieldName . ', group ' . $instance->getGroup()
+                        . $fieldName . ', group ' . $instance->getGroup(),
                     );
                     $fieldInstance = $instance;
 
@@ -243,7 +233,7 @@ class MetadataFactory
                     assert(
                         ! $associationInstance,
                         'Duplicate attribute found for association '
-                        . $associationName . ', group ' . $instance->getGroup()
+                        . $associationName . ', group ' . $instance->getGroup(),
                     );
                     $associationInstance = $instance;
 
@@ -308,9 +298,7 @@ class MetadataFactory
     private function getDefaultStrategy(string $fieldType): string
     {
         // Set default strategy based on field type
-        /**
-         * @psalm-suppress UndefinedDocblockClass
-         */
+        /** @psalm-suppress UndefinedDocblockClass */
         switch ($fieldType) {
             case 'tinyint':
             case 'smallint':

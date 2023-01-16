@@ -19,9 +19,7 @@ class EntityFilterTest extends AbstractTest
     /** @var Schema[] */
     private array $schemas = [];
 
-    /***
-     * @return Schema[]
-     */
+    /*** @return Schema[] */
     public function schemaProvider(): array
     {
         parent::setUp();
@@ -49,9 +47,7 @@ class EntityFilterTest extends AbstractTest
         return $schemas;
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testeq(Schema $schema): void
     {
         $query  = '{ performance ( filter: {id: 2} ) { edges { node { id } } } }';
@@ -63,9 +59,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(2, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testneq(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 id_neq: 2} ) { edges { node { id } } } }';
@@ -77,9 +71,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testlt(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 id_lt: 2} ) { edges { node { id } } } }';
@@ -91,9 +83,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testlte(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 id_lte: 2} ) { edges { node { id } } } }';
@@ -105,9 +95,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testgt(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 id_gt: 2} ) { edges { node { id } } } }';
@@ -119,9 +107,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testgte(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 id_gte: 2} ) { edges { node { id } } } }';
@@ -133,9 +119,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(2, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testisnull(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 venue_isnull: true} ) { edges { node { id } } } }';
@@ -147,9 +131,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(5, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testbetween(Schema $schema): void
     {
         $query  = '{ performance ( filter: {artist: 1 performanceDate_between: { from: "1995-02-21T00:00:00+00:00" to: "1995-07-09T00:00:00+00:00" } } ) { edges { node { id performanceDate } } } }';
@@ -169,9 +151,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(2, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testcontains(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1 venue_contains: "ill" } ) { edges { node { id } } } }';
@@ -183,9 +163,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(2, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function teststartswith(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1 venue_startswith: "Soldier" } ) { edges { node { id } } } }';
@@ -197,9 +175,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(4, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testendswith(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1 venue_endswith: "University" } ) { edges { node { id } } } }';
@@ -211,9 +187,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testin(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1  id_in: [1,2,3] } ) { edges { node { id } } } }';
@@ -225,9 +199,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testnotin(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1  id_notin: [3,4] } ) { edges { node { id } } } }';
@@ -239,9 +211,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testsort(Schema $schema): void
     {
         $query  = '{ performance ( filter: { artist: 1  id_sort: "desc" } ) { edges { node { id } } } }';
@@ -271,9 +241,7 @@ class EntityFilterTest extends AbstractTest
 
     // -------------------------
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testfirst(Schema $schema): void
     {
         $query = '{ performance ( filter: { _first: 2 } ) { edges { node { id } } } }';
@@ -286,9 +254,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testfirstafter(Schema $schema): void
     {
         $after  = base64_encode((string) 1);
@@ -301,9 +267,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testlast(Schema $schema): void
     {
         $query  = '{ performance ( filter: { _last: 3 } ) { edges { node { id } } } }';
@@ -315,9 +279,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(7, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testlastbefore(Schema $schema): void
     {
         $after  = base64_encode((string) 4);
@@ -330,9 +292,7 @@ class EntityFilterTest extends AbstractTest
         $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
     }
 
-    /**
-     * @dataProvider schemaProvider
-     */
+    /** @dataProvider schemaProvider */
     public function testNegativeOffset(Schema $schema): void
     {
         $query  = '{ performance ( filter: { _first: 3, _after: "LTU=" } ) { edges { node { id } } } }';

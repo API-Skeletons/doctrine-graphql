@@ -26,24 +26,20 @@ class ResolveCollectionFactory
         protected EntityManager $entityManager,
         protected Config $config,
         protected FieldResolver $fieldResolver,
-        protected TypeManager $typeManager
+        protected TypeManager $typeManager,
     ) {
     }
 
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
-        /**
-         * @psalm-suppress UndefinedDocblockClass
-         */
+        /** @psalm-suppress UndefinedDocblockClass */
         $fieldMapping = $metadata->getFieldMapping($field);
         $graphQLType  = $this->typeManager->get($fieldMapping['type']);
 
         return $graphQLType->parseValue($graphQLType->serialize($value));
     }
 
-    /**
-     * @param mixed[] $value
-     */
+    /** @param mixed[] $value */
     public function parseArrayValue(ClassMetadata $metadata, string $field, array $value): mixed
     {
         foreach ($value as $key => $val) {
@@ -63,7 +59,7 @@ class ResolveCollectionFactory
                 ->getMetadataFor(
                     $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
-                        ->getAssociationTargetClass($resolveInfo->fieldName)
+                        ->getAssociationTargetClass($resolveInfo->fieldName),
                 );
 
             $criteria = Criteria::create();

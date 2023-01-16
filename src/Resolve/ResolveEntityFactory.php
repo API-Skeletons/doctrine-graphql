@@ -22,17 +22,8 @@ use function substr;
 
 class ResolveEntityFactory
 {
-    protected Config $config;
-
-    protected EntityManager $entityManager;
-
-    protected EventDispatcher $eventDispatcher;
-
-    public function __construct(Config $config, EntityManager $entityManager, EventDispatcher $eventDispatcher)
+    public function __construct(protected Config $config, protected EntityManager $entityManager, protected EventDispatcher $eventDispatcher)
     {
-        $this->config          = $config;
-        $this->entityManager   = $entityManager;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function get(Entity $entity, string $eventName): Closure
@@ -147,7 +138,7 @@ class ResolveEntityFactory
              * Fire the event dispatcher using the passed event name
              */
             $this->eventDispatcher->dispatch(
-                new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap(), $eventName)
+                new FilterQueryBuilder($queryBuilder, $queryBuilderFilter->getEntityAliasMap(), $eventName),
             );
 
             $paginator = new Paginator($queryBuilder->getQuery());

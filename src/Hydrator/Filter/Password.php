@@ -11,7 +11,7 @@ use function in_array;
 class Password implements
     FilterInterface
 {
-    public function filter(string $property, ?object $instance = null): bool
+    public function filter(string $property, object|null $instance = null): bool
     {
         $excludeFields = [
             'password',

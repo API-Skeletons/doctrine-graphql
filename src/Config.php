@@ -24,7 +24,7 @@ class Config
      *                  Be warned, using the same groupSuffix with two different
      *                  groups can cause collisions.
      */
-    protected ?string $groupSuffix = null;
+    protected string|null $groupSuffix = null;
 
     /**
      * @var bool When set to true hydrator results will be cached for the
@@ -52,18 +52,16 @@ class Config
      *           all hydrators will extract by reference.  This overrides
      *           per-entity attribute configuration.
      */
-    protected ?bool $globalByValue = null;
+    protected bool|null $globalByValue = null;
 
     /**
      * @var string|null When set, the entityPrefix will be removed from each
      *                  type name.  This simplifies type names and makes reading
      *                  the GraphQL documentation easier.
      */
-    protected ?string $entityPrefix = null;
+    protected string|null $entityPrefix = null;
 
-    /**
-     * @param mixed[] $config
-     */
+    /** @param mixed[] $config */
     public function __construct(array $config = [])
     {
         /**
@@ -88,14 +86,14 @@ class Config
         return $this->group;
     }
 
-    protected function setGroupSuffix(?string $groupSuffix): self
+    protected function setGroupSuffix(string|null $groupSuffix): self
     {
         $this->groupSuffix = $groupSuffix;
 
         return $this;
     }
 
-    public function getGroupSuffix(): ?string
+    public function getGroupSuffix(): string|null
     {
         return $this->groupSuffix;
     }
@@ -136,9 +134,7 @@ class Config
         return $this->globalEnable;
     }
 
-    /**
-     * @param string[] $globalIgnore
-     */
+    /** @param string[] $globalIgnore */
     protected function setGlobalIgnore(array $globalIgnore): self
     {
         $this->globalIgnore = $globalIgnore;
@@ -146,34 +142,32 @@ class Config
         return $this;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getGlobalIgnore(): array
     {
         return $this->globalIgnore;
     }
 
-    protected function setGlobalByValue(?bool $globalByValue): self
+    protected function setGlobalByValue(bool|null $globalByValue): self
     {
         $this->globalByValue = $globalByValue;
 
         return $this;
     }
 
-    public function getGlobalByValue(): ?bool
+    public function getGlobalByValue(): bool|null
     {
         return $this->globalByValue;
     }
 
-    protected function setEntityPrefix(?string $entityPrefix): self
+    protected function setEntityPrefix(string|null $entityPrefix): self
     {
         $this->entityPrefix = $entityPrefix;
 
         return $this;
     }
 
-    public function getEntityPrefix(): ?string
+    public function getEntityPrefix(): string|null
     {
         return $this->entityPrefix;
     }
