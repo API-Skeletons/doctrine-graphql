@@ -249,7 +249,8 @@ Events
 ------
 
 You may modify the query builder used to resolve any connection by subscribing to events.
-Each connection may have a unique event name.  Pass as the second parameter to `$driver->resolve()`
+Each connection may have a unique event name.  `Entity::class . '.filterQueryBuilder'` is recommended.
+Pass as the second parameter to `$driver->resolve()`.
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
@@ -267,13 +268,13 @@ $schema = new Schema([
               'args' => [
                   'filter' => $driver->filter(Artist::class),
               ],
-              'resolve' => $driver->resolve(Artist::class, Artist::class . 'filterQueryBuilder'),
+              'resolve' => $driver->resolve(Artist::class, Artist::class . '.filterQueryBuilder'),
           ],
       ],
   ]),
 ]);
 
-$driver->get(EventDispatcher::class)->subscribeTo(Artist::class . 'filterQueryBuilder',
+$driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryBuilder',
     function(FilterQueryBuilder $event) {
         $event->getQueryBuilder()
             ->innerJoin('artist.user', 'user')
@@ -284,8 +285,7 @@ $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . 'filterQueryBu
 );
 ```
 
-You may also modify the ObjectType definition for any entity.  
-See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html).
+You may also modify the ObjectType definition for any entity.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-definition).
 
 
 Filtering
