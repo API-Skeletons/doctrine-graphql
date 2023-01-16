@@ -15,6 +15,9 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
 
+use function str_replace;
+use function trim;
+
 class EventDefinitionTest extends AbstractTest
 {
     public function testEvent(): void
@@ -23,7 +26,7 @@ class EventDefinitionTest extends AbstractTest
 
         $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.definition',
-            function (EntityDefinition $event): void {
+            static function (EntityDefinition $event): void {
                 $definition = $event->getDefinition();
 
                 // In order to modify the fields you must resovle the closure
@@ -33,7 +36,7 @@ class EventDefinitionTest extends AbstractTest
                 $fields['nameUnprefix'] = [
                     'type' => Type::string(),
                     'description' => 'A computed dynamically added field',
-                    'resolve' => function ($objectValue, array $args, $context, ResolveInfo $info): mixed {
+                    'resolve' => static function ($objectValue, array $args, $context, ResolveInfo $info): mixed {
                         return trim(str_replace('The', '', $objectValue->getName()));
                     },
                 ];
@@ -63,7 +66,7 @@ class EventDefinitionTest extends AbstractTest
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
-        $data = $result->toArray()['data'];
+        $data   = $result->toArray()['data'];
 
         $this->assertEquals('The Beatles', $data['artist']['edges'][0]['node']['name']);
         $this->assertEquals('Beatles', $data['artist']['edges'][0]['node']['nameUnprefix']);
