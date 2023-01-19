@@ -11,15 +11,18 @@ use League\Event\HasEventName;
 class FilterQueryBuilder implements
     HasEventName
 {
-    /** @param string[] $entityAliasMap */
+    /**
+     * @param string[] $entityAliasMap
+     * @param mixed[]  $args
+     */
     public function __construct(
         protected QueryBuilder $queryBuilder,
         protected array $entityAliasMap,
         protected string $eventName,
-        protected $objectValue,
+        protected mixed $objectValue,
         protected array $args,
-        protected $context,
-        protected ResolveInfo $info
+        protected mixed $context,
+        protected ResolveInfo $info,
     ) {
     }
 

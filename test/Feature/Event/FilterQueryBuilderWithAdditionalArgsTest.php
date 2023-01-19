@@ -8,16 +8,12 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
-use Doctrine\ORM\QueryBuilder;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
-
-use function array_keys;
-use function reset;
 
 /**
  * Use the resolve argument of $args on the FilterQueryBuilder object to filter the query builder
