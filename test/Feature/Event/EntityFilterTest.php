@@ -71,15 +71,17 @@ class EntityFilterTest extends AbstractTest
         $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.filterQueryBuilder',
             static function (FilterQueryBuilder $event): void {
-                if (isset($event->getArgs()['filter']['performanceCount_gte'])) {
-                    $event->getQueryBuilder()
-                        ->innerJoin('entity.performances', 'performances')
-                        ->having($event->getQueryBuilder()->expr()->gte(
-                            'COUNT(performances)',
-                            $event->getArgs()['filter']['performanceCount_gte'],
-                        ))
-                        ->addGroupBy('entity.id');
+                if (! isset($event->getArgs()['filter']['performanceCount_gte'])) {
+                    return;
                 }
+
+                $event->getQueryBuilder()
+                    ->innerJoin('entity.performances', 'performances')
+                    ->having($event->getQueryBuilder()->expr()->gte(
+                        'COUNT(performances)',
+                        $event->getArgs()['filter']['performanceCount_gte'],
+                    ))
+                    ->addGroupBy('entity.id');
             },
         );
 
