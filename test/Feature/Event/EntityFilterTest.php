@@ -17,6 +17,8 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
 
+use function count;
+
 /**
  * This test uses both EventDefinition and QueryBuidlerTest to add a new
  * field to an entity type and filter it.
@@ -63,7 +65,7 @@ class EntityFilterTest extends AbstractTest
                 ];
 
                 $definition['fields'] = $fields;
-            }
+            },
         );
 
         $driver->get(EventDispatcher::class)->subscribeTo(
@@ -73,11 +75,10 @@ class EntityFilterTest extends AbstractTest
                     ->innerJoin('entity.performances', 'performances')
                     ->having($event->getQueryBuilder()->expr()->gte(
                         'COUNT(performances)',
-                        $event->getArgs()['filter']['performanceCount_gte']
+                        $event->getArgs()['filter']['performanceCount_gte'],
                     ))
-                    ->addGroupBy('entity.id')
-                ;
-            }
+                    ->addGroupBy('entity.id');
+            },
         );
 
         $schema = new Schema([

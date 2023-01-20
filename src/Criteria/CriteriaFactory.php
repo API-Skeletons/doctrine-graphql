@@ -6,16 +6,16 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
-use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
+use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-
 use League\Event\EventDispatcher;
+
 use function array_filter;
 use function array_keys;
 use function assert;
@@ -282,7 +282,7 @@ class CriteriaFactory
             'documentation' => 'Cursor from which the items are returned, from a backwards point of view.',
         ];
 
-        $arrayObject = new \ArrayObject([
+        $arrayObject = new ArrayObject([
             'name' => $typeName,
             'fields' => static function () use ($fields) {
                 return $fields;
