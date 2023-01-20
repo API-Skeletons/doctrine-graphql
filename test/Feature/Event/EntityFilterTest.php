@@ -58,7 +58,7 @@ class EntityFilterTest extends AbstractTest
                 // In order to modify the fields you must resovle the closure
                 $fields = $definition['fields']();
 
-                // Add a custom field to show the name without a prefix of 'The'
+                // Add a custom filter field
                 $fields['performanceCount_gte'] = [
                     'type' => Type::int(),
                     'description' => 'The number of performances for this artist greater than or equals',
@@ -71,13 +71,15 @@ class EntityFilterTest extends AbstractTest
         $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.filterQueryBuilder',
             static function (FilterQueryBuilder $event): void {
-                $event->getQueryBuilder()
-                    ->innerJoin('entity.performances', 'performances')
-                    ->having($event->getQueryBuilder()->expr()->gte(
-                        'COUNT(performances)',
-                        $event->getArgs()['filter']['performanceCount_gte'],
-                    ))
-                    ->addGroupBy('entity.id');
+                if (isset($event->getArgs()['filter']['performanceCount_gte'])) {
+                    $event->getQueryBuilder()
+                        ->innerJoin('entity.performances', 'performances')
+                        ->having($event->getQueryBuilder()->expr()->gte(
+                            'COUNT(performances)',
+                            $event->getArgs()['filter']['performanceCount_gte'],
+                        ))
+                        ->addGroupBy('entity.id');
+                }
             },
         );
 
