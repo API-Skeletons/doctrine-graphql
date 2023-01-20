@@ -124,6 +124,56 @@ The ``EntityDefinition`` event has one function:
   needed and the value is set by reference, just like the
   QueryBuilder event above.
 
+Modify an Entity Filter
+---------------------------
+
+You may modify the array used to define an entity filter before it is created.
+This can be used for generated data and the like.  You must attach to events
+before defining your GraphQL schema.
+
+Events of this type are named ``Entity::class . '.filter'`` and the event
+name cannot be modified.
+
+An excellent example of this event is found in the
+`unit tests <https://github.com/API-Skeletons/doctrine-graphql/blob/main/test/Feature/Event/EntityFilterTest.php>`_.
+
+.. code-block:: php
+
+  <?php
+
+  use ApiSkeletons\Doctrine\GraphQL\Driver;
+  use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
+  use App\ORM\Entity\Artist;
+  use GraphQL\Type\Definition\Type;
+  use League\Event\EventDispatcher;
+
+  $driver = new Driver($entityManager);
+
+  $driver->get(EventDispatcher::class)->subscribeTo(
+      Artist::class . '.filter',
+      static function (EntityFilter $event): void {
+          $definition = $event->getDefinition();
+
+          // In order to modify the fields you must resovle the closure
+          $fields = $definition['fields']();
+
+          // Add a custom field to hold a custom filter value
+          $fields['performanceCount_gte'] = [
+              'type' => Type::int(),
+              'description' => 'The number of performances for this artist greater than or equals',
+          ];
+
+          $definition['fields'] = $fields;
+      }
+  );
+
+The ``EntityFilter`` event has one function:
+
+* ``getDefinition`` - Will return an ArrayObject with the ObjectType definition.
+  Because this is an ArrayObject you may manipulate it as
+  needed and the value is set by reference, just like the
+  QueryBuilder event above.
+
 .. role:: raw-html(raw)
    :format: html
 
