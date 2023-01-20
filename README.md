@@ -346,7 +346,7 @@ $driver->get(EventDispatcher::class)->subscribeTo(
         // In order to modify the fields you must resovle the closure
         $fields = $definition['fields']();
 
-        // Add a custom field to show the name without a prefix of 'The'
+        // Add a custom field to hold a custom filter value
         $fields['performanceCount_gte'] = [
             'type' => Type::int(),
             'description' => 'The number of performances for this artist greater than or equals',
