@@ -327,7 +327,7 @@ $driver->get(EventDispatcher::class)->subscribeTo(
 ### Entity Filter
 
 You may modify the array used to define an entity filter before it is created. This can be used for generated data and the like.
-You must attach to events before defining your GraphQL schema.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-definition) for details.
+You must attach to events before defining your GraphQL schema.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-filter) for details.
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Driver;
