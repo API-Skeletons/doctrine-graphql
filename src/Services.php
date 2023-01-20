@@ -91,6 +91,7 @@ class Services extends AbstractContainer
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(Type\TypeManager::class),
+                        $container->get(EventDispatcher::class),
                     );
                 },
             )
