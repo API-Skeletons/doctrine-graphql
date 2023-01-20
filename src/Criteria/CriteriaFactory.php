@@ -6,6 +6,8 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
+use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
+use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
@@ -13,6 +15,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
+use League\Event\EventDispatcher;
 use function array_filter;
 use function array_keys;
 use function assert;
@@ -24,6 +27,7 @@ class CriteriaFactory
         protected Config $config,
         protected EntityManager $entityManager,
         protected TypeManager $typeManager,
+        protected EventDispatcher $eventDispatcher,
     ) {
     }
 
@@ -278,13 +282,22 @@ class CriteriaFactory
             'documentation' => 'Cursor from which the items are returned, from a backwards point of view.',
         ];
 
-        /** @psalm-suppress InvalidArgument */
-        $inputObject = new InputObjectType([
+        $arrayObject = new \ArrayObject([
             'name' => $typeName,
             'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]);
+
+        /**
+         * Dispatch event to allow modifications to the ObjectType definition
+         */
+        $this->eventDispatcher->dispatch(
+            new EntityFilter($arrayObject, $targetEntity->getEntityClass() . '.filter'),
+        );
+
+        /** @psalm-suppress InvalidArgument */
+        $inputObject = new InputObjectType($arrayObject->getArrayCopy());
 
         $this->typeManager->set($typeName, $inputObject);
 
