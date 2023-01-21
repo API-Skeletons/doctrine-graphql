@@ -9,25 +9,23 @@ use League\Event\EventDispatcher;
 use Psr\Container\ContainerInterface;
 
 /**
- * This class is used to remove complexity from the Driver class.
- * It doesn't change what the Driver does.  It just moves service bootstrapping
- * out of the Driver.
+ * This trait is used to remove complexity from the Driver class.
+ * It doesn't change what the Driver does.  It just separates the container work
+ * from the GraphQL Driver.
  */
-class Services extends AbstractContainer
+trait Services
 {
     /**
-     * @param Driver                 $driver             required
      * @param string                 $entityManagerAlias required
      * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
      */
     public function __construct(
-        Driver $driver,
         EntityManager $entityManager,
         Config|null $config = null,
         array|null $metadataConfig = null,
     ) {
-        $driver
+        $this
             // Plain classes
             ->set(EntityManager::class, $entityManager)
             ->set(

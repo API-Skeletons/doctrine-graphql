@@ -5,23 +5,13 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Closure;
-use Doctrine\ORM\EntityManager;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 
 class Driver extends AbstractContainer
 {
-    /**
-     * @param string                 $entityManagerAlias required
-     * @param Config                 $config             required
-     * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
-     */
-    public function __construct(EntityManager $entityManager, Config|null $config = null, array|null $metadataConfig = null)
-    {
-        // Services for this container are initialized in the Services class
-        new Services($this, $entityManager, $config, $metadataConfig);
-    }
+    use Services;
 
     /**
      * Return a connection wrapper for a type
