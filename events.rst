@@ -58,7 +58,7 @@ user, create at least one listener.  You may add multiple listeners.
   $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryBuilder',
       function(FilterQueryBuilder $event) {
           $event->getQueryBuilder()
-              ->innerJoin('entity.user', 'user')
+              ->innerJoin('entity.user', 'user') // The default entity alias is always `entity`
               ->andWhere($event->getQueryBuilder()->expr()->eq('user.id', ':userId'))
               ->setParameter('userId', currentUser()->getId())
               ;

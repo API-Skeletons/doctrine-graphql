@@ -22,10 +22,10 @@ you'll see, there's a lot of customizable power built in too.
     mutations
     config
     attributes
-    strategies
     events
-    metadata
+    caching-metadata
     containers
+    strategies
 
 
 .. role:: raw-html(raw)

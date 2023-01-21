@@ -13,9 +13,12 @@ replace the factory so later requests will just get the composed object.
 There are two containers you should be aware of if you intened to extend this
 library.
 
-* ``TypeManager`` - The ``TypeManager`` stores all the GraphQL types created or
-  used in the library.  If you want to specify your own type for a field you'll
-  need to add your custom type to the container.
+Type Manager
+------------
+
+The ``TypeManager`` stores all the GraphQL types created or
+used in the library.  If you want to specify your own type for a field you'll
+need to add your custom type to the container.
 
   .. code-block:: php
     :linenos:
@@ -27,9 +30,8 @@ library.
     use GraphQL\Type\Definition\Type;
 
     $driver = new Driver($this->getEntityManager());
-    $typeManager = $driver->get(TypeManager::class);
-
-    $typeManager->set('customtype', fn() => Type::string());
+    $driver->get(TypeManager::class)
+        ->set('customtype', fn() => Type::string());
 
 
 Custom Types
@@ -47,11 +49,11 @@ type to the type manager.
         ->set('timestamp', fn() => new Type\Timestamp());
 
 
-Custom Hydrators
+Hydrator Factory
 ----------------
 
-* ``HydratorFactory`` - The ``HydratorFactory`` stores hydrator strategies,
-  filter classes, naming strategy classes, and all the generated hydrators.
+The ``HydratorFactory`` stores hydrator strategies,
+filter classes, naming strategy classes, and all the generated hydrators.
 
   .. code-block:: php
     :linenos:
@@ -62,9 +64,8 @@ Custom Hydrators
     use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
 
     $driver = new Driver($this->getEntityManager());
-    $hydratorFactory = $driver->get(HydratorFactory::class);
-
-    $hydratorFactory->set('customstrategy', fn() => new CustomStrategy());
+    $driver->get(HydratorFactory::class)
+        ->set('customstrategy', fn() => new CustomStrategy());
 
 .. role:: raw-html(raw)
    :format: html

@@ -22,11 +22,11 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
   <?php
 
   $query = "{
-      artist ( filter: { name_contains: \"Dead\" } ) {
+      artists ( filter: { name_contains: \"Dead\" } ) {
         edges {
           node {
             name
-            performance ( filter: { _limit: 100 state:\"CA\" } ) {
+            performances ( filter: { _limit: 100 state:\"CA\" } ) {
               edges {
                 node {
                   performanceDate venue
@@ -56,8 +56,7 @@ specific to the entity they filter upon.
 
 Provided Filters::
 
-    fieldName_eq         -  Equals; same as name: value.
-                              DateTime not supported.
+    fieldName_eq         -  Equals; same as name: value.  DateTime not supported.  See Between.
     fieldName_neq        -  Not Equals
     fieldName_gt         -  Greater Than
     fieldName_lt         -  Less Than
@@ -69,7 +68,7 @@ Provided Filters::
     fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
     fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
     fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
-    fieldName_isnull     -  If TRUE return results where the field is null.
+    fieldName_isnull     -  If `true` return results where the field is null.
     fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
 
 
@@ -99,15 +98,15 @@ date ranges and number queries.
     filter: { year_between: { from: 1966 to: 1995 } }
 
 
-To select a distinct list of years
+To select a list of years
 
 .. code-block:: js
 
     {
-      artist ( filter: { id:2 } ) {
+      artists ( filter: { id:2 } ) {
         edges {
           node {
-            performance( filter: { year_sort: "asc" } ) {
+            performances ( filter: { year_sort: "asc" } ) {
               edges {
                 node {
                   year
@@ -135,7 +134,7 @@ A complete query for all pagination data
 .. code-block:: js
 
   {
-    artist(filter: {_first: 10, _after: "cursor"}) {
+    artists (filter: {_first: 10, _after: "cursor"}) {
       totalCount
       pageInfo {
         endCursor
@@ -168,7 +167,7 @@ To get the first page specify the number of edges
 .. code-block:: js
 
   {
-    artist(filter: {_first: 10}) {
+    artists (filter: {_first: 10}) {
     }
   }
 
@@ -177,7 +176,7 @@ To get the next page, you would add the endCursor from the current page as the a
 .. code-block:: js
 
   {
-    artist(filter: {_first: 10, _after: "endCursor"}) {
+    artists (filter: {_first: 10, _after: "endCursor"}) {
     }
   }
 
@@ -186,7 +185,7 @@ For the previous page, you would add the startCursor from the current page as th
 .. code-block:: js
 
   {
-    offers(filter: {_last: 10, _before: "startCursor"}) {
+    offers (filter: {_last: 10, _before: "startCursor"}) {
     }
   }
 
