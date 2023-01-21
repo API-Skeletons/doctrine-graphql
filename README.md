@@ -152,6 +152,7 @@ Create the driver and GraphQL schema
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use Doctrine\ORM\EntityManager;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -180,12 +181,13 @@ $schema = new Schema([
                     'id' => Type::nonNull(Type::id()),
                     'input' => Type::nonNull($driver->input(Artist::class, ['name'])),
                 ],
-                'resolve' => function ($root, $args): Artist {
-                    $artist = $this->getEntityManager()->getRepository(Artist::class)
+                'resolve' => function ($root, $args) use ($driver): Artist {
+                    $artist = $driver->get(EntityManager::class)
+                        ->getRepository(Artist::class)
                         ->find($args['id']);
 
                     $artist->setName($args['input']['name']);
-                    $this->getEntityManager()->flush();
+                    $driver->get(EntityManager::class)->flush();
 
                     return $artist;
                 },
