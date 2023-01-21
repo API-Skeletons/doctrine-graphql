@@ -50,13 +50,13 @@ class Services extends AbstractContainer
             )
             ->set(
                 Metadata\Metadata::class,
-                static function (ContainerInterface $container) use ($metadataConfig) {
+                static function(ContainerInterface $container) use ($metadataConfig) {
                     return (new Metadata\MetadataFactory($container, $metadataConfig))->getMetadata();
                 },
             )
             ->set(
                 Resolve\FieldResolver::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Resolve\FieldResolver(
                         $container->get(Config::class),
                         $container->get(Metadata\Metadata::class),
@@ -65,7 +65,7 @@ class Services extends AbstractContainer
             )
             ->set(
                 Resolve\ResolveCollectionFactory::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Resolve\ResolveCollectionFactory(
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
@@ -76,7 +76,7 @@ class Services extends AbstractContainer
             )
             ->set(
                 Resolve\ResolveEntityFactory::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Resolve\ResolveEntityFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
@@ -86,7 +86,7 @@ class Services extends AbstractContainer
             )
             ->set(
                 Criteria\CriteriaFactory::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Criteria\CriteriaFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
@@ -97,7 +97,7 @@ class Services extends AbstractContainer
             )
             ->set(
                 Hydrator\HydratorFactory::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Hydrator\HydratorFactory(
                         $container->get(EntityManager::class),
                         $container->get(Metadata\Metadata::class),
@@ -106,7 +106,7 @@ class Services extends AbstractContainer
             )
             ->set(
                 Input\InputFactory::class,
-                static function (ContainerInterface $container) {
+                static function(ContainerInterface $container) {
                     return new Input\InputFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),

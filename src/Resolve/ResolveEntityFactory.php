@@ -28,7 +28,7 @@ class ResolveEntityFactory
 
     public function get(Entity $entity, string $eventName): Closure
     {
-        return function ($objectValue, array $args, $context, ResolveInfo $info) use ($entity, $eventName) {
+        return function($objectValue, array $args, $context, ResolveInfo $info) use ($entity, $eventName) {
             $entityClass = $entity->getEntityClass();
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];

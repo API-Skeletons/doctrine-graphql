@@ -51,7 +51,7 @@ class ResolveCollectionFactory
 
     public function get(Entity $entity): Closure
     {
-        return function ($source, $args, $context, ResolveInfo $resolveInfo) {
+        return function($source, $args, $context, ResolveInfo $resolveInfo) {
             $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 

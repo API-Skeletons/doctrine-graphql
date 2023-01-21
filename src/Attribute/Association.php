@@ -6,7 +6,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_PROPERTY|Attribute::IS_REPEATABLE)]
 class Association
 {
     /** @param string[] $excludeCriteria */

@@ -120,7 +120,7 @@ class Entity
                 case ClassMetadataInfo::MANY_TO_ONE:
                 case ClassMetadataInfo::TO_ONE:
                     $targetEntity                    = $associationMetadata['targetEntity'];
-                    $graphQLFields[$associationName] = function () use ($targetEntity) {
+                    $graphQLFields[$associationName] = function() use ($targetEntity) {
                         $entity = $this->metadata->get($targetEntity);
 
                         return [
@@ -133,7 +133,7 @@ class Entity
                 case ClassMetadataInfo::MANY_TO_MANY:
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity                    = $associationMetadata['targetEntity'];
-                    $graphQLFields[$associationName] = function () use ($targetEntity, $associationName) {
+                    $graphQLFields[$associationName] = function() use ($targetEntity, $associationName) {
                         $entity    = $this->metadata->get($targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
@@ -162,7 +162,7 @@ class Entity
         $arrayObject = new ArrayObject([
             'name' => $this->getTypeName(),
             'description' => $this->getDescription(),
-            'fields' => static function () use ($graphQLFields) {
+            'fields' => static function() use ($graphQLFields) {
                 return $graphQLFields;
             },
             'resolveField' => $this->fieldResolver,
