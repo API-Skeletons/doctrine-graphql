@@ -1,5 +1,5 @@
-Metadata
-========
+Caching Metadata
+================
 
 The process of attributing your entities results in an array of metadata that
 is used internal to this library.  If you have a very large number of

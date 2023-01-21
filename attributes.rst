@@ -34,8 +34,10 @@ A slightly complicated example:
       public $performances;
   }
 
-``Entity``
+
+Entity
 ----------
+
 Use this attribute on entities you want included in your graph.
 Optional parameters are:
 
@@ -61,14 +63,16 @@ data from Doctrine entities.  The hydrator library is
   More information here:
   `By Value and By Reference <https://www.doctrine-project.org/projects/doctrine-laminas-hydrator/en/3.0/by-value-by-reference.html#by-value-and-by-reference>`_
 * ``namingStrategy`` - Default is null.  You may set a naming strategy class.
-  Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
+  Class must exist in the HydratorFactory container.  See `containers <containers.html>`_
 * ``filters`` - Default is null.  An array of filters to apply to the
   hydrator.  In practice these should not be necessary because if you want to
   filter fields just don't include them in the attribute group.
-  Filter classes must be injected into the HydratorFactory container.  See `containers <containers.html>`_
+  Filter classes must exist in the HydratorFactory container.  See `containers <containers.html>`_
 
-``Field``
+
+Field
 ---------
+
 Use this attribute on fields (not associations) you want included
 in your graph. Optional parameters are:
 
@@ -100,7 +104,7 @@ in your graph. Optional parameters are:
   Class must be injected into the HydratorFactory container.  See `strategies <strategies.html>`_ and `containers <containers.html>`_
 
 
-``Association``
+Association
 ---------------
 
 Used on any type of association including one to one, one to many, many to one,
