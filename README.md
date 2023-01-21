@@ -227,7 +227,6 @@ $result = GraphQL::executeQuery(
     operationName: null
 );
 
-$result = GraphQL::executeQuery($schema, $query);
 $output = $result->toArray();
 ```
 
@@ -236,14 +235,20 @@ Run GraphQL mutations
 ```php
 use GraphQL\GraphQL;
 
-$query = 'mutation {
-    artistUpdateName(id: 1, input: { name: "newName" }) {
+$query = 'mutation ArtistUpdateName($id: Int!, $name: String!) {
+    artistUpdateName(id: $id, input: { name: $name }) {
         id
         name
     }
 }';
 
-$result = GraphQL::executeQuery($schema, $query);
+$result = GraphQL::executeQuery(
+    schema: $schema,
+    source: $query,
+    variableValues: ['id' => 1, 'name' => 'newName'],
+    operationName: 'ArtistUpdateName'
+);
+
 $output = $result->toArray();
 ```
 

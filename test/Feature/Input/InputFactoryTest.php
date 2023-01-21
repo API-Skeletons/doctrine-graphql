@@ -8,6 +8,7 @@ use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
+use Doctrine\ORM\EntityManager;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
@@ -32,12 +33,13 @@ class InputFactoryTest extends AbstractTest
                             'id' => Type::nonNull(Type::id()),
                             'input' => Type::nonNull($driver->input(User::class, ['name'])),
                         ],
-                        'resolve' => function ($root, $args): User {
-                            $user = $this->getEntityManager()->getRepository(User::class)
+                        'resolve' => static function ($root, $args) use ($driver): User {
+                            $user = $driver->get(EntityManager::class)
+                                ->getRepository(User::class)
                                 ->find($args['id']);
 
                             $user->setName($args['input']['name']);
-                            $this->getEntityManager()->flush();
+                            $driver->get(EntityManager::class)->flush();
 
                             return $user;
                         },
@@ -46,14 +48,20 @@ class InputFactoryTest extends AbstractTest
             ]),
         ]);
 
-        $query = 'mutation {
-            testInput(id: 1, input: { name: "inputTest" }) {
+        $query = 'mutation TestInput($id: ID!, $name: String!) {
+            testInput(id: $id, input: { name: $name }) {
                 id
                 name
             }
         }';
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery(
+            schema: $schema,
+            source: $query,
+            variableValues: ['id' => 1, 'name' => 'inputTest'],
+            operationName: 'TestInput',
+        );
+
         $output = $result->toArray();
 
         $this->getEntityManager()->clear();
