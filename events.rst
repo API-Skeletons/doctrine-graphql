@@ -34,7 +34,7 @@ In the code below the custom event ``Artist::class . '.filterQueryBuilder'`` wil
     'query' => new ObjectType([
         'name' => 'query',
         'fields' => [
-            'artist' => [
+            'artists' => [
                 'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
@@ -58,7 +58,7 @@ user, create at least one listener.  You may add multiple listeners.
   $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryBuilder',
       function(FilterQueryBuilder $event) {
           $event->getQueryBuilder()
-              ->innerJoin('artist.user', 'user')
+              ->innerJoin('entity.user', 'user')
               ->andWhere($event->getQueryBuilder()->expr()->eq('user.id', ':userId'))
               ->setParameter('userId', currentUser()->getId())
               ;
