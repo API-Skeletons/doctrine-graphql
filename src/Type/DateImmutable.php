@@ -6,7 +6,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use DateTimeImmutable as PHPDateTime;
 use GraphQL\Error\Error;
-use GraphQL\Language\AST\Node;
+use GraphQL\Language\AST\Node as ASTNode;
 use GraphQL\Language\AST\StringValueNode;
 use GraphQL\Type\Definition\ScalarType;
 
@@ -18,7 +18,7 @@ class DateImmutable extends ScalarType
     public string|null $description = 'The `date_immutable` scalar type represents datetime data.'
     . 'The format is e.g. 2004-02-12';
 
-    public function parseLiteral(Node $valueNode, array|null $variables = null): string
+    public function parseLiteral(ASTNode $valueNode, array|null $variables = null): string
     {
         // @codeCoverageIgnoreStart
         if (! $valueNode instanceof StringValueNode) {
