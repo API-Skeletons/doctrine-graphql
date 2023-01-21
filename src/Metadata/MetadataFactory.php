@@ -30,12 +30,13 @@ class MetadataFactory
     {
         $this->entityManager = $container->get(EntityManager::class);
         $this->config        = $container->get(Config::class);
+        $this->metadata      = null;
 
-        if ($metadataConfig) {
-            $this->metadata = new Metadata($this->container, $metadataConfig);
-        } else {
-            $this->metadata = null;
+        if (empty($metadataConfig)) {
+            return;
         }
+
+        $this->metadata = new Metadata($this->container, $metadataConfig);
     }
 
     public function getMetadata(): Metadata
@@ -100,8 +101,6 @@ class MetadataFactory
 
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $associationName;
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = [];
-
-                $mapping = $entityClassMetadata->getAssociationMapping($associationName);
 
                 // NullifyOwningAssociation is not used for globalEnable
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
@@ -295,7 +294,7 @@ class MetadataFactory
         return $this->appendGroupSuffix($this->stripEntityPrefix($entityClass));
     }
 
-    private function getDefaultStrategy(string $fieldType): string
+    private function getDefaultStrategy(string|null $fieldType): string
     {
         // Set default strategy based on field type
         /** @psalm-suppress UndefinedDocblockClass */

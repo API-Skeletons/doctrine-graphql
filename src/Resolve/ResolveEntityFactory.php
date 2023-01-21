@@ -126,9 +126,6 @@ class ResolveEntityFactory
                 $offset = 0;
             }
 
-// $x = new \Exception();
- // $x->
-
             if ($offset) {
                 $queryBuilder->setFirstResult($offset);
             }
