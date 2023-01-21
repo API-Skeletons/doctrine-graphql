@@ -66,7 +66,7 @@ $schema = new Schema([
     'query' => new ObjectType([
         'name' => 'query',
         'fields' => [
-            'artist' => [
+            'artists' => [
                 'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
@@ -78,7 +78,7 @@ $schema = new Schema([
 ]);
 
 $query = '{ 
-    artist { 
+    artists { 
         edges { 
             node { 
                 id 
@@ -161,7 +161,7 @@ $schema = new Schema([
     'query' => new ObjectType([
         'name' => 'query',
         'fields' => [
-            'artist' => [
+            'artists' => [
                 'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
@@ -200,7 +200,7 @@ Run GraphQL queries
 use GraphQL\GraphQL;
 
 $query = '{ 
-    artist { 
+    artists { 
         edges { 
             node { 
                 id 
@@ -265,7 +265,7 @@ $schema = new Schema([
   'query' => new ObjectType([
       'name' => 'query',
       'fields' => [
-          'artist' => [
+          'artists' => [
               'type' => $driver->connection($driver->type(Artist::class)),
               'args' => [
                   'filter' => $driver->filter(Artist::class),
@@ -279,7 +279,7 @@ $schema = new Schema([
 $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryBuilder',
     function(FilterQueryBuilder $event) {
         $event->getQueryBuilder()
-            ->innerJoin('artist.user', 'user')
+            ->innerJoin('entity.user', 'user')
             ->andWhere($event->getQueryBuilder()->expr()->eq('user.id', ':userId'))
             ->setParameter('userId', currentUser()->getId())
             ;
@@ -367,7 +367,7 @@ Example
 
 ```gql
 {
-  artist (filter: { name_contains: "dead" }) {
+  artists (filter: { name_contains: "dead" }) {
     edges {
       node {
         id
