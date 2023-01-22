@@ -10,6 +10,7 @@ use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
 use Closure;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use GraphQL\Type\Definition\ResolveInfo;
 use League\Event\EventDispatcher;
@@ -22,8 +23,11 @@ use function substr;
 
 class ResolveEntityFactory
 {
-    public function __construct(protected Config $config, protected EntityManager $entityManager, protected EventDispatcher $eventDispatcher)
-    {
+    public function __construct(
+        protected Config $config,
+        protected EntityManager $entityManager,
+        protected EventDispatcher $eventDispatcher,
+    ) {
     }
 
     public function get(Entity $entity, string $eventName): Closure
@@ -32,168 +36,211 @@ class ResolveEntityFactory
             $entityClass = $entity->getEntityClass();
             // Resolve top level filters
             $filterTypes = $args['filter'] ?? [];
-            $filterArray = [];
-
-            $first  = 0;
-            $after  = 0;
-            $last   = 0;
-            $before = 0;
-
-            foreach ($filterTypes as $field => $value) {
-                // Cursor based pagination
-                if ($field === '_first') {
-                    $first = $value;
-                    continue;
-                }
-
-                if ($field === '_after') {
-                    $after = (int) base64_decode($value, true) + 1;
-                    continue;
-                }
-
-                if ($field === '_last') {
-                    $last = $value;
-                    continue;
-                }
-
-                if ($field === '_before') {
-                    $before = (int) base64_decode($value, true);
-                    continue;
-                }
-
-                // Handle other fields as $field_$type: $value
-                // Get right-most _text
-                $filter = substr($field, strrpos($field, '_') + 1);
-
-                // Special case for eq `field: value`
-                if (strrpos($field, '_') === false) {
-                    // Handle field:value
-                    $filterArray[$field . '|eq'] = (string) $value;
-                } else {
-                    $field = substr($field, 0, strrpos($field, '_'));
-
-                    switch ($filter) {
-                        case 'contains':
-                            $filterArray[$field . '|like'] = $value;
-                            break;
-                        case 'startswith':
-                            $filterArray[$field . '|startswith'] = $value;
-                            break;
-                        case 'endswith':
-                            $filterArray[$field . '|endswith'] = $value;
-                            break;
-                        case 'isnull':
-                            $filterArray[$field . '|isnull'] = 'true';
-                            break;
-                        case 'between':
-                            $filterArray[$field . '|between'] = $value['from'] . ',' . $value['to'];
-                            break;
-                        case 'in':
-                            $filterArray[$field . '|in'] = implode(',', $value);
-                            break;
-                        case 'notin':
-                            $filterArray[$field . '|notin'] = implode(',', $value);
-                            break;
-                        default:
-                            $filterArray[$field . '|' . $filter] = (string) $value;
-                            break;
-                    }
-                }
-            }
 
             $queryBuilderFilter = (new Applicator($this->entityManager, $entityClass))
                 ->setEntityAlias('entity');
-            $queryBuilder       = $queryBuilderFilter($filterArray);
+            $queryBuilder       = $queryBuilderFilter($this->buildFilterArray($filterTypes))
+                ->select('entity');
 
-            // Build query builder from Query Provider
-            $queryBuilder->select('entity');
-
-            $offset        = 0;
-            $limit         = $this->config->getLimit();
-            $adjustedLimit = $first ?: $last ?: $limit;
-            if ($adjustedLimit < $limit) {
-                $limit = $adjustedLimit;
-            }
-
-            if ($after) {
-                $offset = $after;
-            } elseif ($before) {
-                $offset = $before - $limit;
-            }
-
-            if ($offset < 0) {
-                $limit += $offset;
-                $offset = 0;
-            }
-
-            if ($offset) {
-                $queryBuilder->setFirstResult($offset);
-            }
-
-            if ($limit) {
-                $queryBuilder->setMaxResults($limit);
-            }
-
-            /**
-             * Fire the event dispatcher using the passed event name.
-             * Include all resolve variables.
-             */
-
-            $this->eventDispatcher->dispatch(
-                new FilterQueryBuilder(
-                    queryBuilder: $queryBuilder,
-                    entityAliasMap: $queryBuilderFilter->getEntityAliasMap(),
-                    eventName: $eventName,
-                    objectValue: $objectValue,
-                    args: $args,
-                    context: $context,
-                    info: $info,
-                ),
+            return $this->buildPagination(
+                filterTypes: $filterTypes,
+                queryBuilder: $queryBuilder,
+                aliasMap: $queryBuilderFilter->getEntityAliasMap(),
+                eventName: $eventName,
+                objectValue: $objectValue,
+                args: $args,
+                context: $context,
+                info: $info,
             );
-
-            $paginator = new Paginator($queryBuilder->getQuery());
-            $itemCount = $paginator->count();
-
-            if ($last && ! $before) {
-                $offset = $itemCount - $last;
-                $queryBuilder->setFirstResult($offset);
-                $paginator = new Paginator($queryBuilder->getQuery());
-            }
-
-            $edges       = [];
-            $index       = 0;
-            $lastCursor  = base64_encode((string) 0);
-            $firstCursor = null;
-            foreach ($paginator->getQuery()->getResult() as $result) {
-                $cursor = base64_encode((string) ($index + $offset));
-
-                $edges[] = [
-                    'node' => $result,
-                    'cursor' => $cursor,
-                ];
-
-                $lastCursor = $cursor;
-                if (! $firstCursor) {
-                    $firstCursor = $cursor;
-                }
-
-                $index++;
-            }
-
-            $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
-            $startCursor = base64_encode((string) 0);
-            $endCursor   = base64_encode((string) $endCursor);
-
-            return [
-                'edges' => $edges,
-                'totalCount' => $paginator->count(),
-                'pageInfo' => [
-                    'endCursor' => $endCursor,
-                    'startCursor' => $startCursor,
-                    'hasNextPage' => $endCursor !== $lastCursor,
-                    'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
-                ],
-            ];
         };
+    }
+
+    /**
+     * @param string[] $filterTypes
+     *
+     * @return mixed[]
+     */
+    private function buildFilterArray(array $filterTypes): array
+    {
+        $filterArray = [];
+
+        foreach ($filterTypes as $field => $value) {
+            // Pagination is handled elsewhere
+            switch ($field) {
+                case '_first':
+                case '_after':
+                case '_last':
+                case '_before':
+                    continue 2;
+            }
+
+            // Handle other fields as $field_$type: $value
+            // Get right-most _text
+            $filter = substr($field, strrpos($field, '_') + 1);
+
+            // Special case for eq `field: value`
+            if (strrpos($field, '_') === false) {
+                // Handle field:value
+                $filterArray[$field . '|eq'] = (string) $value;
+            } else {
+                $field = substr($field, 0, strrpos($field, '_'));
+
+                switch ($filter) {
+                    case 'contains':
+                        $filterArray[$field . '|like'] = $value;
+                        break;
+                    case 'startswith':
+                        $filterArray[$field . '|startswith'] = $value;
+                        break;
+                    case 'endswith':
+                        $filterArray[$field . '|endswith'] = $value;
+                        break;
+                    case 'isnull':
+                        $filterArray[$field . '|isnull'] = 'true';
+                        break;
+                    case 'between':
+                        $filterArray[$field . '|between'] = $value['from'] . ',' . $value['to'];
+                        break;
+                    case 'in':
+                        $filterArray[$field . '|in'] = implode(',', $value);
+                        break;
+                    case 'notin':
+                        $filterArray[$field . '|notin'] = implode(',', $value);
+                        break;
+                    default:
+                        $filterArray[$field . '|' . $filter] = (string) $value;
+                        break;
+                }
+            }
+        }
+
+        return $filterArray;
+    }
+
+    /**
+     * @param string[] $filterTypes
+     * @param mixed[]  $aliasMap
+     * @param mixed[]  $args
+     *
+     * @return mixed[]
+     */
+    public function buildPagination(
+        array $filterTypes,
+        QueryBuilder $queryBuilder,
+        array $aliasMap,
+        string $eventName,
+        mixed $objectValue,
+        array $args,
+        mixed $context,
+        ResolveInfo $info,
+    ): array {
+        $first  = 0;
+        $after  = 0;
+        $last   = 0;
+        $before = 0;
+        $offset = 0;
+
+        foreach ($filterTypes as $field => $value) {
+            switch ($field) {
+                case '_first':
+                    $first = $value;
+                    break;
+                case '_after':
+                    $after = (int) base64_decode($value, true) + 1;
+                    break;
+                case '_last':
+                    $last = $value;
+                    break;
+                case '_before':
+                    $before = (int) base64_decode($value, true);
+                    break;
+            }
+        }
+
+        $limit         = $this->config->getLimit();
+        $adjustedLimit = $first ?: $last ?: $limit;
+        if ($adjustedLimit < $limit) {
+            $limit = $adjustedLimit;
+        }
+
+        if ($after) {
+            $offset = $after;
+        } elseif ($before) {
+            $offset = $before - $limit;
+        }
+
+        if ($offset < 0) {
+            $limit += $offset;
+            $offset = 0;
+        }
+
+        if ($offset) {
+            $queryBuilder->setFirstResult($offset);
+        }
+
+        if ($limit) {
+            $queryBuilder->setMaxResults($limit);
+        }
+
+        /**
+         * Fire the event dispatcher using the passed event name.
+         * Include all resolve variables.
+         */
+
+        $this->eventDispatcher->dispatch(
+            new FilterQueryBuilder(
+                queryBuilder: $queryBuilder,
+                entityAliasMap: $aliasMap,
+                eventName: $eventName,
+                objectValue: $objectValue,
+                args: $args,
+                context: $context,
+                info: $info,
+            ),
+        );
+
+        $paginator = new Paginator($queryBuilder->getQuery());
+        $itemCount = $paginator->count();
+
+        if ($last && ! $before) {
+            $offset = $itemCount - $last;
+            $queryBuilder->setFirstResult($offset);
+            $paginator = new Paginator($queryBuilder->getQuery());
+        }
+
+        $edges       = [];
+        $index       = 0;
+        $lastCursor  = base64_encode((string) 0);
+        $firstCursor = null;
+        foreach ($paginator->getQuery()->getResult() as $result) {
+            $cursor = base64_encode((string) ($index + $offset));
+
+            $edges[] = [
+                'node' => $result,
+                'cursor' => $cursor,
+            ];
+
+            $lastCursor = $cursor;
+            if (! $firstCursor) {
+                $firstCursor = $cursor;
+            }
+
+            $index++;
+        }
+
+        $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
+        $startCursor = base64_encode((string) 0);
+        $endCursor   = base64_encode((string) $endCursor);
+
+        return [
+            'edges' => $edges,
+            'totalCount' => $paginator->count(),
+            'pageInfo' => [
+                'endCursor' => $endCursor,
+                'startCursor' => $startCursor,
+                'hasNextPage' => $endCursor !== $lastCursor,
+                'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
+            ],
+        ];
     }
 }
