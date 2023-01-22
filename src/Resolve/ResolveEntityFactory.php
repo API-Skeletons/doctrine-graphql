@@ -56,7 +56,7 @@ class ResolveEntityFactory
     }
 
     /**
-     * @param string[] $filterTypes
+     * @param mixed[] $filterTypes
      *
      * @return mixed[]
      */
@@ -118,9 +118,9 @@ class ResolveEntityFactory
     }
 
     /**
-     * @param string[] $filterTypes
-     * @param mixed[]  $aliasMap
-     * @param mixed[]  $args
+     * @param mixed[] $filterTypes
+     * @param mixed[] $aliasMap
+     * @param mixed[] $args
      *
      * @return mixed[]
      */
