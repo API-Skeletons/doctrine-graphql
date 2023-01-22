@@ -129,12 +129,34 @@ Pagination
 Pagination of collections supports
 `GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
 
+A pagination argument is included with embedded collections but for top-level
+collections you must include the pagination argument yourself just as you do
+for filters.
+
+.. code-block:: php
+
+  $this->schema = new Schema([
+      'query' => new ObjectType([
+          'name' => 'query',
+          'fields' => [
+              'artist' => [
+                  'type' => $driver->connection($driver->type(Artist::class)),
+                  'args' => [
+                      'filter' => $driver->filter(Artist::class),
+                      'pagination' => $driver->pagination(),
+                  ],
+                  'resolve' => $driver->resolve(Artist::class),
+              ],
+          ],
+      ]),
+  ]);
+
 A complete query for all pagination data
 
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10, _after: "cursor"}) {
+    artists (pagination: {first: 10, after: "cursor"}) {
       totalCount
       pageInfo {
         endCursor
@@ -154,20 +176,20 @@ offset from the beginning of the result set.
 
 Two pairs of parameters work with the query:
 
-* ``_first`` and ``_after``
-* ``_last`` and ``_before``
+* ``first`` and ``after``
+* ``last`` and ``before``
 
-* ``_first`` corresponds to the items per page starting from the beginning;
-* ``_after`` corresponds to the cursor from which the items are returned.
-* ``_last`` corresponds to the items per page starting from the end;
-* ``_before`` corresponds to the cursor from which the items are returned, from a backwards point of view.
+* ``first`` corresponds to the items per page starting from the beginning;
+* ``after`` corresponds to the cursor from which the items are returned.
+* ``last`` corresponds to the items per page starting from the end;
+* ``before`` corresponds to the cursor from which the items are returned, from a backwards point of view.
 
 To get the first page specify the number of edges
 
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10}) {
+    artists (pagination: { first: 10 }) {
     }
   }
 
@@ -176,7 +198,7 @@ To get the next page, you would add the endCursor from the current page as the a
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10, _after: "endCursor"}) {
+    artists (pagination: { first: 10, after: "endCursor" }) {
     }
   }
 
@@ -185,7 +207,7 @@ For the previous page, you would add the startCursor from the current page as th
 .. code-block:: js
 
   {
-    offers (filter: {_last: 10, _before: "startCursor"}) {
+    offers (pagination: { last: 10, before: "startCursor" }) {
     }
   }
 
