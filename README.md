@@ -71,6 +71,7 @@ $schema = new Schema([
                 'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
+                    'pagination' => $driver->pagination(),
                 ],
                 'resolve' => $driver->resolve(Artist::class),
             ],
@@ -167,6 +168,7 @@ $schema = new Schema([
                 'type' => $driver->connection($driver->type(Artist::class)),
                 'args' => [
                     'filter' => $driver->filter(Artist::class),
+                    'pagination' => $driver->pagination(),
                 ],
                 'resolve' => $driver->resolve(Artist::class),
             ],
@@ -277,6 +279,7 @@ $schema = new Schema([
               'type' => $driver->connection($driver->type(Artist::class)),
               'args' => [
                   'filter' => $driver->filter(Artist::class),
+                  'pagination' => $driver->pagination(),
               ],
               'resolve' => $driver->resolve(Artist::class, Artist::class . '.filterQueryBuilder'),
           ],
