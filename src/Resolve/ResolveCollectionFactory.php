@@ -58,8 +58,7 @@ class ResolveCollectionFactory
 
             $collectionMetadata = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor(
-                    (string)
-                    $this->entityManager->getMetadataFactory()
+                    (string) $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
                         ->getAssociationTargetClass($resolveInfo->fieldName),
                 );
