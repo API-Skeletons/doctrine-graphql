@@ -15,12 +15,20 @@ use Doctrine\ORM\Mapping as ORM;
 #[GraphQL\Entity(typeName: 'artist', description: 'Artists')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest')]
 #[GraphQL\Entity(group: 'TypeNameTest')]
+#[GraphQL\Entity(group: 'DuplicateGroup')]
+#[GraphQL\Entity(group: 'DuplicateGroup')]
+#[GraphQL\Entity(group: 'DuplicateGroupField')]
+#[GraphQL\Entity(group: 'DuplicateGroupAssociation')]
 #[ORM\Entity]
 class Artist
 {
     #[GraphQL\Field(description: 'Artist name')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     #[GraphQL\Field(group: 'TypeNameTest')]
+    #[GraphQL\Field(group: 'DuplicateGroup')]
+    #[GraphQL\Field(group: 'DuplicateGroup')]
+    #[GraphQL\Field(group: 'DuplicateGroupField')]
+    #[GraphQL\Field(group: 'DuplicateGroupField')]
     #[ORM\Column(type: 'string', nullable: false)]
     private string $name;
 
@@ -35,6 +43,10 @@ class Artist
     /** @var Collection<id, Performance> */
     #[GraphQL\Association(description: 'Performances')]
     #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
+    #[GraphQL\Association(group: 'DuplicateGroup')]
+    #[GraphQL\Association(group: 'DuplicateGroup')]
+    #[GraphQL\Association(group: 'DuplicateGroupAssociation')]
+    #[GraphQL\Association(group: 'DuplicateGroupAssociation')]
     #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance', mappedBy: 'artist')]
     private Collection $performances;
 
