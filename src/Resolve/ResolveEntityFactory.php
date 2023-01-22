@@ -34,16 +34,13 @@ class ResolveEntityFactory
     {
         return function ($objectValue, array $args, $context, ResolveInfo $info) use ($entity, $eventName) {
             $entityClass = $entity->getEntityClass();
-            // Resolve top level filters
-            $filterTypes = $args['filter'] ?? [];
 
             $queryBuilderFilter = (new Applicator($this->entityManager, $entityClass))
                 ->setEntityAlias('entity');
-            $queryBuilder       = $queryBuilderFilter($this->buildFilterArray($filterTypes))
+            $queryBuilder       = $queryBuilderFilter($this->buildFilterArray($args['filter'] ?? []))
                 ->select('entity');
 
             return $this->buildPagination(
-                filterTypes: $filterTypes,
                 queryBuilder: $queryBuilder,
                 aliasMap: $queryBuilderFilter->getEntityAliasMap(),
                 eventName: $eventName,
@@ -116,7 +113,6 @@ class ResolveEntityFactory
      * @return mixed[]
      */
     public function buildPagination(
-        array $filterTypes,
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
