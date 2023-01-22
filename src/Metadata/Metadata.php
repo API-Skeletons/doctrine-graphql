@@ -11,8 +11,10 @@ use Psr\Container\ContainerInterface;
 
 class Metadata extends AbstractContainer
 {
-    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected array|null $metadataConfig,
+    ) {
     }
 
     /** @throws Error */
@@ -31,7 +33,7 @@ class Metadata extends AbstractContainer
         return parent::get($id);
     }
 
-    public function getMetadataConfig(): mixed
+    public function getMetadataConfig(): array|null
     {
         return $this->metadataConfig;
     }
