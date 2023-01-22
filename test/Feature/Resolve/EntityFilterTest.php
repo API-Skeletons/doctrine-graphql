@@ -11,7 +11,6 @@ use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 
-use function base64_encode;
 use function count;
 
 class EntityFilterTest extends AbstractTest
@@ -237,70 +236,5 @@ class EntityFilterTest extends AbstractTest
 
         $this->assertEquals(5, count($data['performance']['edges']));
         $this->assertEquals(4, $data['performance']['edges'][0]['node']['id']);
-    }
-
-    // -------------------------
-
-    /** @dataProvider schemaProvider */
-    public function testfirst(Schema $schema): void
-    {
-        $query = '{ performance ( filter: { _first: 2 } ) { edges { node { id } } } }';
-
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertEquals(2, count($data['performance']['edges']));
-        $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
-    }
-
-    /** @dataProvider schemaProvider */
-    public function testfirstafter(Schema $schema): void
-    {
-        $after  = base64_encode((string) 1);
-        $query  = '{ performance ( filter: { _first: 2, _after:"' . $after . '" } ) { edges { node { id } } } }';
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertEquals(2, count($data['performance']['edges']));
-        $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
-    }
-
-    /** @dataProvider schemaProvider */
-    public function testlast(Schema $schema): void
-    {
-        $query  = '{ performance ( filter: { _last: 3 } ) { edges { node { id } } } }';
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertEquals(3, count($data['performance']['edges']));
-        $this->assertEquals(7, $data['performance']['edges'][0]['node']['id']);
-    }
-
-    /** @dataProvider schemaProvider */
-    public function testlastbefore(Schema $schema): void
-    {
-        $after  = base64_encode((string) 4);
-        $query  = '{ performance ( filter: { _last: 2, _before:"' . $after . '" } ) { edges { node { id } } } }';
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertEquals(2, count($data['performance']['edges']));
-        $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
-    }
-
-    /** @dataProvider schemaProvider */
-    public function testNegativeOffset(Schema $schema): void
-    {
-        $query  = '{ performance ( filter: { _first: 3, _after: "LTU=" } ) { edges { node { id } } } }';
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertEquals(9, count($data['performance']['edges']));
-        $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 }

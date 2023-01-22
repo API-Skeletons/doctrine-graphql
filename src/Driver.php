@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\InputObjectType;
@@ -43,6 +44,16 @@ class Driver extends AbstractContainer
     {
         return $this->get(Criteria\CriteriaFactory::class)
             ->get($this->get(Metadata\Metadata::class)->get($entityClass));
+    }
+
+    /**
+     * Pagination for a connection
+     *
+     * @throws Error
+     */
+    public function pagination(): object
+    {
+        return $this->get(TypeManager::class)->get('pagination');
     }
 
     /**

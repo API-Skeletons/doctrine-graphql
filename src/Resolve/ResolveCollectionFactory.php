@@ -53,22 +53,20 @@ class ResolveCollectionFactory
     public function get(Entity $entity): Closure
     {
         return function ($source, $args, $context, ResolveInfo $resolveInfo) {
-            $filter = $args['filter'] ?? [];
-
             $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 
             $collectionMetadata = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor(
-                    $this->entityManager->getMetadataFactory()
+                    (string) $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
                         ->getAssociationTargetClass($resolveInfo->fieldName),
                 );
 
             return $this->buildPagination(
-                $filter,
+                $args['pagination'] ?? [],
                 $collection,
-                $this->buildCriteria($filter, $collectionMetadata),
+                $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
             );
         };
     }
@@ -80,15 +78,6 @@ class ResolveCollectionFactory
         $criteria = Criteria::create();
 
         foreach ($filter as $field => $value) {
-            // Pagination is handled elsewhere
-            switch ($field) {
-                case '_first':
-                case '_after':
-                case '_last':
-                case '_before':
-                    continue 2;
-            }
-
             // Handle other fields as $field_$type: $value
             // Get right-most _text
             $filter = substr($field, strrpos($field, '_') + 1);
@@ -144,11 +133,11 @@ class ResolveCollectionFactory
     }
 
     /**
-     * @param mixed[] $filter
+     * @param mixed[] $pagination
      *
      * @return mixed[]
      */
-    private function buildPagination(array $filter, PersistentCollection $collection, Criteria $criteria): array
+    private function buildPagination(array $pagination, PersistentCollection $collection, Criteria $criteria): array
     {
         $first  = 0;
         $after  = 0;
@@ -157,18 +146,18 @@ class ResolveCollectionFactory
         $offset = 0;
 
         // Pagination
-        foreach ($filter as $field => $value) {
+        foreach ($pagination as $field => $value) {
             switch ($field) {
-                case '_first':
+                case 'first':
                     $first = $value;
                     break;
-                case '_after':
+                case 'after':
                     $after = (int) base64_decode($value, true) + 1;
                     break;
-                case '_last':
+                case 'last':
                     $last = $value;
                     break;
-                case '_before':
+                case 'before':
                     $before = (int) base64_decode($value, true);
                     break;
             }

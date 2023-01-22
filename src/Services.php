@@ -114,4 +114,6 @@ trait Services
                 },
             );
     }
+
+    abstract public function set(string $id, mixed $value): mixed;
 }
