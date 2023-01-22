@@ -60,7 +60,7 @@ class ResolveCollectionFactory
                 ->getMetadataFor(
                     $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
-                        ->getAssociationTargetClass($resolveInfo->fieldName),
+                        ->getAssociationTargetClass((string) $resolveInfo->fieldName),
                 );
 
             return $this->buildPagination(
