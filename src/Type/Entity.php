@@ -150,6 +150,7 @@ class Entity
                                     $associationName,
                                     $this->metadataConfig['fields'][$associationName],
                                 ),
+                                'pagination' => $this->typeManager->get('pagination'),
                             ],
                             'description' => $this->metadataConfig['fields'][$associationName]['description'],
                             'resolve' => $this->collectionFactory->get($entity),

@@ -65,16 +65,7 @@ class ResolveEntityFactory
         $filterArray = [];
 
         foreach ($filterTypes as $field => $value) {
-            // Pagination is handled elsewhere
-            switch ($field) {
-                case '_first':
-                case '_after':
-                case '_last':
-                case '_before':
-                    continue 2;
-            }
-
-            // Handle other fields as $field_$type: $value
+            // Handle fields as $field_$type: $value
             // Get right-most _text
             $filter = substr($field, strrpos($field, '_') + 1);
 
@@ -140,20 +131,22 @@ class ResolveEntityFactory
         $before = 0;
         $offset = 0;
 
-        foreach ($filterTypes as $field => $value) {
-            switch ($field) {
-                case '_first':
-                    $first = $value;
-                    break;
-                case '_after':
-                    $after = (int) base64_decode($value, true) + 1;
-                    break;
-                case '_last':
-                    $last = $value;
-                    break;
-                case '_before':
-                    $before = (int) base64_decode($value, true);
-                    break;
+        if (isset($args['pagination'])) {
+            foreach ($args['pagination'] as $field => $value) {
+                switch ($field) {
+                    case 'first':
+                        $first = $value;
+                        break;
+                    case 'after':
+                        $after = (int) base64_decode($value, true) + 1;
+                        break;
+                    case 'last':
+                        $last = $value;
+                        break;
+                    case 'before':
+                        $before = (int) base64_decode($value, true);
+                        break;
+                }
             }
         }
 

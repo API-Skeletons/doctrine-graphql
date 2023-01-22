@@ -260,28 +260,6 @@ class CriteriaFactory
             }
         }
 
-        // Cursor pagination
-        $fields['_first']  = [
-            'name' => '_first',
-            'type' => Type::int(),
-            'documentation' => 'Items per page starting from the beginning.',
-        ];
-        $fields['_after']  = [
-            'name' => '_after',
-            'type' => Type::string(),
-            'documentation' => 'Cursor from which the items are returned.',
-        ];
-        $fields['_last']   = [
-            'name' => '_last',
-            'type' => Type::int(),
-            'documentation' => 'Items per page starting from the end.',
-        ];
-        $fields['_before'] = [
-            'name' => '_before',
-            'type' => Type::string(),
-            'documentation' => 'Cursor from which the items are returned, from a backwards point of view.',
-        ];
-
         $arrayObject = new ArrayObject([
             'name' => $typeName,
             'fields' => static function () use ($fields) {

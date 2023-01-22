@@ -32,6 +32,7 @@ class CollectionFilterTest extends AbstractTest
                         'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
+                            'pagination' => $driver->pagination(),
                         ],
                         'resolve' => $driver->resolve(Artist::class),
                     ],
@@ -220,7 +221,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testfirst(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { _first: 2 } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( pagination: { first: 2 } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -232,7 +233,7 @@ class CollectionFilterTest extends AbstractTest
     public function testfirstafter(): void
     {
         $after  = base64_encode((string) 1);
-        $query  = '{ artist { edges { node { performances ( filter: { _first: 2, _after:"' . $after . '" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( pagination: { first: 2, after:"' . $after . '" } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -243,7 +244,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testlast(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { _last: 3 } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( pagination: { last: 3 } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -255,7 +256,7 @@ class CollectionFilterTest extends AbstractTest
     public function testlastbefore(): void
     {
         $after  = base64_encode((string) 4);
-        $query  = '{ artist { edges { node { performances ( filter: { _last: 2, _before:"' . $after . '" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( pagination: { last: 2, before:"' . $after . '" } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -266,7 +267,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testNegativeOffset(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { _first: 3, _after: "LTU=" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( pagination: { first: 3, after: "LTU=" } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];

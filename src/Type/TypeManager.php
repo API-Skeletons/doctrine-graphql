@@ -39,7 +39,8 @@ class TypeManager extends AbstractContainer
             ->set('datetime_immutable', static fn () => new DateTimeImmutable())
             ->set('datetimetz_immutable', static fn () => new DateTimeTZImmutable())
             ->set('time_immutable', static fn () => new TimeImmutable())
-            ->set('PageInfo', static fn () => new PageInfo());
+            ->set('pageinfo', static fn () => new PageInfo())
+            ->set('pagination', static fn () => new Pagination());
     }
 
     /**
