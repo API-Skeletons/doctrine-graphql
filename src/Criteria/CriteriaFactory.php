@@ -94,13 +94,15 @@ class CriteriaFactory
                 'description' => 'Filters for ' . $fieldName,
             ];
 
-            if (in_array(Filters::SORT, $allowedFilters)) {
-                $fields[$fieldName . '_sort'] = [
-                    'name' => $fieldName . '_sort',
-                    'type' => Type::string(),
-                    'description' => 'Sort the result either ASC or DESC',
-                ];
+            if (! in_array(Filters::SORT, $allowedFilters)) {
+                continue;
             }
+
+            $fields[$fieldName . '_sort'] = [
+                'name' => $fieldName . '_sort',
+                'type' => Type::string(),
+                'description' => 'Sort the result either ASC or DESC',
+            ];
         }
 
         // Add eq filter for to-one associations

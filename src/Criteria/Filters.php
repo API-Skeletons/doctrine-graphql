@@ -21,9 +21,7 @@ final class Filters
     public const ISNULL     = 'isnull';
     public const SORT       = 'sort';
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public static function toArray(): array
     {
         return [

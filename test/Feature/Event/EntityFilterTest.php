@@ -6,7 +6,6 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Event;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
-use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
@@ -19,6 +18,7 @@ use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
 
 use function count;
+use function uniqid;
 
 /**
  * This test uses both EventDefinition and QueryBuidlerTest to add a new
@@ -81,7 +81,7 @@ class EntityFilterTest extends AbstractTest
                                 'fields' => [
                                     'performanceCount_gte' => Type::int(),
                                 ],
-                            ])
+                            ]),
                         ],
                         'resolve' => $driver->resolve(Artist::class, Artist::class . '.filterQueryBuilder'),
                     ],

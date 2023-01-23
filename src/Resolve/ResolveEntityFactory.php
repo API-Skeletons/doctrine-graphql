@@ -19,8 +19,7 @@ use League\Event\EventDispatcher;
 use function base64_decode;
 use function base64_encode;
 use function implode;
-use function strrpos;
-use function substr;
+use function is_array;
 
 class ResolveEntityFactory
 {
@@ -67,6 +66,7 @@ class ResolveEntityFactory
             if (! is_array($filters)) {
                 continue;
             }
+
             foreach ($filters as $filter => $value) {
                 switch ($filter) {
                     case FiltersDef::CONTAINS:

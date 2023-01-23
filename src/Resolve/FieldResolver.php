@@ -10,6 +10,8 @@ use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 
+use function assert;
+use function is_object;
 use function spl_object_hash;
 
 /**

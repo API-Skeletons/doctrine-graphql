@@ -19,8 +19,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use function base64_decode;
 use function base64_encode;
 use function count;
-use function strrpos;
-use function substr;
 
 class ResolveCollectionFactory
 {

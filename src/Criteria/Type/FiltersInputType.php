@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
-use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
+use function in_array;
+
 class FiltersInputType extends InputObjectType
 {
+    /** @param string[] $allowedFilters */
     public function __construct(string $typeName, string $fieldName, Type $type, array $allowedFilters)
     {
         $configuration = [
             'name' => $typeName . '_' . $fieldName . '_filters',
             'description' => 'Field filters',
-            'fields' => []
+            'fields' => [],
         ];
 
         if (in_array(FiltersDef::SORT, $allowedFilters)) {
@@ -87,21 +89,26 @@ class FiltersInputType extends InputObjectType
         }
 
         if (in_array(FiltersDef::BETWEEN, $allowedFilters)) {
+            /** @psalm-suppress InvalidArgument */
+            $inputObjectType = new InputObjectType([
+                'name' => $typeName . '_' . $fieldName . '_filters_' . FiltersDef::BETWEEN . '_fields',
+                'fields' => [
+                    'from' => [
+                        'name' => 'from',
+                        'type' => $type,
+                        'description' => 'Low value of between',
+                    ],
+                    'to' => [
+                        'name' => 'to',
+                        'type' => $type,
+                        'description' => 'High value of between',
+                    ],
+                ],
+            ]);
+
             $configuration['fields'][FiltersDef::BETWEEN] = [
                 'name' => FiltersDef::BETWEEN,
-                'type' => new InputObjectType([
-                    'name' => $typeName . '_' . $fieldName . '_filters' . '_' . FiltersDef::BETWEEN . '_' . 'fields',
-                    'fields' => [
-                        'from' => [
-                            'type' => $type,
-                            'description' => 'Low value of between',
-                        ],
-                        'to' => [
-                            'type' => $type,
-                            'description' => 'High value of between',
-                        ]
-                    ]
-                ]),
+                'type' => $inputObjectType,
                 'description' => 'Is between from and to inclusive of from and to.  Good substitute for DateTime Equals.',
             ];
         }
@@ -122,9 +129,10 @@ class FiltersInputType extends InputObjectType
             ];
         }
 
-        if (in_array(FiltersDef::STARTSWITH, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())) {
-
+        if (
+            in_array(FiltersDef::STARTSWITH, $allowedFilters)
+            && ($type === Type::string() || $type === Type::id())
+        ) {
             $configuration['fields'][FiltersDef::STARTSWITH] = [
                 'name' => FiltersDef::STARTSWITH,
                 'type'        => $type,
@@ -132,9 +140,10 @@ class FiltersInputType extends InputObjectType
             ];
         }
 
-        if (in_array(FiltersDef::ENDSWITH, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())) {
-
+        if (
+            in_array(FiltersDef::ENDSWITH, $allowedFilters)
+            && ($type === Type::string() || $type === Type::id())
+        ) {
             $configuration['fields'][FiltersDef::ENDSWITH] = [
                 'name' => FiltersDef::ENDSWITH,
                 'type'        => $type,
@@ -142,9 +151,10 @@ class FiltersInputType extends InputObjectType
             ];
         }
 
-        if (in_array(FiltersDef::CONTAINS, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())) {
-
+        if (
+            in_array(FiltersDef::CONTAINS, $allowedFilters)
+            && ($type === Type::string() || $type === Type::id())
+        ) {
             $configuration['fields'][FiltersDef::CONTAINS] = [
                 'name' => FiltersDef::CONTAINS,
                 'type'        => $type,
@@ -152,6 +162,7 @@ class FiltersInputType extends InputObjectType
             ];
         }
 
+        /** @psalm-suppress InvalidArgument */
         return parent::__construct($configuration);
     }
 }
