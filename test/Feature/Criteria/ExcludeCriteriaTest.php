@@ -24,7 +24,7 @@ class ExcludeCriteriaTest extends AbstractTest
             'query' => new ObjectType([
                 'name' => 'query',
                 'fields' => [
-                    'artist' => [
+                    'artists' => [
                         'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
@@ -36,14 +36,28 @@ class ExcludeCriteriaTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
+        $query  = '{ artists (filter: { name: { eq: "Grateful Dead" } } ) { edges { node { name } } } }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        foreach ($result->errors as $error) {
+            $this->assertEquals('Field "eq" is not defined by type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_filter_name_filters".', $error->getMessage());
+        }
+
+        $query  = '{ artists (filter: { name: { neq: "Grateful Dead" } } ) { edges { node { name } } } }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        foreach ($result->errors as $error) {
+            $this->assertEquals('Field "neq" is not defined by type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_filter_name_filters".', $error->getMessage());
+        }
+
+        $query  = '{ artists { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {
             $this->assertEquals('Field "neq" is not defined by type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_ExcludeCriteriaTest_performances_filter_venue_filters". Did you mean "eq"?', $error->getMessage());
         }
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue: { contains: "test" } } ) { edges { node { venue } } } } } } }';
+        $query  = '{ artists { edges { node { performances ( filter: {venue: { contains: "test" } } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         foreach ($result->errors as $error) {
