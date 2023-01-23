@@ -319,7 +319,6 @@ class MetadataFactory
     private function getDefaultStrategy(string|null $fieldType): string
     {
         // Set default strategy based on field type
-        /** @psalm-suppress UndefinedDocblockClass */
         switch ($fieldType) {
             case 'tinyint':
             case 'smallint':

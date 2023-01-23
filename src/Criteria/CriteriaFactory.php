@@ -76,7 +76,6 @@ class CriteriaFactory
                 continue;
             }
 
-            /** @psalm-suppress UndefinedDocblockClass */
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
             $graphQLType = $this->typeManager
@@ -93,16 +92,6 @@ class CriteriaFactory
                 'type' => new FiltersInputType($typeName, $fieldName, $graphQLType, $allowedFilters),
                 'description' => 'Filters for ' . $fieldName,
             ];
-
-            if (! in_array(Filters::SORT, $allowedFilters)) {
-                continue;
-            }
-
-            $fields[$fieldName . '_sort'] = [
-                'name' => $fieldName . '_sort',
-                'type' => Type::string(),
-                'description' => 'Sort the result either ASC or DESC',
-            ];
         }
 
         // Add eq filter for to-one associations
@@ -112,7 +101,6 @@ class CriteriaFactory
                 continue;
             }
 
-            /** @psalm-suppress UndefinedDocblockClass */
             $associationMetadata = $classMetadata->getAssociationMapping($associationName);
             $graphQLType         = Type::id();
             switch ($associationMetadata['type']) {
@@ -130,7 +118,6 @@ class CriteriaFactory
             }
         }
 
-        /** @psalm-suppress InvalidArgument */
         $inputObject = new InputObjectType([
             'name' => $typeName,
             'fields' => static function () use ($fields) {
