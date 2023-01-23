@@ -25,7 +25,7 @@ A slightly complicated example:
       #[GraphQL\Field(group: 'admin')]
       public $id;
 
-      #[GraphQL\Field(description: 'Artist name')]
+      #[GraphQL\Field(description: 'Artist name', excludeCriteria: ['startswith'])]
       #[GraphQL\Field(group: 'admin')]
       public $name;
 
@@ -82,6 +82,8 @@ in your graph. Optional parameters are:
 * ``type`` - Used for overriding the GraphQL type used for the field.
   The custom type must be injected into the TypeManager container.
   See `containers <containers.html>`_
+* ``excludeCriteria`` - An array of filters to exclude from available
+  filters for this field.  Combined with ``excludeCriteria`` for the entity.
 
 .. code-block:: php
   :linenos:
