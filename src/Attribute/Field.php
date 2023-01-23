@@ -9,6 +9,7 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Field
 {
+    /** @param string[] $excludeCriteria */
     public function __construct(
         protected string $group = 'default',
         protected string|null $strategy = null,

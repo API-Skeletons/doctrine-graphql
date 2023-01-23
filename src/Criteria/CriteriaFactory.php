@@ -17,6 +17,7 @@ use League\Event\EventDispatcher;
 use function array_filter;
 use function array_keys;
 use function assert;
+use function count;
 use function in_array;
 
 class CriteriaFactory
@@ -88,15 +89,17 @@ class CriteriaFactory
             assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
             // Limit field filters
-            if (isset($entityMetadata['fields'][$fieldName]['excludeCriteria'])
-                && count($entityMetadata['fields'][$fieldName]['excludeCriteria'])) {
-
+            if (
+                isset($entityMetadata['fields'][$fieldName]['excludeCriteria'])
+                && count($entityMetadata['fields'][$fieldName]['excludeCriteria'])
+            ) {
                 // Compute the difference of arrays
-                $fieldExcludeCriteria  = $entityMetadata['fields'][$fieldName]['excludeCriteria'];
-                $allowedFilters        = array_filter($allowedFilters,
+                $fieldExcludeCriteria = $entityMetadata['fields'][$fieldName]['excludeCriteria'];
+                $allowedFilters       = array_filter(
+                    $allowedFilters,
                     static function ($value) use ($fieldExcludeCriteria) {
                         return ! in_array($value, $fieldExcludeCriteria);
-                    }
+                    },
                 );
             }
 
