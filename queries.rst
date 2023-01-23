@@ -26,7 +26,10 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
         edges {
           node {
             name
-            performances ( filter: { _limit: 100 state: { eq: "CA" } } ) {
+            performances (
+              filter: { state: { eq: "CA" } }
+              pagination: { first: 100 }
+            ) {
               edges {
                 node {
                   performanceDate venue
