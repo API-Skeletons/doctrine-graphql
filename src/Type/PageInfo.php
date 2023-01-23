@@ -7,12 +7,14 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
+use function uniqid;
+
 class PageInfo extends ObjectType
 {
     public function __construct()
     {
         $configuration = [
-            'name' => 'PageInfo',
+            'name' => uniqid(),
             'description' => 'Page information',
             'fields' => [
                 'startCursor' => Type::nonNull(Type::string()),

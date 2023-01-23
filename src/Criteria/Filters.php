@@ -20,4 +20,25 @@ final class Filters
     public const NOTIN      = 'notin';
     public const ISNULL     = 'isnull';
     public const SORT       = 'sort';
+
+    /** @return string[] */
+    public static function toArray(): array
+    {
+        return [
+            self::EQ,
+            self::NEQ,
+            self::LT,
+            self::LTE,
+            self::GT,
+            self::GTE,
+            self::BETWEEN,
+            self::CONTAINS,
+            self::STARTSWITH,
+            self::ENDSWITH,
+            self::IN,
+            self::NOTIN,
+            self::ISNULL,
+            self::SORT,
+        ];
+    }
 }

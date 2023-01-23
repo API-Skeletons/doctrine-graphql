@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
@@ -18,8 +19,7 @@ use League\Event\EventDispatcher;
 use function base64_decode;
 use function base64_encode;
 use function implode;
-use function strrpos;
-use function substr;
+use function is_array;
 
 class ResolveEntityFactory
 {
@@ -61,38 +61,33 @@ class ResolveEntityFactory
     {
         $filterArray = [];
 
-        foreach ($filterTypes as $field => $value) {
-            // Handle fields as $field_$type: $value
-            // Get right-most _text
-            $filter = substr($field, strrpos($field, '_') + 1);
+        foreach ($filterTypes as $field => $filters) {
+            // Allow for custom filters
+            if (! is_array($filters)) {
+                continue;
+            }
 
-            // Special case for eq `field: value`
-            if (strrpos($field, '_') === false) {
-                // Handle field:value
-                $filterArray[$field . '|eq'] = (string) $value;
-            } else {
-                $field = substr($field, 0, strrpos($field, '_'));
-
+            foreach ($filters as $filter => $value) {
                 switch ($filter) {
-                    case 'contains':
+                    case FiltersDef::CONTAINS:
                         $filterArray[$field . '|like'] = $value;
                         break;
-                    case 'startswith':
+                    case FiltersDef::STARTSWITH:
                         $filterArray[$field . '|startswith'] = $value;
                         break;
-                    case 'endswith':
+                    case FiltersDef::ENDSWITH:
                         $filterArray[$field . '|endswith'] = $value;
                         break;
-                    case 'isnull':
+                    case FiltersDef::ISNULL:
                         $filterArray[$field . '|isnull'] = 'true';
                         break;
-                    case 'between':
+                    case FiltersDef::BETWEEN:
                         $filterArray[$field . '|between'] = $value['from'] . ',' . $value['to'];
                         break;
-                    case 'in':
+                    case FiltersDef::IN:
                         $filterArray[$field . '|in'] = implode(',', $value);
                         break;
-                    case 'notin':
+                    case FiltersDef::NOTIN:
                         $filterArray[$field . '|notin'] = implode(',', $value);
                         break;
                     default:

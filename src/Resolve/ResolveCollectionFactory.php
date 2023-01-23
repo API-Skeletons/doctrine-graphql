@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
@@ -18,8 +19,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use function base64_decode;
 use function base64_encode;
 use function count;
-use function strrpos;
-use function substr;
 
 class ResolveCollectionFactory
 {
@@ -33,7 +32,6 @@ class ResolveCollectionFactory
 
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
-        /** @psalm-suppress UndefinedDocblockClass */
         $fieldMapping = $metadata->getFieldMapping($field);
         $graphQLType  = $this->typeManager->get($fieldMapping['type']);
 
@@ -77,48 +75,36 @@ class ResolveCollectionFactory
         $orderBy  = [];
         $criteria = Criteria::create();
 
-        foreach ($filter as $field => $value) {
-            // Handle other fields as $field_$type: $value
-            // Get right-most _text
-            $filter = substr($field, strrpos($field, '_') + 1);
-
-            if (strrpos($field, '_') === false) {
-                // Special case for eq `field: value`
-                $value = $this->parseValue($collectionMetadata, $field, $value);
-                $criteria->andWhere($criteria->expr()->eq($field, $value));
-            } else {
-                $field = substr($field, 0, strrpos($field, '_'));
-
-                // Format value type - this seems like something which should
-                // be done in GraphQL.
+        foreach ($filter as $field => $filters) {
+            foreach ($filters as $filter => $value) {
                 switch ($filter) {
-                    case 'eq':
-                    case 'neq':
-                    case 'lt':
-                    case 'lte':
-                    case 'gt':
-                    case 'gte':
-                    case 'contains':
-                    case 'startswith':
-                    case 'endswith':
+                    case FiltersDef::EQ:
+                    case FiltersDef::NEQ:
+                    case FiltersDef::LT:
+                    case FiltersDef::LTE:
+                    case FiltersDef::GT:
+                    case FiltersDef::GTE:
+                    case FiltersDef::CONTAINS:
+                    case FiltersDef::STARTSWITH:
+                    case FiltersDef::ENDSWITH:
                         $value = $this->parseValue($collectionMetadata, $field, $value);
                         $criteria->andWhere($criteria->expr()->$filter($field, $value));
                         break;
-                    case 'in':
-                    case 'notin':
+                    case FiltersDef::IN:
+                    case FiltersDef::NOTIN:
                         $value = $this->parseArrayValue($collectionMetadata, $field, $value);
                         $criteria->andWhere($criteria->expr()->$filter($field, $value));
                         break;
-                    case 'isnull':
+                    case FiltersDef::ISNULL:
                         $criteria->andWhere($criteria->expr()->$filter($field));
                         break;
-                    case 'between':
+                    case FiltersDef::BETWEEN:
                         $value = $this->parseArrayValue($collectionMetadata, $field, $value);
 
                         $criteria->andWhere($criteria->expr()->gte($field, $value['from']));
                         $criteria->andWhere($criteria->expr()->lte($field, $value['to']));
                         break;
-                    case 'sort':
+                    case FiltersDef::SORT:
                         $orderBy[$field] = $value;
                         break;
                 }

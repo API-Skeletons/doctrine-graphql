@@ -43,7 +43,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testEq(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id: 2} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { eq: 2 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -54,7 +54,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testNeq(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_neq: 2} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { neq: 2 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -65,7 +65,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testlt(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_lt: 2} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { lt: 2 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -76,7 +76,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testlte(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_lte: 2} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { lte: 2 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -87,7 +87,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testgt(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_gt: 1} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { gt: 1 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -98,7 +98,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testgte(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_gte: 2} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { id: { gte: 2 } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -109,7 +109,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testisnull(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {venue_isnull: true} ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {venue: { isnull: true } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -120,7 +120,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testbetween(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: {id_between: { from: 2, to: 3 } } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {id: { between: { from: 2, to: 3 } } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -128,7 +128,7 @@ class CollectionFilterTest extends AbstractTest
         $this->assertEquals(2, count($data['artist']['edges'][0]['node']['performances']['edges']));
         $this->assertEquals(2, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
 
-        $query  = '{ artist { edges { node { performances ( filter: {performanceDate_between: { from: "1995-02-21T00:00:00+00:00" to: "1995-07-09T00:00:00+00:00" } } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {performanceDate: { between: { from: "1995-02-21T00:00:00+00:00" to: "1995-07-09T00:00:00+00:00" } } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -139,7 +139,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testcontains(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { venue_contains: "ill" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { venue: { contains: "ill" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -150,7 +150,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function teststartwith(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { venue_startswith: "Soldier" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { venue: { startswith: "Soldier" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -161,7 +161,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testendswith(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { venue_endswith: "University" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { venue: { endswith: "University" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -172,7 +172,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testin(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { id_in: [1,2,3] } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { id: { in: [1,2,3] } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -183,7 +183,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testnotin(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { id_notin: [3,4] } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { id: { notin: [3,4] } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -194,7 +194,7 @@ class CollectionFilterTest extends AbstractTest
 
     public function testsort(): void
     {
-        $query  = '{ artist { edges { node { performances ( filter: { id_sort: "desc" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { id: { sort: "desc" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -202,7 +202,7 @@ class CollectionFilterTest extends AbstractTest
         $this->assertEquals(5, count($data['artist']['edges'][0]['node']['performances']['edges']));
         $this->assertEquals(5, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
 
-        $query  = '{ artist { edges { node { performances ( filter: {  venue_sort: "asc" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {  venue: { sort: "asc" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];
@@ -210,7 +210,7 @@ class CollectionFilterTest extends AbstractTest
         $this->assertEquals(5, count($data['artist']['edges'][0]['node']['performances']['edges']));
         $this->assertEquals(5, $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['id']);
 
-        $query  = '{ artist { edges { node { performances ( filter: { venue_sort: "desc" } ) { edges { node { id } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: { venue: { sort: "desc" } } ) { edges { node { id } } } } } } }';
         $result = GraphQL::executeQuery($this->schema, $query);
 
         $data = $result->toArray()['data'];

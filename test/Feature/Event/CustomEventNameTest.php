@@ -51,7 +51,7 @@ class CustomEventNameTest extends AbstractTest
         ]);
 
         $query = '{
-            artist (filter: { name_contains: "dead" })
+            artist (filter: { name: { contains: "dead" } } )
                 { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 

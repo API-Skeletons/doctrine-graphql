@@ -33,7 +33,7 @@ class FilterQueryBuilderWithAdditionalArgsTest extends AbstractTest
                 $this->assertEquals('contextTest', $event->getContext());
                 $this->assertIsArray($event->getArgs());
                 $this->assertEquals(1, $event->getArgs()['id']);
-                $this->assertEquals('dead', $event->getArgs()['filter']['name_contains']);
+                $this->assertEquals('dead', $event->getArgs()['filter']['name']['contains']);
                 $this->assertInstanceOf(ResolveInfo::class, $event->getInfo());
             },
         );
@@ -55,13 +55,14 @@ class FilterQueryBuilderWithAdditionalArgsTest extends AbstractTest
         ]);
 
         $query = '{
-            artists (filter: { name_contains: "dead"} id: 1)
+            artists (filter: { name: { contains: "dead"} } id: 1)
                 { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 
         $result = GraphQL::executeQuery($schema, $query, null, 'contextTest');
 
         $data = $result->toArray()['data'];
+
         $this->assertEquals('Grateful Dead', $data['artists']['edges'][0]['node']['name']);
     }
 }
