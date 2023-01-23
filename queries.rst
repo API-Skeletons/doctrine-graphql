@@ -21,12 +21,12 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
 
   <?php
 
-  $query = "{
-      artists ( filter: { name_contains: \"Dead\" } ) {
+  $query = '{
+      artists ( filter: { name: { contains: "Dead" } } ) {
         edges {
           node {
             name
-            performances ( filter: { _limit: 100 state:\"CA\" } ) {
+            performances ( filter: { _limit: 100 state: { eq: "CA" } } ) {
               edges {
                 node {
                   performanceDate venue
@@ -36,7 +36,7 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
           }
         }
       }
-  }";
+  }';
 
 
 Filters
@@ -48,7 +48,7 @@ filter the name using
 
 .. code-block:: js
 
-    filter: { name: "Grateful Dead" }
+    filter: { name: { eq: "Grateful Dead" } }
 
 You may only use each field's filter once per filter().  Should a child record
 have the same name as a parent it will share the filter names but filters are
@@ -56,46 +56,46 @@ specific to the entity they filter upon.
 
 Provided Filters::
 
-    fieldName_eq         -  Equals; same as name: value.  DateTime not supported.  See Between.
-    fieldName_neq        -  Not Equals
-    fieldName_gt         -  Greater Than
-    fieldName_lt         -  Less Than
-    fieldName_gte        -  Greater Than or Equal To
-    fieldName_lte        -  Less Than or Equal To
-    fieldName_in         -  Filter for values in an array
-    fieldName_notin      -  Filter for values not in an array
-    fieldName_between    -  Filter between `from` and `to` values.  Good substitute for DateTime Equals.
-    fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
-    fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
-    fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
-    fieldName_isnull     -  If `true` return results where the field is null.
-    fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
+    eq         -  Equals; same as name: value.  DateTime not supported.  See Between.
+    neq        -  Not Equals
+    gt         -  Greater Than
+    lt         -  Less Than
+    gte        -  Greater Than or Equal To
+    lte        -  Less Than or Equal To
+    in         -  Filter for values in an array
+    notin      -  Filter for values not in an array
+    between    -  Filter between `from` and `to` values.  Good substitute for DateTime Equals.
+    contains   -  Strings only. Similar to a Like query as `like '%value%'`
+    startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
+    endswith   -  Strings only. A like query from the end of the value `like '%value'`
+    isnull     -  If `true` return results where the field is null.
+    sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
 
 
 The format for using these filters is:
 
 .. code-block:: js
 
-    filter: { name_endswith: "Dead" }
+    filter: { name: { endswith: "Dead" } }
 
 For isnull the parameter is a boolean
 
 .. code-block:: js
 
-    filter: { name_isnull: false  }
+    filter: { name: { isnull: false  } }
 
 For in and notin an array of values is expected
 
 .. code-block:: js
 
-    filter: { name_in: ["Phish", "Legion of Mary"] }
+    filter: { name: { in: ["Phish", "Legion of Mary"] } }
 
 For the between filter two parameters are necessary.  This is very useful for
 date ranges and number queries.
 
 .. code-block:: js
 
-    filter: { year_between: { from: 1966 to: 1995 } }
+    filter: { year: { between: { from: 1966 to: 1995 } } }
 
 
 To select a list of years
@@ -103,10 +103,10 @@ To select a list of years
 .. code-block:: js
 
     {
-      artists ( filter: { id:2 } ) {
+      artists ( filter: { id: { eq: 2 } } ) {
         edges {
           node {
-            performances ( filter: { year_sort: "asc" } ) {
+            performances ( filter: { year: { sort: "asc" } } ) {
               edges {
                 node {
                   year

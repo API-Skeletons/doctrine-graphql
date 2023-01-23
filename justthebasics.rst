@@ -64,10 +64,11 @@ types for the entity, the filter for the entity, and the resolver.
       'query' => new ObjectType([
           'name' => 'query',
           'fields' => [
-              'artists' => [
+              'artist' => [
                   'type' => $driver->connection($driver->type(Artist::class)),
                   'args' => [
                       'filter' => $driver->filter(Artist::class),
+                      'pagination' => $driver->pagination(),
                   ],
                   'resolve' => $driver->resolve(Artist::class),
               ],
@@ -84,7 +85,7 @@ Now, using the schema, you can start making GraphqL queries
 
   use GraphQL\GraphQL;
 
-  $query = '{ artists { edges { node { id name } } } }';
+  $query = '{ artist { edges { node { id name } } } }';
 
   $result = GraphQL::executeQuery($schema, $query);
 
@@ -132,7 +133,7 @@ attributes, a query of performances is now possible:
 
   use GraphQL\GraphQL;
 
-  $query = '{ artists { edges { node { id name performances { edges { node { id venue } } } } } } }';
+  $query = '{ artist { edges { node { id name performances { edges { node { id venue } } } } } } }';
 
   $result = GraphQL::executeQuery($schema, $query);
 
