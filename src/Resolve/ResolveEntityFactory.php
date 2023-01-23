@@ -19,7 +19,6 @@ use League\Event\EventDispatcher;
 use function base64_decode;
 use function base64_encode;
 use function implode;
-use function is_array;
 
 class ResolveEntityFactory
 {
