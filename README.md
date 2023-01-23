@@ -335,39 +335,6 @@ $driver->get(EventDispatcher::class)->subscribeTo(
 );
 ```
 
-### Entity Filter
-
-You may modify the array used to define an entity filter before it is created. This can be used for generated data and the like.
-You must attach to events before defining your GraphQL schema.  See the [detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/events.html#modify-an-entity-filter) for details.
-
-```php
-use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
-use App\ORM\Entity\Artist;
-use GraphQL\Type\Definition\Type;
-use League\Event\EventDispatcher;
-
-$driver = new Driver($entityManager);
-
-$driver->get(EventDispatcher::class)->subscribeTo(
-    Artist::class . '.filter',
-    static function (EntityFilter $event): void {
-        $definition = $event->getDefinition();
-
-        // In order to modify the fields you must resovle the closure
-        $fields = $definition['fields']();
-
-        // Add a custom field to hold a custom filter value
-        $fields['performanceCount_gte'] = [
-            'type' => Type::int(),
-            'description' => 'The number of performances for this artist greater than or equals',
-        ];
-
-        $definition['fields'] = $fields;
-    }
-);
-```
-
 Filtering
 ---------
 
@@ -378,12 +345,12 @@ Example
 
 ```gql
 {
-  artists (filter: { name_contains: "dead" }) {
+  artists ( filter: { name: { contains: "dead" } } ) {
     edges {
       node {
         id
         name
-        performances (filter: { venue_eq: "The Fillmore" }) {
+        performances ( filter: { venue: { eq: "The Fillmore" } } ) {
           edges { 
             node {
               venue
@@ -396,9 +363,9 @@ Example
 }
 ```
 
-Filters are named after their field and followed by an underscore and the filter name.
+Each field has their on set of filters.  Most fields have the following:
 
-* eq - Equals.  May be shorthanded as `field: "value"` or longhanded as `field_eq: "value"`
+* eq - Equals
 * neq - Not equals
 * lt - Less than
 * lte - Less than or equal to
