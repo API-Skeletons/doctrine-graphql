@@ -10,10 +10,9 @@ This project provides a Driver to be used with
 
 You may choose which entities, fields, and associations in your object manager
 are available for querying through GraphQL.  Filtering is provided for
-top-level GraphQL types (those types assigned to fields on the query object
-type) and for all association collections below that type.
+entities and for all associated collections.
 
-Pagination of collections is supported with 
+Pagination of collections is supported with
 `GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
 
 .. role:: raw-html(raw)

@@ -45,7 +45,7 @@ Optional parameters are:
   ``group``.  Only one ``Entity`` attribute per group is allowed.
 * ``description`` - A description of the ``Entity``.
 * ``typeName`` - A name to reference the type internal to GraphQL.
-* ``excludeCriteria`` - An array of criteria to exclude from available
+* ``excludeCriteria`` - An array of filters to exclude from available
   filters for all fields in the entity.  For instance, to exclude filters
   that use a ``like`` database query, set the following::
 
