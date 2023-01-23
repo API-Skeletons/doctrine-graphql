@@ -21,12 +21,15 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
 
   <?php
 
-  $query = "{
-      artists ( filter: { name_contains: \"Dead\" } ) {
+  $query = '{
+      artists ( filter: { name: { contains: "Dead" } } ) {
         edges {
           node {
             name
-            performances ( filter: { _limit: 100 state:\"CA\" } ) {
+            performances (
+              filter: { state: { eq: "CA" } }
+              pagination: { first: 100 }
+            ) {
               edges {
                 node {
                   performanceDate venue
@@ -36,7 +39,7 @@ Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
           }
         }
       }
-  }";
+  }';
 
 
 Filters
@@ -48,7 +51,7 @@ filter the name using
 
 .. code-block:: js
 
-    filter: { name: "Grateful Dead" }
+    filter: { name: { eq: "Grateful Dead" } }
 
 You may only use each field's filter once per filter().  Should a child record
 have the same name as a parent it will share the filter names but filters are
@@ -56,46 +59,46 @@ specific to the entity they filter upon.
 
 Provided Filters::
 
-    fieldName_eq         -  Equals; same as name: value.  DateTime not supported.  See Between.
-    fieldName_neq        -  Not Equals
-    fieldName_gt         -  Greater Than
-    fieldName_lt         -  Less Than
-    fieldName_gte        -  Greater Than or Equal To
-    fieldName_lte        -  Less Than or Equal To
-    fieldName_in         -  Filter for values in an array
-    fieldName_notin      -  Filter for values not in an array
-    fieldName_between    -  Filter between `from` and `to` values.  Good substitute for DateTime Equals.
-    fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
-    fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
-    fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
-    fieldName_isnull     -  If `true` return results where the field is null.
-    fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
+    eq         -  Equals; same as name: value.  DateTime not supported.  See Between.
+    neq        -  Not Equals
+    gt         -  Greater Than
+    lt         -  Less Than
+    gte        -  Greater Than or Equal To
+    lte        -  Less Than or Equal To
+    in         -  Filter for values in an array
+    notin      -  Filter for values not in an array
+    between    -  Filter between `from` and `to` values.  Good substitute for DateTime Equals.
+    contains   -  Strings only. Similar to a Like query as `like '%value%'`
+    startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
+    endswith   -  Strings only. A like query from the end of the value `like '%value'`
+    isnull     -  If `true` return results where the field is null.
+    sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
 
 
 The format for using these filters is:
 
 .. code-block:: js
 
-    filter: { name_endswith: "Dead" }
+    filter: { name: { endswith: "Dead" } }
 
 For isnull the parameter is a boolean
 
 .. code-block:: js
 
-    filter: { name_isnull: false  }
+    filter: { name: { isnull: false  } }
 
 For in and notin an array of values is expected
 
 .. code-block:: js
 
-    filter: { name_in: ["Phish", "Legion of Mary"] }
+    filter: { name: { in: ["Phish", "Legion of Mary"] } }
 
 For the between filter two parameters are necessary.  This is very useful for
 date ranges and number queries.
 
 .. code-block:: js
 
-    filter: { year_between: { from: 1966 to: 1995 } }
+    filter: { year: { between: { from: 1966 to: 1995 } } }
 
 
 To select a list of years
@@ -103,10 +106,10 @@ To select a list of years
 .. code-block:: js
 
     {
-      artists ( filter: { id:2 } ) {
+      artists ( filter: { id: { eq: 2 } } ) {
         edges {
           node {
-            performances ( filter: { year_sort: "asc" } ) {
+            performances ( filter: { year: { sort: "asc" } } ) {
               edges {
                 node {
                   year
@@ -129,12 +132,34 @@ Pagination
 Pagination of collections supports
 `GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
 
+A pagination argument is included with embedded collections but for top-level
+collections you must include the pagination argument yourself just as you do
+for filters.
+
+.. code-block:: php
+
+  $this->schema = new Schema([
+      'query' => new ObjectType([
+          'name' => 'query',
+          'fields' => [
+              'artist' => [
+                  'type' => $driver->connection($driver->type(Artist::class)),
+                  'args' => [
+                      'filter' => $driver->filter(Artist::class),
+                      'pagination' => $driver->pagination(),
+                  ],
+                  'resolve' => $driver->resolve(Artist::class),
+              ],
+          ],
+      ]),
+  ]);
+
 A complete query for all pagination data
 
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10, _after: "cursor"}) {
+    artists (pagination: {first: 10, after: "cursor"}) {
       totalCount
       pageInfo {
         endCursor
@@ -154,20 +179,20 @@ offset from the beginning of the result set.
 
 Two pairs of parameters work with the query:
 
-* ``_first`` and ``_after``
-* ``_last`` and ``_before``
+* ``first`` and ``after``
+* ``last`` and ``before``
 
-* ``_first`` corresponds to the items per page starting from the beginning;
-* ``_after`` corresponds to the cursor from which the items are returned.
-* ``_last`` corresponds to the items per page starting from the end;
-* ``_before`` corresponds to the cursor from which the items are returned, from a backwards point of view.
+* ``first`` corresponds to the items per page starting from the beginning;
+* ``after`` corresponds to the cursor from which the items are returned.
+* ``last`` corresponds to the items per page starting from the end;
+* ``before`` corresponds to the cursor from which the items are returned, from a backwards point of view.
 
 To get the first page specify the number of edges
 
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10}) {
+    artists (pagination: { first: 10 }) {
     }
   }
 
@@ -176,7 +201,7 @@ To get the next page, you would add the endCursor from the current page as the a
 .. code-block:: js
 
   {
-    artists (filter: {_first: 10, _after: "endCursor"}) {
+    artists (pagination: { first: 10, after: "endCursor" }) {
     }
   }
 
@@ -185,7 +210,7 @@ For the previous page, you would add the startCursor from the current page as th
 .. code-block:: js
 
   {
-    offers (filter: {_last: 10, _before: "startCursor"}) {
+    offers (pagination: { last: 10, before: "startCursor" }) {
     }
   }
 
