@@ -55,7 +55,7 @@ class DateTimeImmutableTest extends AbstractTest
         ]);
 
         $now    = (new PHPDateTime())->format('c');
-        $query  = '{ typetest ( filter: { testDateTimeImmutable_between: { from: "2022-08-06T00:00:00+00:00" to: "' . $now . '" } } ) { edges { node { id testDateTimeImmutable } } } }';
+        $query  = '{ typetest ( filter: { testDateTimeImmutable: { between: { from: "2022-08-06T00:00:00+00:00" to: "' . $now . '" } } } ) { edges { node { id testDateTimeImmutable } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

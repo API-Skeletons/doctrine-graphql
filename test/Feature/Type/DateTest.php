@@ -55,7 +55,7 @@ class DateTest extends AbstractTest
         ]);
 
         $now    = (new PHPDateTime())->format('Y-m-d');
-        $query  = '{ typetest ( filter: { testDate_between: { from: "2022-08-06" to: "' . $now . '" } } ) { edges { node { id testDate } } } }';
+        $query  = '{ typetest ( filter: { testDate: { between: { from: "2022-08-06" to: "' . $now . '" } } } ) { edges { node { id testDate } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];
