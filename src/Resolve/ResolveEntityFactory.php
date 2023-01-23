@@ -62,11 +62,6 @@ class ResolveEntityFactory
         $filterArray = [];
 
         foreach ($filterTypes as $field => $filters) {
-            // Allow for custom filters
-            if (! is_array($filters)) {
-                continue;
-            }
-
             foreach ($filters as $filter => $value) {
                 switch ($filter) {
                     case FiltersDef::CONTAINS:

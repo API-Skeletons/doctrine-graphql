@@ -163,6 +163,6 @@ class FiltersInputType extends InputObjectType
         }
 
         /** @psalm-suppress InvalidArgument */
-        return parent::__construct($configuration);
+        parent::__construct($configuration);
     }
 }
