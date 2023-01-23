@@ -61,7 +61,7 @@ class EventDefinitionTest extends AbstractTest
         ]);
 
         $query = '{
-            artist (filter: { name_contains: "beatles" })
+            artist (filter: { name: { contains: "beatles" } } )
                 { edges { node { id name nameUnprefix  } } }
         }';
 

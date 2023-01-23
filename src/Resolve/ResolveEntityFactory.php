@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
@@ -18,8 +19,6 @@ use League\Event\EventDispatcher;
 use function base64_decode;
 use function base64_encode;
 use function implode;
-use function strrpos;
-use function substr;
 
 class ResolveEntityFactory
 {
@@ -34,16 +33,13 @@ class ResolveEntityFactory
     {
         return function ($objectValue, array $args, $context, ResolveInfo $info) use ($entity, $eventName) {
             $entityClass = $entity->getEntityClass();
-            // Resolve top level filters
-            $filterTypes = $args['filter'] ?? [];
 
             $queryBuilderFilter = (new Applicator($this->entityManager, $entityClass))
                 ->setEntityAlias('entity');
-            $queryBuilder       = $queryBuilderFilter($this->buildFilterArray($filterTypes))
+            $queryBuilder       = $queryBuilderFilter($this->buildFilterArray($args['filter'] ?? []))
                 ->select('entity');
 
             return $this->buildPagination(
-                filterTypes: $filterTypes,
                 queryBuilder: $queryBuilder,
                 aliasMap: $queryBuilderFilter->getEntityAliasMap(),
                 eventName: $eventName,
@@ -64,47 +60,28 @@ class ResolveEntityFactory
     {
         $filterArray = [];
 
-        foreach ($filterTypes as $field => $value) {
-            // Pagination is handled elsewhere
-            switch ($field) {
-                case '_first':
-                case '_after':
-                case '_last':
-                case '_before':
-                    continue 2;
-            }
-
-            // Handle other fields as $field_$type: $value
-            // Get right-most _text
-            $filter = substr($field, strrpos($field, '_') + 1);
-
-            // Special case for eq `field: value`
-            if (strrpos($field, '_') === false) {
-                // Handle field:value
-                $filterArray[$field . '|eq'] = (string) $value;
-            } else {
-                $field = substr($field, 0, strrpos($field, '_'));
-
+        foreach ($filterTypes as $field => $filters) {
+            foreach ($filters as $filter => $value) {
                 switch ($filter) {
-                    case 'contains':
+                    case FiltersDef::CONTAINS:
                         $filterArray[$field . '|like'] = $value;
                         break;
-                    case 'startswith':
+                    case FiltersDef::STARTSWITH:
                         $filterArray[$field . '|startswith'] = $value;
                         break;
-                    case 'endswith':
+                    case FiltersDef::ENDSWITH:
                         $filterArray[$field . '|endswith'] = $value;
                         break;
-                    case 'isnull':
+                    case FiltersDef::ISNULL:
                         $filterArray[$field . '|isnull'] = 'true';
                         break;
-                    case 'between':
+                    case FiltersDef::BETWEEN:
                         $filterArray[$field . '|between'] = $value['from'] . ',' . $value['to'];
                         break;
-                    case 'in':
+                    case FiltersDef::IN:
                         $filterArray[$field . '|in'] = implode(',', $value);
                         break;
-                    case 'notin':
+                    case FiltersDef::NOTIN:
                         $filterArray[$field . '|notin'] = implode(',', $value);
                         break;
                     default:
@@ -125,7 +102,6 @@ class ResolveEntityFactory
      * @return mixed[]
      */
     public function buildPagination(
-        array $filterTypes,
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
@@ -140,20 +116,22 @@ class ResolveEntityFactory
         $before = 0;
         $offset = 0;
 
-        foreach ($filterTypes as $field => $value) {
-            switch ($field) {
-                case '_first':
-                    $first = $value;
-                    break;
-                case '_after':
-                    $after = (int) base64_decode($value, true) + 1;
-                    break;
-                case '_last':
-                    $last = $value;
-                    break;
-                case '_before':
-                    $before = (int) base64_decode($value, true);
-                    break;
+        if (isset($args['pagination'])) {
+            foreach ($args['pagination'] as $field => $value) {
+                switch ($field) {
+                    case 'first':
+                        $first = $value;
+                        break;
+                    case 'after':
+                        $after = (int) base64_decode($value, true) + 1;
+                        break;
+                    case 'last':
+                        $last = $value;
+                        break;
+                    case 'before':
+                        $before = (int) base64_decode($value, true);
+                        break;
+                }
             }
         }
 

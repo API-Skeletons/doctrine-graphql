@@ -54,7 +54,7 @@ class TimeTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ typetest ( filter: { testTime_between: { from: "19:15:10.000000" to: "21:00:00.000000" } } ) { edges { node { id testDate } } } }';
+        $query  = '{ typetest ( filter: { testTime: { between: { from: "19:15:10.000000" to: "21:00:00.000000" } } } ) { edges { node { id testDate } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];

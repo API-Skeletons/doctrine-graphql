@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Type;
+namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
@@ -13,60 +13,9 @@ use GraphQL\Type\Schema;
 
 use function count;
 
-class PageInfoTest extends AbstractTest
+class PaginationTest extends AbstractTest
 {
-    public function testPageInfo(): void
-    {
-        $driver = new Driver($this->getEntityManager());
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'performance' => [
-                        'type' => $driver->connection($driver->type(Performance::class)),
-                        'args' => [
-                            'filter' => $driver->filter(Performance::class),
-                            'pagination' => $driver->pagination(),
-                        ],
-                        'resolve' => $driver->resolve(Performance::class),
-                    ],
-                ],
-            ]),
-        ]);
-
-        $query  = '{
-            performance {
-                pageInfo {
-                    hasNextPage
-                    hasPreviousPage
-                    startCursor
-                    endCursor
-                }
-                edges {
-                    cursor
-                    node {
-                        id
-                    }
-                }
-            }
-        }';
-        $result = GraphQL::executeQuery($schema, $query);
-
-        $data = $result->toArray()['data'];
-
-        $this->assertFalse($data['performance']['pageInfo']['hasNextPage']);
-        $this->assertFalse($data['performance']['pageInfo']['hasPreviousPage']);
-        $this->assertEquals(
-            $data['performance']['edges'][0]['cursor'],
-            $data['performance']['pageInfo']['startCursor'],
-        );
-        $this->assertEquals(
-            $data['performance']['edges'][count($data['performance']['edges']) - 1]['cursor'],
-            $data['performance']['pageInfo']['endCursor'],
-        );
-    }
-
-    public function testPageInfoHasNextPage(): void
+    public function testFirst(): void
     {
         $driver = new Driver($this->getEntityManager());
         $schema = new Schema([
@@ -90,8 +39,11 @@ class PageInfoTest extends AbstractTest
                 pageInfo {
                     hasNextPage
                     hasPreviousPage
+                    startCursor
+                    endCursor
                 }
                 edges {
+                    cursor
                     node {
                         id
                     }
@@ -102,11 +54,10 @@ class PageInfoTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertTrue($data['performance']['pageInfo']['hasNextPage']);
-        $this->assertFalse($data['performance']['pageInfo']['hasPreviousPage']);
+        $this->assertEquals(2, count($data['performance']['edges']));
     }
 
-    public function testPageInfoHasPreviousPage(): void
+    public function testAfter(): void
     {
         $driver = new Driver($this->getEntityManager());
         $schema = new Schema([
@@ -126,12 +77,15 @@ class PageInfoTest extends AbstractTest
         ]);
 
         $query  = '{
-            performance (pagination: { last: 2}) {
+            performance (pagination: { first: 2 after: "MQ=="}) {
                 pageInfo {
                     hasNextPage
                     hasPreviousPage
+                    startCursor
+                    endCursor
                 }
                 edges {
+                    cursor
                     node {
                         id
                     }
@@ -142,7 +96,121 @@ class PageInfoTest extends AbstractTest
 
         $data = $result->toArray()['data'];
 
-        $this->assertFalse($data['performance']['pageInfo']['hasNextPage']);
-        $this->assertTrue($data['performance']['pageInfo']['hasPreviousPage']);
+        $this->assertEquals(2, count($data['performance']['edges']));
+        $this->assertEquals(3, $data['performance']['edges'][0]['node']['id']);
+    }
+
+    public function testLast(): void
+    {
+        $driver = new Driver($this->getEntityManager());
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'performance' => [
+                        'type' => $driver->connection($driver->type(Performance::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Performance::class),
+                            'pagination' => $driver->pagination(),
+                        ],
+                        'resolve' => $driver->resolve(Performance::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query  = '{
+            performance (pagination: { last: 2 }) {
+                pageInfo {
+                    hasNextPage
+                    hasPreviousPage
+                    startCursor
+                    endCursor
+                }
+                edges {
+                    cursor
+                    node {
+                        id
+                    }
+                }
+            }
+        }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(2, count($data['performance']['edges']));
+        $this->assertEquals(8, $data['performance']['edges'][0]['node']['id']);
+    }
+
+    public function testBefore(): void
+    {
+        $driver = new Driver($this->getEntityManager());
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'performance' => [
+                        'type' => $driver->connection($driver->type(Performance::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Performance::class),
+                            'pagination' => $driver->pagination(),
+                        ],
+                        'resolve' => $driver->resolve(Performance::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query  = '{
+            performance (pagination: { last: 2 before: "Nw=="}) {
+                pageInfo {
+                    hasNextPage
+                    hasPreviousPage
+                    startCursor
+                    endCursor
+                }
+                edges {
+                    cursor
+                    node {
+                        id
+                    }
+                }
+            }
+        }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(2, count($data['performance']['edges']));
+        $this->assertEquals(6, $data['performance']['edges'][0]['node']['id']);
+    }
+
+    public function testNegativeOffset(): void
+    {
+        $driver = new Driver($this->getEntityManager());
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'performance' => [
+                        'type' => $driver->connection($driver->type(Performance::class)),
+                        'args' => [
+                            'filter' => $driver->filter(Performance::class),
+                            'pagination' => $driver->pagination(),
+                        ],
+                        'resolve' => $driver->resolve(Performance::class),
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query  = '{ performance ( pagination: { first: 3, after: "LTU=" } ) { edges { node { id } } } }';
+        $result = GraphQL::executeQuery($schema, $query);
+
+        $data = $result->toArray()['data'];
+
+        $this->assertEquals(9, count($data['performance']['edges']));
+        $this->assertEquals(1, $data['performance']['edges'][0]['node']['id']);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
@@ -18,8 +19,6 @@ use GraphQL\Type\Definition\ResolveInfo;
 use function base64_decode;
 use function base64_encode;
 use function count;
-use function strrpos;
-use function substr;
 
 class ResolveCollectionFactory
 {
@@ -33,7 +32,6 @@ class ResolveCollectionFactory
 
     public function parseValue(ClassMetadata $metadata, string $field, mixed $value): mixed
     {
-        /** @psalm-suppress UndefinedDocblockClass */
         $fieldMapping = $metadata->getFieldMapping($field);
         $graphQLType  = $this->typeManager->get($fieldMapping['type']);
 
@@ -53,22 +51,20 @@ class ResolveCollectionFactory
     public function get(Entity $entity): Closure
     {
         return function ($source, $args, $context, ResolveInfo $resolveInfo) {
-            $filter = $args['filter'] ?? [];
-
             $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
 
             $collectionMetadata = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor(
-                    $this->entityManager->getMetadataFactory()
+                    (string) $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
                         ->getAssociationTargetClass($resolveInfo->fieldName),
                 );
 
             return $this->buildPagination(
-                $filter,
+                $args['pagination'] ?? [],
                 $collection,
-                $this->buildCriteria($filter, $collectionMetadata),
+                $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
             );
         };
     }
@@ -79,57 +75,36 @@ class ResolveCollectionFactory
         $orderBy  = [];
         $criteria = Criteria::create();
 
-        foreach ($filter as $field => $value) {
-            // Pagination is handled elsewhere
-            switch ($field) {
-                case '_first':
-                case '_after':
-                case '_last':
-                case '_before':
-                    continue 2;
-            }
-
-            // Handle other fields as $field_$type: $value
-            // Get right-most _text
-            $filter = substr($field, strrpos($field, '_') + 1);
-
-            if (strrpos($field, '_') === false) {
-                // Special case for eq `field: value`
-                $value = $this->parseValue($collectionMetadata, $field, $value);
-                $criteria->andWhere($criteria->expr()->eq($field, $value));
-            } else {
-                $field = substr($field, 0, strrpos($field, '_'));
-
-                // Format value type - this seems like something which should
-                // be done in GraphQL.
+        foreach ($filter as $field => $filters) {
+            foreach ($filters as $filter => $value) {
                 switch ($filter) {
-                    case 'eq':
-                    case 'neq':
-                    case 'lt':
-                    case 'lte':
-                    case 'gt':
-                    case 'gte':
-                    case 'contains':
-                    case 'startswith':
-                    case 'endswith':
+                    case FiltersDef::EQ:
+                    case FiltersDef::NEQ:
+                    case FiltersDef::LT:
+                    case FiltersDef::LTE:
+                    case FiltersDef::GT:
+                    case FiltersDef::GTE:
+                    case FiltersDef::CONTAINS:
+                    case FiltersDef::STARTSWITH:
+                    case FiltersDef::ENDSWITH:
                         $value = $this->parseValue($collectionMetadata, $field, $value);
                         $criteria->andWhere($criteria->expr()->$filter($field, $value));
                         break;
-                    case 'in':
-                    case 'notin':
+                    case FiltersDef::IN:
+                    case FiltersDef::NOTIN:
                         $value = $this->parseArrayValue($collectionMetadata, $field, $value);
                         $criteria->andWhere($criteria->expr()->$filter($field, $value));
                         break;
-                    case 'isnull':
+                    case FiltersDef::ISNULL:
                         $criteria->andWhere($criteria->expr()->$filter($field));
                         break;
-                    case 'between':
+                    case FiltersDef::BETWEEN:
                         $value = $this->parseArrayValue($collectionMetadata, $field, $value);
 
                         $criteria->andWhere($criteria->expr()->gte($field, $value['from']));
                         $criteria->andWhere($criteria->expr()->lte($field, $value['to']));
                         break;
-                    case 'sort':
+                    case FiltersDef::SORT:
                         $orderBy[$field] = $value;
                         break;
                 }
@@ -144,11 +119,11 @@ class ResolveCollectionFactory
     }
 
     /**
-     * @param mixed[] $filter
+     * @param mixed[] $pagination
      *
      * @return mixed[]
      */
-    private function buildPagination(array $filter, PersistentCollection $collection, Criteria $criteria): array
+    private function buildPagination(array $pagination, PersistentCollection $collection, Criteria $criteria): array
     {
         $first  = 0;
         $after  = 0;
@@ -157,18 +132,18 @@ class ResolveCollectionFactory
         $offset = 0;
 
         // Pagination
-        foreach ($filter as $field => $value) {
+        foreach ($pagination as $field => $value) {
             switch ($field) {
-                case '_first':
+                case 'first':
                     $first = $value;
                     break;
-                case '_after':
+                case 'after':
                     $after = (int) base64_decode($value, true) + 1;
                     break;
-                case '_last':
+                case 'last':
                     $last = $value;
                     break;
-                case '_before':
+                case 'before':
                     $before = (int) base64_decode($value, true);
                     break;
             }
