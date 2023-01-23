@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Artist
  */
 #[GraphQL\Entity(typeName: 'artist', description: 'Artists')]
-#[GraphQL\Entity(group: 'ExcludeCriteriaTest')]
+#[GraphQL\Entity(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
 #[GraphQL\Entity(group: 'TypeNameTest')]
 #[GraphQL\Entity(group: 'DuplicateGroup')]
 #[GraphQL\Entity(group: 'DuplicateGroup')]
@@ -23,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Artist
 {
     #[GraphQL\Field(description: 'Artist name')]
-    #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'ExcludeCriteriaTest', excludeCriteria: ['eq'])]
     #[GraphQL\Field(group: 'TypeNameTest')]
     #[GraphQL\Field(group: 'DuplicateGroup')]
     #[GraphQL\Field(group: 'DuplicateGroup')]

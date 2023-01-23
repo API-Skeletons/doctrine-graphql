@@ -87,6 +87,8 @@ class MetadataFactory
                 // Set default strategy based on field type
                 $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy'] =
                     $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
+
+                $this->metadataConfig[$entityClass]['fields'][$fieldName]['excludeCriteria'] = [];
             }
 
             // Fetch attributes for associations
@@ -216,6 +218,9 @@ class MetadataFactory
 
                     continue;
                 }
+
+                $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['excludeCriteria'] =
+                    $instance->getExcludeCriteria();
 
                 // Set default strategy based on field type
                 $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['strategy'] =
