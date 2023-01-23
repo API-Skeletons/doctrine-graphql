@@ -31,6 +31,9 @@ class FieldResolver
     /** @throws Error */
     public function __invoke(mixed $source, mixed $args, mixed $context, ResolveInfo $info): mixed
     {
+        assert(is_object($source), 'A non-object was passed to the FieldResolver.  '
+            . 'Verify you\'re wrapping your Doctrine GraohQL type() call in a connection.');
+
         $entityClass   = ClassUtils::getRealClass($source::class);
         $splObjectHash = spl_object_hash($source);
 

@@ -87,6 +87,7 @@ class DriverTest extends AbstractTest
                         'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
+                            'pagination' => $driver->pagination(),
                         ],
                         'resolve' => $driver->resolve(Artist::class),
                     ],
@@ -95,12 +96,14 @@ class DriverTest extends AbstractTest
         ]);
 
         $query = '{
-            artist (filter: { name_contains: "dead" })
+            artist (filter: { name: { contains: "dead" } })
                 { edges { node { id name performances { edges { node { venue recordings { edges { node { source } } } } } } } } }
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
+
+        print_r($output);die();
 
         $this->assertEquals('Grateful Dead', $output['data']['artist']['edges'][0]['node']['name']);
     }

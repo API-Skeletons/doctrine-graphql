@@ -6,10 +6,8 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\FiltersInputType;
-use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
-use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use GraphQL\Type\Definition\InputObjectType;
@@ -105,6 +103,7 @@ class CriteriaFactory
             }
         }
 
+        // Add eq filter for to-one associations
         foreach ($classMetadata->getAssociationNames() as $associationName) {
             // Only process fields which are in the graphql metadata
             if (! in_array($associationName, array_keys($entityMetadata['fields']))) {
@@ -118,39 +117,24 @@ class CriteriaFactory
                 case ClassMetadataInfo::ONE_TO_ONE:
                 case ClassMetadataInfo::MANY_TO_ONE:
                 case ClassMetadataInfo::TO_ONE:
-                    // eq filter is for field:value and field_eq:value
+                    // eq filter is for association:value
                     if (in_array(Filters::EQ, $allowedFilters)) {
                         $fields[$associationName] = [
                             'name' => $associationName,
-                            'type' => $graphQLType,
-                            'description' => 'Equals.',
-                        ];
-
-                        $fields[$associationName . '_eq'] = [
-                            'name' => $associationName . '_eq',
-                            'type' => $graphQLType,
-                            'description' => 'Equals.',
+                            'type' => new FiltersInputType($typeName, $associationName, $graphQLType, ['eq']),
+                            'description' => 'Filters for ' . $associationName,
                         ];
                     }
             }
         }
 
-        $arrayObject = new ArrayObject([
+        /** @psalm-suppress InvalidArgument */
+        $inputObject = new InputObjectType([
             'name' => $typeName,
             'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]);
-
-        /**
-         * Dispatch event to allow modifications to the ObjectType definition
-         */
-        $this->eventDispatcher->dispatch(
-            new EntityFilter($arrayObject, $targetEntity->getEntityClass() . '.filter'),
-        );
-
-        /** @psalm-suppress InvalidArgument */
-        $inputObject = new InputObjectType($arrayObject->getArrayCopy());
 
         $this->typeManager->set($typeName, $inputObject);
 

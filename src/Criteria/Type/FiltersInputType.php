@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
@@ -13,10 +14,18 @@ class FiltersInputType extends InputObjectType
     public function __construct(string $typeName, string $fieldName, Type $type, array $allowedFilters)
     {
         $configuration = [
-            'name' => 'filters',
+            'name' => $typeName . '_' . $fieldName . '_filters',
             'description' => 'Field filters',
             'fields' => []
         ];
+
+        if (in_array(FiltersDef::SORT, $allowedFilters)) {
+            $configuration['fields'][FiltersDef::SORT] = [
+                'name' => FiltersDef::SORT,
+                'type' => Type::string(),
+                'description' => 'Sort the result.  Either "asc" or "desc".',
+            ];
+        }
 
         if (in_array(FiltersDef::EQ, $allowedFilters)) {
             $configuration['fields'][FiltersDef::EQ] = [
@@ -81,15 +90,13 @@ class FiltersInputType extends InputObjectType
             $configuration['fields'][FiltersDef::BETWEEN] = [
                 'name' => FiltersDef::BETWEEN,
                 'type' => new InputObjectType([
-                    'name' => $fieldName . '_' . FiltersDef::BETWEEN . '_' . 'fields',
+                    'name' => $typeName . '_' . $fieldName . '_filters' . '_' . FiltersDef::BETWEEN . '_' . 'fields',
                     'fields' => [
                         'from' => [
-                            'name' => $fieldName . '_' . FiltersDef::BETWEEN . '_from',
                             'type' => $type,
                             'description' => 'Low value of between',
                         ],
                         'to' => [
-                            'name' => $fieldName . '_' . FiltersDef::BETWEEN . '_to',
                             'type' => $type,
                             'description' => 'High value of between',
                         ]
@@ -116,7 +123,7 @@ class FiltersInputType extends InputObjectType
         }
 
         if (in_array(FiltersDef::STARTSWITH, $allowedFilters)
-            && $type === Type::string() && $type === Type::id()) {
+            && ($type === Type::string() || $type === Type::id())) {
 
             $configuration['fields'][FiltersDef::STARTSWITH] = [
                 'name' => FiltersDef::STARTSWITH,
@@ -126,7 +133,7 @@ class FiltersInputType extends InputObjectType
         }
 
         if (in_array(FiltersDef::ENDSWITH, $allowedFilters)
-            && $type === Type::string() && $type === Type::id()) {
+            && ($type === Type::string() || $type === Type::id())) {
 
             $configuration['fields'][FiltersDef::ENDSWITH] = [
                 'name' => FiltersDef::ENDSWITH,
@@ -136,7 +143,7 @@ class FiltersInputType extends InputObjectType
         }
 
         if (in_array(FiltersDef::CONTAINS, $allowedFilters)
-            && $type === Type::string() && $type === Type::id()) {
+            && ($type === Type::string() || $type === Type::id())) {
 
             $configuration['fields'][FiltersDef::CONTAINS] = [
                 'name' => FiltersDef::CONTAINS,

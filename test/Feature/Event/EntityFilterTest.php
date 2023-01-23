@@ -11,6 +11,7 @@ use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use GraphQL\GraphQL;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -51,27 +52,9 @@ class EntityFilterTest extends AbstractTest
         );
 
         $driver->get(EventDispatcher::class)->subscribeTo(
-            Artist::class . '.filter',
-            static function (EntityFilter $event): void {
-                $definition = $event->getDefinition();
-
-                // In order to modify the fields you must resovle the closure
-                $fields = $definition['fields']();
-
-                // Add a custom filter field
-                $fields['performanceCount_gte'] = [
-                    'type' => Type::int(),
-                    'description' => 'The number of performances for this artist greater than or equals',
-                ];
-
-                $definition['fields'] = $fields;
-            },
-        );
-
-        $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.filterQueryBuilder',
             static function (FilterQueryBuilder $event): void {
-                if (! isset($event->getArgs()['filter']['performanceCount_gte'])) {
+                if (! isset($event->getArgs()['moreFilters']['performanceCount_gte'])) {
                     return;
                 }
 
@@ -79,7 +62,7 @@ class EntityFilterTest extends AbstractTest
                     ->innerJoin('entity.performances', 'performances')
                     ->having($event->getQueryBuilder()->expr()->gte(
                         'COUNT(performances)',
-                        $event->getArgs()['filter']['performanceCount_gte'],
+                        $event->getArgs()['moreFilters']['performanceCount_gte'],
                     ))
                     ->addGroupBy('entity.id');
             },
@@ -89,10 +72,16 @@ class EntityFilterTest extends AbstractTest
             'query' => new ObjectType([
                 'name' => 'query',
                 'fields' => [
-                    'artist' => [
+                    'artists' => [
                         'type' => $driver->connection($driver->type(Artist::class)),
                         'args' => [
                             'filter' => $driver->filter(Artist::class),
+                            'moreFilters' => new InputObjectType([
+                                'name' => uniqid(),
+                                'fields' => [
+                                    'performanceCount_gte' => Type::int(),
+                                ],
+                            ])
                         ],
                         'resolve' => $driver->resolve(Artist::class, Artist::class . '.filterQueryBuilder'),
                     ],
@@ -101,15 +90,20 @@ class EntityFilterTest extends AbstractTest
         ]);
 
         $query = '{
-            artist (filter: { performanceCount_gte: 3 })
-                { edges { node { id name performanceCount  } } }
+            artists ( moreFilters: { performanceCount_gte: 3 } ) {
+              edges {
+                node {
+                  id name performanceCount
+                }
+              }
+            }
         }';
 
         $result = GraphQL::executeQuery($schema, $query);
         $data   = $result->toArray()['data'];
 
-        $this->assertEquals('Grateful Dead', $data['artist']['edges'][0]['node']['name']);
-        $this->assertEquals(5, $data['artist']['edges'][0]['node']['performanceCount']);
-        $this->assertEquals(1, count($data['artist']['edges']));
+        $this->assertEquals('Grateful Dead', $data['artists']['edges'][0]['node']['name']);
+        $this->assertEquals(5, $data['artists']['edges'][0]['node']['performanceCount']);
+        $this->assertEquals(1, count($data['artists']['edges']));
     }
 }
