@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\Between;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\FiltersInputType;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityFilter;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
@@ -39,9 +39,9 @@ class CriteriaFactory
         array|null $associationMetadata = null,
     ): InputObjectType {
         if ($owningEntity) {
-            $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_Filter';
+            $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_filter';
         } else {
-            $typeName = $targetEntity->getTypeName() . '_Filter';
+            $typeName = $targetEntity->getTypeName() . '_filter';
         }
 
         if ($this->typeManager->has($typeName)) {
@@ -52,24 +52,7 @@ class CriteriaFactory
         $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
         $entityMetadata = $targetEntity->getMetadataConfig();
 
-        $allFilters = [
-            'sort',
-            'eq',
-            'neq',
-            'lt',
-            'lte',
-            'gt',
-            'gte',
-            'isnull',
-            'between',
-            'in',
-            'notin',
-            'startswith',
-            'endswith',
-            'contains',
-        ];
-
-        $allowedFilters = $allFilters;
+        $allowedFilters = Filters::toArray();
 
         // Limit entity filters
         if ($entityMetadata['excludeCriteria']) {
@@ -107,37 +90,11 @@ class CriteriaFactory
 
             assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
-            // Step through all criteria and create filter fields
-            $descriptions = [
-                Filters::EQ  => 'Equals; same as name: value.  DateTime not supported.',
-                Filters::NEQ => 'Not Equals',
-                Filters::LT  => 'Less Than',
-                Filters::LTE => 'Less Than or Equals',
-                Filters::GT  => 'Greater Than',
-                Filters::GTE => 'Greater Than or Equals',
+            $fields[$fieldName] = [
+                'name' => $fieldName,
+                'type' => new FiltersInputType($typeName, $fieldName, $graphQLType, $allowedFilters),
+                'description' => 'Filters for ' . $fieldName,
             ];
-
-            // Build simple filters
-            foreach ($descriptions as $filter => $docs) {
-                if (! in_array($filter, $allowedFilters)) {
-                    continue;
-                }
-
-                $fields[$fieldName . '_' . $filter] = [
-                    'name' => $fieldName . '_' . $filter,
-                    'type' => $graphQLType,
-                    'description' => $docs,
-                ];
-            }
-
-            // eq filter is for field:value and field_eq:value
-            if (in_array(Filters::EQ, $allowedFilters)) {
-                $fields[$fieldName] = [
-                    'name' => $fieldName,
-                    'type' => $graphQLType,
-                    'description' => 'Equals.  DateTime not supported.',
-                ];
-            }
 
             if (in_array(Filters::SORT, $allowedFilters)) {
                 $fields[$fieldName . '_sort'] = [
@@ -146,88 +103,6 @@ class CriteriaFactory
                     'description' => 'Sort the result either ASC or DESC',
                 ];
             }
-
-            if (in_array(Filters::ISNULL, $allowedFilters)) {
-                $fields[$fieldName . '_isnull'] = [
-                    'name' => $fieldName . '_isnull',
-                    'type' => Type::boolean(),
-                    'description' => 'Takes a boolean.  If TRUE return results where the field is null. '
-                        . 'If FALSE returns results where the field is not null. '
-                        . 'Acts as "isEmpty" for collection filters.  A value of false will '
-                        . 'be handled as though it were null.',
-                ];
-            }
-
-            if (in_array(Filters::BETWEEN, $allowedFilters)) {
-                $fields[$fieldName . '_between'] = [
-                    'name' => $fieldName . '_between',
-                    'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
-                    'type' => new Between([
-                        'fields' => [
-                            'from' => [
-                                'name' => 'from',
-                                'type' => $graphQLType,
-                            ],
-                            'to' => [
-                                'name' => 'to',
-                                'type' => $graphQLType,
-                            ],
-                        ],
-                    ]),
-                ];
-            }
-
-            /** @psalm-suppress InvalidTemplateParam */
-            if (in_array(Filters::IN, $allowedFilters)) {
-                $fields[$fieldName . '_in'] = [
-                    'name' => $fieldName . '_in',
-                    'type' => Type::listOf($graphQLType),
-                    'description' => 'Filter for values in an array',
-                ];
-            }
-
-            /** @psalm-suppress InvalidTemplateParam */
-            if (in_array(Filters::NOTIN, $allowedFilters)) {
-                $fields[$fieldName . '_notin'] = [
-                    'name' => $fieldName . '_notin',
-                    'type' => Type::listOf($graphQLType),
-                    'description' => 'Filter for values not in an array',
-                ];
-            }
-
-            // According to GraphQL id types are represented as strings so
-            // include string fitlers with ids
-            if ($graphQLType !== Type::string() && $graphQLType !== Type::id()) {
-                continue;
-            }
-
-            if (in_array(Filters::STARTSWITH, $allowedFilters)) {
-                $fields[$fieldName . '_startswith'] = [
-                    'name' => $fieldName . '_startswith',
-                    'type' => $graphQLType,
-                    'documentation' => 'Strings only. '
-                        . 'A like query from the beginning of the value `like \'value%\'`',
-                ];
-            }
-
-            if (in_array(Filters::ENDSWITH, $allowedFilters)) {
-                $fields[$fieldName . '_endswith'] = [
-                    'name' => $fieldName . '_endswith',
-                    'type' => $graphQLType,
-                    'documentation' => 'Strings only. '
-                        . 'A like query from the end of the value `like \'%value\'`',
-                ];
-            }
-
-            if (! in_array(Filters::CONTAINS, $allowedFilters)) {
-                continue;
-            }
-
-            $fields[$fieldName . '_contains'] = [
-                'name' => $fieldName . '_contains',
-                'type' => $graphQLType,
-                'description' => 'Strings only. Similar to a Like query as `like \'%value%\'`',
-            ];
         }
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
