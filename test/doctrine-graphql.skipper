@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.3.0.1781" mvc="Without MVC" orm="Doctrine2" name="api-skeletons/doctrine-graphql" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
+<skipper version="3.3.3.1806" mvc="Without MVC" orm="Doctrine2" name="api-skeletons/doctrine-graphql" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
   <module name="\GraphQL for Doctrine" local-name="GraphQL for Doctrine" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2PhpAttributes" export-path="Entity2" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" local-name="Artist" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="9d8eb724-b4f3-414c-9d1a-48bd61008f33"/>
@@ -13,7 +13,7 @@
       <field name="performanceDate" type="datetime" required="true" uuid="6445ff83-a7ec-43ef-852a-a236abd3cc4c"/>
       <field name="artist_id" type="bigint" required="true" uuid="f77a7b2c-d4f7-43f1-a727-5ab5e965b128"/>
     </entity>
-    <association from="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance" to="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" caption="Artist Performances" owner-alias="performances" inverse-alias="artist" many-owner="true" many-inverse="false" parent-required="true" uuid="4f0247e2-6d76-42f9-b56b-52306c2fa201">
+    <association from="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance" to="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" caption="artist performances" owner-alias="performances" inverse-alias="artist" many-owner="true" many-inverse="false" parent-required="true" uuid="4f0247e2-6d76-42f9-b56b-52306c2fa201">
       <association-field from="artist_id" to="id" uuid="8ba1d43e-9bcc-4c68-9470-e2d1ce7e8191"/>
     </association>
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording" local-name="Recording" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="ad470906-9e63-41e7-9558-979789bc2d28">
@@ -21,7 +21,7 @@
       <field name="source" type="text" required="true" uuid="e05ef23e-d672-4e9c-8103-bb25006bd851"/>
       <field name="performance_id" type="integer" required="true" uuid="6fdad895-ce70-4ec6-a2d5-27ab3377fc2a"/>
     </entity>
-    <association from="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording" to="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance" caption="Performance Recordings" owner-alias="recordings" inverse-alias="performance" many-owner="true" many-inverse="false" parent-required="true" uuid="ab34ba86-e61e-458a-87e7-9dfa2aa1f391">
+    <association from="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording" to="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance" caption="performance recordings" owner-alias="recordings" inverse-alias="performance" many-owner="true" many-inverse="false" parent-required="true" uuid="ab34ba86-e61e-458a-87e7-9dfa2aa1f391">
       <association-field from="performance_id" to="id" uuid="d65c0af7-1f4e-4036-a316-cb32ac3403d5"/>
     </association>
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\User" local-name="User" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="568a03b7-3dd5-435a-9bc8-869bc673923c">
@@ -34,7 +34,7 @@
       <field name="user_id" type="integer" required="true" primary="true" uuid="6e73b00a-d350-44aa-9c5c-df5e8bd1b767"/>
       <field name="recording_id" type="integer" required="true" primary="true" uuid="f236d7f6-924c-4bbf-9c94-84ff1bdb1ac0"/>
     </entity>
-    <many-to-many mn-entity="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\RecordingToUser" caption="Recording to User" uuid="e4936d0d-1d1f-4fb8-af31-fa1d0665ccf7">
+    <many-to-many mn-entity="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\RecordingToUser" caption="recordings users" uuid="e4936d0d-1d1f-4fb8-af31-fa1d0665ccf7">
       <many-to-many-entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\User" owning-side="true" alias="users" uuid="d7d1f0f7-f83b-4860-87d5-ba5cc1601018">
         <many-to-many-field from="user_id" to="id" uuid="934edaf6-9cd2-4712-bbaa-aa44704f0e51"/>
       </many-to-many-entity>
@@ -73,15 +73,15 @@
   <visual-data>
     <association uuid="4f0247e2-6d76-42f9-b56b-52306c2fa201" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="ab34ba86-e61e-458a-87e7-9dfa2aa1f391" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <comment uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b" bg-color="#FFFFE0" position-x="495" position-y="-68" size-x="6" size-x2="128" size-y="-3" size-y2="63" txt-color="#000000"/>
-    <entity uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="117" position-y="-9" size-x="0" size-x2="77" size-y="0" size-y2="45"/>
-    <entity uuid="568a03b7-3dd5-435a-9bc8-869bc673923c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-13" position-y="44" size-x="0" size-x2="77" size-y="0" size-y2="59"/>
-    <entity uuid="8a04b312-72bb-4723-baac-75502524ae38" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="317" position-y="-37" size-x="0" size-x2="136" size-y="0" size-y2="101"/>
-    <entity uuid="ad470906-9e63-41e7-9558-979789bc2d28" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="323" position-y="163" size-x="0" size-x2="122" size-y="0" size-y2="59"/>
-    <entity uuid="d1836028-90d0-4d9e-b281-d792cd95d906" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="506" position-y="72" size-x="0" size-x2="20" size-y="0" size-y2="20"/>
-    <entity uuid="e5603f71-6798-480b-bcf8-0d185a08e653" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="97" position-y="163" size-x="0" size-x2="109" size-y="0" size-y2="60"/>
+    <comment uuid="0e4ff410-5025-42fd-89ae-0d05319ab49b" bg-color="#FFFFE0" position-x="489" position-y="333" size-x="6" size-x2="128" size-y="-3" size-y2="63" txt-color="#000000"/>
+    <entity uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-20" position-y="-44" size-x="0" size-x2="77" size-y="0" size-y2="45"/>
+    <entity uuid="568a03b7-3dd5-435a-9bc8-869bc673923c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="-16" position-y="136" size-x="0" size-x2="93" size-y="0" size-y2="73"/>
+    <entity uuid="8a04b312-72bb-4723-baac-75502524ae38" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="177" position-y="-44" size-x="0" size-x2="136" size-y="0" size-y2="101"/>
+    <entity uuid="ad470906-9e63-41e7-9558-979789bc2d28" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="177" position-y="136" size-x="0" size-x2="122" size-y="0" size-y2="59"/>
+    <entity uuid="d1836028-90d0-4d9e-b281-d792cd95d906" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="377" position-y="-44" size-x="0" size-x2="226" size-y="0" size-y2="297"/>
+    <entity uuid="e5603f71-6798-480b-bcf8-0d185a08e653" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="77" position-y="256" size-x="0" size-x2="109" size-y="0" size-y2="60"/>
     <many-to-many-association uuid="e4936d0d-1d1f-4fb8-af31-fa1d0665ccf7" color="#969696"/>
-    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#FFD6FF" position-x="63" position-y="104" size-x="43" size-x2="752" size-y="84" size-y2="431"/>
-    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="30" size-x2="865" size-y="30" size-y2="585"/>
+    <module uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5" bg-color="#FFD6FF" position-x="43" position-y="84" size-x="43" size-x2="637" size-y="84" size-y2="416"/>
+    <project uuid="25d2b513-c6b7-4071-9ada-7c48f127f426" size-x="50" size-x2="730" size-y="50" size-y2="550"/>
   </visual-data>
 </skipper>
