@@ -141,6 +141,12 @@ trait Services
                     );
                 },
             );
+
+        if (! $this->get(Config::class)->getGlobalEnable()) {
+            return;
+        }
+
+        $this->set(Type\TypeManager::class, new Type\TypeManager());
     }
 
     abstract public function set(string $id, mixed $value): mixed;

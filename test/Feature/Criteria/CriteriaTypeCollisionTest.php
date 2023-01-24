@@ -17,13 +17,7 @@ class CriteriaTypeCollisionTest extends AbstractTest
 {
     public function testCriteriaTypeCollision(): void
     {
-        Driver::$clearTypeManager = false;
-        $driver1                  = new Driver($this->getEntityManager());
-        /**
-         * For the purpose of testing the $clearTypeManager is set to true
-         * in setUp(), but in practice there should be only one Driver
-         * per group with a shared TypeManager for all Drivers.
-         */
+        $driver1 = new Driver($this->getEntityManager());
         $driver2 = new Driver($this->getEntityManager(), new Config(['group' => 'ExcludeCriteriaTest']));
 
         $schema = new Schema([

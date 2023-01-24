@@ -74,8 +74,6 @@ class TypeNameTest extends AbstractTest
 
     public function testEntityPrefix(): void
     {
-        Driver::$clearTypeManager = true;
-
         $driver = new Driver($this->getEntityManager(), new Config([
             'entityPrefix' => 'ApiSkeletonsTest\\Doctrine\\GraphQL\\Entity\\',
             'globalEnable' => true,
