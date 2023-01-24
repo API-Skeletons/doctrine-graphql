@@ -37,7 +37,7 @@ class TypeNameTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $this->assertEquals('Artist', $driver->type(Artist::class)->name);
@@ -66,7 +66,7 @@ class TypeNameTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {venue: {neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $this->assertEquals('Artist', $driver->type(Artist::class)->name);
@@ -94,9 +94,9 @@ class TypeNameTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
-        $this->assertEquals('Artist_default', $driver->type(Artist::class)->name);
+        $this->assertEquals('artist_default', $driver->type(Artist::class)->name);
     }
 }

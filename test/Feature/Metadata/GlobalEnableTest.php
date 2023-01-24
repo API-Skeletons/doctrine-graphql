@@ -36,7 +36,7 @@ class GlobalEnableTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $this->assertTrue($driver->get(Config::class)->getGlobalEnable());
@@ -65,7 +65,7 @@ class GlobalEnableTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { name performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { name performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $this->assertEquals(
@@ -97,8 +97,10 @@ class GlobalEnableTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ artist { edges { node { name performances ( filter: {venue_neq: "test"} ) { edges { node { venue } } } } } } }';
+        $query  = '{ artist { edges { node { name performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
+
+print_r($result);die();
 
         $this->assertEquals(
             'Cannot query field "performances" on type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_globalEnable".',
