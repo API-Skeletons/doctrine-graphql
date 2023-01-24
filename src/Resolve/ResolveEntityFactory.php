@@ -95,9 +95,7 @@ class ResolveEntityFactory
     }
 
     /**
-     * @param mixed[] $filterTypes
      * @param mixed[] $aliasMap
-     * @param mixed[] $args
      *
      * @return mixed[]
      */
@@ -105,19 +103,18 @@ class ResolveEntityFactory
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
-        mixed $objectValue,
-        array $args,
-        mixed $context,
-        ResolveInfo $info,
+        mixed ...$resolve,
     ): array {
         $first  = 0;
         $after  = 0;
         $last   = 0;
         $before = 0;
         $offset = 0;
+        $index  = 0;
+        $edges  = [];
 
-        if (isset($args['pagination'])) {
-            foreach ($args['pagination'] as $field => $value) {
+        if (isset($resolve['args']['pagination'])) {
+            foreach ($resolve['args']['pagination'] as $field => $value) {
                 switch ($field) {
                     case 'first':
                         $first = $value;
@@ -164,30 +161,25 @@ class ResolveEntityFactory
          * Fire the event dispatcher using the passed event name.
          * Include all resolve variables.
          */
-
         $this->eventDispatcher->dispatch(
             new FilterQueryBuilder(
-                queryBuilder: $queryBuilder,
-                entityAliasMap: $aliasMap,
-                eventName: $eventName,
-                objectValue: $objectValue,
-                args: $args,
-                context: $context,
-                info: $info,
+                $queryBuilder,
+                $aliasMap,
+                $eventName,
+                ...$resolve,
             ),
         );
 
         $paginator = new Paginator($queryBuilder->getQuery());
         $itemCount = $paginator->count();
 
+        // Rebuild paginator if needed
         if ($last && ! $before) {
             $offset = $itemCount - $last;
             $queryBuilder->setFirstResult($offset);
             $paginator = new Paginator($queryBuilder->getQuery());
         }
 
-        $edges       = [];
-        $index       = 0;
         $lastCursor  = base64_encode((string) 0);
         $firstCursor = null;
         foreach ($paginator->getQuery()->getResult() as $result) {
