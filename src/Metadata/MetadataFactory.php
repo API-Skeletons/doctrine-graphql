@@ -338,10 +338,6 @@ class MetadataFactory
             case 'float':
                 return Strategy\ToFloat::class;
 
-            case 'bigint':  // bigint is handled as a string internal to php
-            case 'string':
-            case 'text':
-            case 'datetime':
             default:
                 return Strategy\FieldDefault::class;
         }
