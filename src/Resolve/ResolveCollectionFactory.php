@@ -78,18 +78,6 @@ class ResolveCollectionFactory
         foreach ($filter as $field => $filters) {
             foreach ($filters as $filter => $value) {
                 switch ($filter) {
-                    case FiltersDef::EQ:
-                    case FiltersDef::NEQ:
-                    case FiltersDef::LT:
-                    case FiltersDef::LTE:
-                    case FiltersDef::GT:
-                    case FiltersDef::GTE:
-                    case FiltersDef::CONTAINS:
-                    case FiltersDef::STARTSWITH:
-                    case FiltersDef::ENDSWITH:
-                        $value = $this->parseValue($collectionMetadata, $field, $value);
-                        $criteria->andWhere($criteria->expr()->$filter($field, $value));
-                        break;
                     case FiltersDef::IN:
                     case FiltersDef::NOTIN:
                         $value = $this->parseArrayValue($collectionMetadata, $field, $value);
@@ -106,6 +94,10 @@ class ResolveCollectionFactory
                         break;
                     case FiltersDef::SORT:
                         $orderBy[$field] = $value;
+                        break;
+                    default:
+                        $value = $this->parseValue($collectionMetadata, $field, $value);
+                        $criteria->andWhere($criteria->expr()->$filter($field, $value));
                         break;
                 }
             }
