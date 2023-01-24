@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <skipper version="3.3.3.1806" mvc="Without MVC" orm="Doctrine2" name="api-skeletons/doctrine-graphql" uuid="25d2b513-c6b7-4071-9ada-7c48f127f426">
-  <module name="\GraphQL for Doctrine" local-name="GraphQL for Doctrine" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2PhpAttributes" export-path="Entity2" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
+  <module name="\GraphQL Type Driver for Doctrine ORM" local-name="GraphQL Type Driver for Doctrine ORM" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" local-namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" export-format="Doctrine2PhpAttributes" export-path="Entity2" uuid="d5f257f8-d854-4bae-a05d-1ed8673c7eb5">
     <entity name="\ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist" local-name="Artist" namespace="\ApiSkeletonsTest\Doctrine\GraphQL\Entity" uuid="10de66e4-a8b3-44a9-a6d0-a9fd28338fe2">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="9d8eb724-b4f3-414c-9d1a-48bd61008f33"/>
       <field name="name" type="string" required="true" uuid="b5bf5f02-5032-4637-9d89-af0c6748d4fc"/>
