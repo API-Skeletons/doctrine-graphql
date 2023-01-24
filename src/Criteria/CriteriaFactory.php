@@ -37,11 +37,9 @@ class CriteriaFactory
         string|null $associationName = null,
         array|null $associationMetadata = null,
     ): InputObjectType {
-        if ($owningEntity) {
-            $typeName = $owningEntity->getTypeName() . '_' . $associationName . '_filter';
-        } else {
-            $typeName = $targetEntity->getTypeName() . '_filter';
-        }
+        $typeName = $owningEntity ?
+            $owningEntity->getTypeName() . '_' . $associationName . '_filter'
+            : $targetEntity->getTypeName() . '_filter';
 
         if ($this->typeManager->has($typeName)) {
             return $this->typeManager->get($typeName);
@@ -50,7 +48,6 @@ class CriteriaFactory
         $fields         = [];
         $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
         $entityMetadata = $targetEntity->getMetadataConfig();
-
         $allowedFilters = Filters::toArray();
 
         // Limit entity filters
@@ -70,13 +67,12 @@ class CriteriaFactory
         }
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            $graphQLType = null;
-
-            // Only process fields which are in the graphql metadata
+            // Only process fields that are in the graphql metadata
             if (! in_array($fieldName, array_keys($entityMetadata['fields']))) {
                 continue;
             }
 
+            $graphQLType   = null;
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
             $graphQLType = $this->typeManager
@@ -93,7 +89,6 @@ class CriteriaFactory
                 isset($entityMetadata['fields'][$fieldName]['excludeCriteria'])
                 && count($entityMetadata['fields'][$fieldName]['excludeCriteria'])
             ) {
-                // Compute the difference of arrays
                 $fieldExcludeCriteria = $entityMetadata['fields'][$fieldName]['excludeCriteria'];
                 $allowedFilters       = array_filter(
                     $allowedFilters,
@@ -104,8 +99,8 @@ class CriteriaFactory
             }
 
             $fields[$fieldName] = [
-                'name' => $fieldName,
-                'type' => new FiltersInputType($typeName, $fieldName, $graphQLType, $allowedFilters),
+                'name'        => $fieldName,
+                'type'        => new FiltersInputType($typeName, $fieldName, $graphQLType, $allowedFilters),
                 'description' => 'Filters for ' . $fieldName,
             ];
         }
@@ -136,9 +131,7 @@ class CriteriaFactory
 
         $inputObject = new InputObjectType([
             'name' => $typeName,
-            'fields' => static function () use ($fields) {
-                return $fields;
-            },
+            'fields' => static fn () => $fields,
         ]);
 
         $this->typeManager->set($typeName, $inputObject);
