@@ -8,39 +8,28 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
-use function in_array;
-
 class FiltersInputType extends InputObjectType
 {
     /** @param string[] $allowedFilters */
     public function __construct(string $typeName, string $fieldName, Type $type, array $allowedFilters)
     {
+        $fields       = [];
         $descriptions = FiltersDef::getDescriptions();
 
-        $configuration = [
-            'name' => $typeName . '_' . $fieldName . '_filters',
-            'description' => 'Field filters',
-            'fields' => [],
-        ];
-
-        foreach (FiltersDef::toArray() as $filter) {
-            if (! in_array($filter, $allowedFilters)) {
-                continue;
-            }
-
+        foreach ($allowedFilters as $filter) {
             switch ($filter) {
                 case FiltersDef::SORT:
-                    $configuration['fields'][$filter] = [
-                        'name' => $filter,
-                        'type' => Type::string(),
+                    $fields[$filter] = [
+                        'name'        => $filter,
+                        'type'        => Type::string(),
                         'description' => $descriptions[$filter],
                     ];
                     break;
 
                 case FiltersDef::ISNULL:
-                    $configuration['fields'][$filter] = [
-                        'name' => $filter,
-                        'type' => Type::boolean(),
+                    $fields[$filter] = [
+                        'name'        => $filter,
+                        'type'        => Type::boolean(),
                         'description' => $descriptions[$filter],
                     ];
                     break;
@@ -51,30 +40,30 @@ class FiltersInputType extends InputObjectType
                         'name' => $typeName . '_' . $fieldName . '_filters_' . FiltersDef::BETWEEN . '_fields',
                         'fields' => [
                             'from' => [
-                                'name' => 'from',
-                                'type' => $type,
+                                'name'        => 'from',
+                                'type'        => $type,
                                 'description' => 'Low value of between',
                             ],
                             'to' => [
-                                'name' => 'to',
-                                'type' => $type,
+                                'name'        => 'to',
+                                'type'        => $type,
                                 'description' => 'High value of between',
                             ],
                         ],
                         'description' => 'Between `from` and `to',
                     ]);
 
-                    $configuration['fields'][FiltersDef::BETWEEN] = [
-                        'name' => FiltersDef::BETWEEN,
-                        'type' => $inputObjectType,
+                    $fields[$filter] = [
+                        'name'        => $filter,
+                        'type'        => $inputObjectType,
                         'description' => $descriptions[$filter],
                     ];
                     break;
 
                 case FiltersDef::IN:
                 case FiltersDef::NOTIN:
-                    $configuration['fields'][$filter] = [
-                        'name' => $filter,
+                    $fields[$filter] = [
+                        'name'        => $filter,
                         'type'        => Type::listOf($type),
                         'description' => $descriptions[$filter],
                     ];
@@ -88,15 +77,19 @@ class FiltersInputType extends InputObjectType
                     }
                     // break intentionally omitted
                 default:
-                    $configuration['fields'][$filter] = [
-                        'name' => $filter,
-                        'type' => $type,
+                    $fields[$filter] = [
+                        'name'        => $filter,
+                        'type'        => $type,
                         'description' => $descriptions[$filter],
                     ];
             }
         }
 
         /** @psalm-suppress InvalidArgument */
-        parent::__construct($configuration);
+        parent::__construct([
+            'name' => $typeName . '_' . $fieldName . '_filters',
+            'description' => 'Field filters',
+            'fields' => static fn () => $fields,
+        ]);
     }
 }
