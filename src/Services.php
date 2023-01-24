@@ -36,11 +36,6 @@ trait Services
     private bool $clearTypeManagerLocal = false;
 
     /**
-     * This TypeManager is used locally when $clearTypeManager is true.
-     */
-    private Type\TypeManager $typeManagerLocal;
-
-    /**
      * @param string                 $entityManagerAlias required
      * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
@@ -52,9 +47,7 @@ trait Services
     ) {
         $this->clearTypeManagerLocal = self::$clearTypeManager;
 
-        if (self::$clearTypeManager) {
-            $this->typeManagerLocal = new Type\TypeManager();
-        } elseif (! self::$typeManagerShared) {
+        if (! self::$typeManagerShared) {
             self::$typeManagerShared = new Type\TypeManager();
         }
 
@@ -78,7 +71,7 @@ trait Services
             ->set(
                 Type\TypeManager::class,
                 fn () => $this->clearTypeManagerLocal ?
-                        $this->typeManagerLocal
+                        new Type\TypeManager()
                         : self::$typeManagerShared,
             )
             ->set(
