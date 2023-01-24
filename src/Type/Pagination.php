@@ -14,7 +14,7 @@ class Pagination extends InputObjectType
     public function __construct()
     {
         $configuration = [
-            'name' => 'a' . uniqid(), // must start with a letter
+            'name' => 'Pagination_' . uniqid(), // must start with a letter
             'description' => 'Pagination fields for the GraphQL Complete Connection Model',
             'fields' => [
                 'first' => [
