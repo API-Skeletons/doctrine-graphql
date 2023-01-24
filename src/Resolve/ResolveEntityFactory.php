@@ -112,6 +112,8 @@ class ResolveEntityFactory
         $last   = 0;
         $before = 0;
         $offset = 0;
+        $index  = 0;
+        $edges  = [];
 
         if (isset($resolve['args']['pagination'])) {
             foreach ($resolve['args']['pagination'] as $field => $value) {
@@ -161,7 +163,6 @@ class ResolveEntityFactory
          * Fire the event dispatcher using the passed event name.
          * Include all resolve variables.
          */
-
         $this->eventDispatcher->dispatch(
             new FilterQueryBuilder(
                 $queryBuilder,
@@ -174,14 +175,13 @@ class ResolveEntityFactory
         $paginator = new Paginator($queryBuilder->getQuery());
         $itemCount = $paginator->count();
 
+        // Rebuild paginator if needed
         if ($last && ! $before) {
             $offset = $itemCount - $last;
             $queryBuilder->setFirstResult($offset);
             $paginator = new Paginator($queryBuilder->getQuery());
         }
 
-        $edges       = [];
-        $index       = 0;
         $lastCursor  = base64_encode((string) 0);
         $firstCursor = null;
         foreach ($paginator->getQuery()->getResult() as $result) {
@@ -197,7 +197,7 @@ class ResolveEntityFactory
                 $firstCursor = $cursor;
             }
 
-            $index++;
+            $index ++;
         }
 
         $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
