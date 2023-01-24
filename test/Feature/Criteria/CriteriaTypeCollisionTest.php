@@ -6,7 +6,6 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use GraphQL\GraphQL;
@@ -17,13 +16,7 @@ class CriteriaTypeCollisionTest extends AbstractTest
 {
     public function testCriteriaTypeCollision(): void
     {
-        Driver::$clearTypeManager = false;
-        $driver1                  = new Driver($this->getEntityManager());
-        /**
-         * For the purpose of testing the $clearTypeManager is set to true
-         * in setUp(), but in practice there should be only one Driver
-         * per group with a shared TypeManager for all Drivers.
-         */
+        $driver1 = new Driver($this->getEntityManager());
         $driver2 = new Driver($this->getEntityManager(), new Config(['group' => 'ExcludeCriteriaTest']));
 
         $schema = new Schema([
@@ -56,13 +49,5 @@ class CriteriaTypeCollisionTest extends AbstractTest
         $data = $result->toArray()['data'];
 
         $this->assertEquals($data['one']['edges'][0]['node']['id'], $data['two']['edges'][0]['node']['id']);
-        $this->assertSame(
-            $driver1->get(TypeManager::class)->get('PageInfo'),
-            $driver2->get(TypeManager::class)->get('PageInfo'),
-        );
-        $this->assertSame(
-            $driver1->get(TypeManager::class),
-            $driver2->get(TypeManager::class),
-        );
     }
 }
