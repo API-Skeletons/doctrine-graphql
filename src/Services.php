@@ -27,7 +27,7 @@ trait Services
     /**
      * This is the shared TypeManger for all Drivers
      */
-    private static Type\TypeManager $typeManagerShared;
+    private static Type\TypeManager|null $typeManagerShared = null;
 
     /**
      * A local persisting flag for the value of $clearTypeManager when
@@ -54,7 +54,7 @@ trait Services
 
         if (self::$clearTypeManager) {
             $this->typeManagerLocal = new Type\TypeManager();
-        } elseif (empty(self::$typeManagerShared)) {
+        } elseif (! self::$typeManagerShared) {
             self::$typeManagerShared = new Type\TypeManager();
         }
 
