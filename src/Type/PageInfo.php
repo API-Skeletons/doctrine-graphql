@@ -14,7 +14,7 @@ class PageInfo extends ObjectType
     public function __construct()
     {
         $configuration = [
-            'name' => uniqid(),
+            'name' => 'a' . uniqid(), // must start with a letter
             'description' => 'Page information',
             'fields' => [
                 'startCursor' => Type::nonNull(Type::string()),
