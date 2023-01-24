@@ -77,9 +77,9 @@ class GlobalEnableTest extends AbstractTest
     }
 
     public function testGlobalIgnoreAssociationName(): void
-    { 
+    {
         Driver::$clearTypeManager = true;
-        $driver = new Driver($this->getEntityManager(), new Config([
+        $driver                   = new Driver($this->getEntityManager(), new Config([
             'group' => 'globalEnable',
             'globalEnable' => true,
             'globalIgnore' => ['performances'],
