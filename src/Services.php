@@ -16,6 +16,31 @@ use Psr\Container\ContainerInterface;
 trait Services
 {
     /**
+     * By default all Driver instances share the same TypeManager.
+     * The reason for this is because PageInfo is a required type name and
+     * would collide if two drivers are used in the same schema.
+     * To override this and use a non-shared local TypeManager, set this flag
+     * before you instantiate the driver.
+     */
+    public static bool $clearTypeManager = false;
+
+    /**
+     * This is the shared TypeManger for all Drivers
+     */
+    private static Type\TypeManager $typeManagerShared;
+
+    /**
+     * A local persisting flag for the value of $clearTypeManager when
+     * the Driver is created.
+     */
+    private bool $clearTypeManagerLocal = false;
+
+    /**
+     * This TypeManager is used locally when $clearTypeManager is true.
+     */
+    private Type\TypeManager $typeManagerLocal;
+
+    /**
      * @param string                 $entityManagerAlias required
      * @param Config                 $config             required
      * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
@@ -25,6 +50,14 @@ trait Services
         Config|null $config = null,
         array|null $metadataConfig = null,
     ) {
+        $this->clearTypeManagerLocal = self::$clearTypeManager;
+
+        if (self::$clearTypeManager) {
+            $this->typeManagerLocal = new Type\TypeManager();
+        } elseif (empty(self::$typeManagerShared)) {
+            self::$typeManagerShared = new Type\TypeManager();
+        }
+
         $this
             // Plain classes
             ->set(EntityManager::class, $entityManager)
@@ -44,7 +77,9 @@ trait Services
             )
             ->set(
                 Type\TypeManager::class,
-                static fn () => new Type\TypeManager()
+                fn () => $this->clearTypeManagerLocal ?
+                        $this->typeManagerLocal
+                        : self::$typeManagerShared,
             )
             ->set(
                 Metadata\Metadata::class,
