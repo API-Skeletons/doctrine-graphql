@@ -40,7 +40,7 @@ abstract class AbstractTest extends TestCase
 
         $this->populateData();
 
-        Driver::$clearTypeManager = true;
+        Driver::$clearTypeManager = false;
     }
 
     protected function getEntityManager(): EntityManager

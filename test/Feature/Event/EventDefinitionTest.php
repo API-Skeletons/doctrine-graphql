@@ -22,6 +22,8 @@ class EventDefinitionTest extends AbstractTest
 {
     public function testEvent(): void
     {
+        Driver::$clearTypeManager = true;
+
         $driver = new Driver($this->getEntityManager());
 
         $driver->get(EventDispatcher::class)->subscribeTo(

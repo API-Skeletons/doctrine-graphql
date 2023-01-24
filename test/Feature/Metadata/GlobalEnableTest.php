@@ -44,6 +44,8 @@ class GlobalEnableTest extends AbstractTest
 
     public function testGlobalIgnoreFieldName(): void
     {
+        Driver::$clearTypeManager = true;
+
         $driver = new Driver($this->getEntityManager(), new Config([
             'group' => 'globalEnable',
             'globalEnable' => true,
@@ -75,7 +77,8 @@ class GlobalEnableTest extends AbstractTest
     }
 
     public function testGlobalIgnoreAssociationName(): void
-    {
+    { 
+        Driver::$clearTypeManager = true;
         $driver = new Driver($this->getEntityManager(), new Config([
             'group' => 'globalEnable',
             'globalEnable' => true,
@@ -99,8 +102,6 @@ class GlobalEnableTest extends AbstractTest
 
         $query  = '{ artist { edges { node { name performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
-
-print_r($result);die();
 
         $this->assertEquals(
             'Cannot query field "performances" on type "ApiSkeletonsTest_Doctrine_GraphQL_Entity_Artist_globalEnable".',

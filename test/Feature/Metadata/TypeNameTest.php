@@ -74,6 +74,8 @@ class TypeNameTest extends AbstractTest
 
     public function testEntityPrefix(): void
     {
+        Driver::$clearTypeManager = true;
+
         $driver = new Driver($this->getEntityManager(), new Config([
             'entityPrefix' => 'ApiSkeletonsTest\\Doctrine\\GraphQL\\Entity\\',
             'globalEnable' => true,
@@ -97,6 +99,6 @@ class TypeNameTest extends AbstractTest
         $query  = '{ artist { edges { node { performances ( filter: {venue: { neq: "test"} } ) { edges { node { venue } } } } } } }';
         $result = GraphQL::executeQuery($schema, $query);
 
-        $this->assertEquals('artist_default', $driver->type(Artist::class)->name);
+        $this->assertEquals('Artist_default', $driver->type(Artist::class)->name);
     }
 }
