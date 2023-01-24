@@ -14,13 +14,32 @@ class PageInfo extends ObjectType
     public function __construct()
     {
         $configuration = [
+            /**
+             * Because you may create multiple drivers and assign types to the
+             * schema from each, there would be a name collision if this object
+             * used only the name `PageInfo` as defined in section 2.1.2 of the
+             * GraphQL spec:ification.
+             * https://relay.dev/graphql/connections.htm#sec-Connection-Types.Fields.PageInfo
+             */
             'name' => 'PageInfo_' . uniqid(), // must start with a letter
             'description' => 'Page information',
             'fields' => [
-                'startCursor' => Type::nonNull(Type::string()),
-                'endCursor' => Type::nonNull(Type::string()),
-                'hasPreviousPage' => Type::nonNull(Type::boolean()),
-                'hasNextPage' => Type::nonNull(Type::boolean()),
+                'startCursor' => [
+                    'description' => 'Cursor corresponding to the first node in edges.',
+                    'type' => Type::nonNull(Type::string()),
+                ],
+                'endCursor' => [
+                    'description' => 'Cursor corresponding to the last node in edges.',
+                    'type' => Type::nonNull(Type::string()),
+                ],
+                'hasPreviousPage' => [
+                    'description' => 'If edges contains more than last elements return true, otherwise false.',
+                    'type' => Type::nonNull(Type::boolean()),
+                ],
+                'hasNextPage' => [
+                    'description' => 'If edges contains more than first elements return true, otherwise false.',
+                    'type' => Type::nonNull(Type::boolean()),
+                ],
             ],
         ];
 
