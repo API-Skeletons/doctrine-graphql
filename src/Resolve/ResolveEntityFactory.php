@@ -197,7 +197,7 @@ class ResolveEntityFactory
                 $firstCursor = $cursor;
             }
 
-            $index ++;
+            $index++;
         }
 
         $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
