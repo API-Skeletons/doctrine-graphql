@@ -72,17 +72,15 @@ class CriteriaFactory
                 continue;
             }
 
-            $graphQLType   = null;
             $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-
-            $graphQLType = $this->typeManager
+            $graphQLType   = $this->typeManager
                 ->get($entityMetadata['fields'][$fieldName]['type']);
 
-            if ($graphQLType && $classMetadata->isIdentifier($fieldName)) {
+            assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
+
+            if ($classMetadata->isIdentifier($fieldName)) {
                 $graphQLType = Type::id();
             }
-
-            assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
             // Limit field filters
             if (
