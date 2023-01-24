@@ -105,10 +105,7 @@ class ResolveEntityFactory
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
-        mixed $objectValue,
-        array $args,
-        mixed $context,
-        ResolveInfo $info,
+        ...$resolve,
     ): array {
         $first  = 0;
         $after  = 0;
@@ -116,8 +113,8 @@ class ResolveEntityFactory
         $before = 0;
         $offset = 0;
 
-        if (isset($args['pagination'])) {
-            foreach ($args['pagination'] as $field => $value) {
+        if (isset($resolve['args']['pagination'])) {
+            foreach ($resolve['args']['pagination'] as $field => $value) {
                 switch ($field) {
                     case 'first':
                         $first = $value;
@@ -167,13 +164,10 @@ class ResolveEntityFactory
 
         $this->eventDispatcher->dispatch(
             new FilterQueryBuilder(
-                queryBuilder: $queryBuilder,
-                entityAliasMap: $aliasMap,
-                eventName: $eventName,
-                objectValue: $objectValue,
-                args: $args,
-                context: $context,
-                info: $info,
+                $queryBuilder,
+                $aliasMap,
+                $eventName,
+                ...$resolve,
             ),
         );
 
