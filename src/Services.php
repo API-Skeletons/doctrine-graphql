@@ -30,19 +30,18 @@ trait Services
         Config|null $config = null,
         array|null $metadataConfig = null,
     ) {
-        if (! $config) {
-            $config = new Config();
-        }
+        self::$typeManagerShared = self::$typeManagerShared ?? new Type\TypeManager();
 
+            $config = $config ?? new Config();
+
+        echo spl_object_hash($config) . "\n";
         $this
             // Plain classes
-            ->set(EntityManager::class, $entityManager)
             ->set(
                 Config::class,
-                static function () use ($config) {
-                    return $config;
-                },
+                fn() => $config
             )
+            ->set(EntityManager::class, $entityManager)
             ->set(
                 EventDispatcher::class,
                 static fn () => new EventDispatcher()
@@ -52,10 +51,6 @@ trait Services
                 static function (ContainerInterface $container) {
                     if (! $container->get(Config::class)->getSharedTypeManager()) {
                         return new Type\TypeManager();
-                    }
-
-                    if (! self::$typeManagerShared) {
-                        self::$typeManagerShared = new Type\TypeManager();
                     }
 
                     return self::$typeManagerShared;

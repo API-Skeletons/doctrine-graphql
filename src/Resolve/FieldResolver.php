@@ -56,6 +56,8 @@ class FieldResolver
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
+        echo spl_object_hash($config) . " resolver\n";
+
         // Use full hydrator cache
         if (isset($this->extractValues[$splObjectHash][$info->fieldName])) {
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
