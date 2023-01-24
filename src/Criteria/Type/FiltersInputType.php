@@ -15,151 +15,85 @@ class FiltersInputType extends InputObjectType
     /** @param string[] $allowedFilters */
     public function __construct(string $typeName, string $fieldName, Type $type, array $allowedFilters)
     {
+        $descriptions = FiltersDef::getDescriptions();
+
         $configuration = [
             'name' => $typeName . '_' . $fieldName . '_filters',
             'description' => 'Field filters',
             'fields' => [],
         ];
 
-        if (in_array(FiltersDef::SORT, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::SORT] = [
-                'name' => FiltersDef::SORT,
-                'type' => Type::string(),
-                'description' => 'Sort the result.  Either "asc" or "desc".',
-            ];
-        }
+        foreach (FiltersDef::toArray() as $filter) {
+            if (! in_array($filter, $allowedFilters)) {
+                continue;
+            }
 
-        if (in_array(FiltersDef::EQ, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::EQ] = [
-                'name' => FiltersDef::EQ,
-                'type' => $type,
-                'description' => 'Equals. DateTime not supported.',
-            ];
-        }
+            switch ($filter) {
+                case FiltersDef::SORT:
+                    $configuration['fields'][$filter] = [
+                        'name' => $filter,
+                        'type' => Type::string(),
+                        'description' => $descriptions[$filter],
+                    ];
+                    break;
 
-        if (in_array(FiltersDef::NEQ, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::NEQ] = [
-                'name' => FiltersDef::NEQ,
-                'type'        => $type,
-                'description' => 'Not equals',
-            ];
-        }
+                case FiltersDef::ISNULL:
+                    $configuration['fields'][$filter] = [
+                        'name' => $filter,
+                        'type' => Type::boolean(),
+                        'description' => $descriptions[$filter],
+                    ];
+                    break;
 
-        if (in_array(FiltersDef::LT, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::LT] = [
-                'name' => FiltersDef::LT,
-                'type'        => $type,
-                'description' => 'Less than',
-            ];
-        }
+                case FiltersDef::BETWEEN:
+                    /** @psalm-suppress InvalidArgument */
+                    $inputObjectType = new InputObjectType([
+                        'name' => $typeName . '_' . $fieldName . '_filters_' . FiltersDef::BETWEEN . '_fields',
+                        'fields' => [
+                            'from' => [
+                                'name' => 'from',
+                                'type' => $type,
+                                'description' => 'Low value of between',
+                            ],
+                            'to' => [
+                                'name' => 'to',
+                                'type' => $type,
+                                'description' => 'High value of between',
+                            ],
+                        ],
+                        'description' => 'Between `from` and `to',
+                    ]);
 
-        if (in_array(FiltersDef::LTE, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::LTE] = [
-                'name' => FiltersDef::LTE,
-                'type'        => $type,
-                'description' => 'Less than or equals',
-            ];
-        }
+                    $configuration['fields'][FiltersDef::BETWEEN] = [
+                        'name' => FiltersDef::BETWEEN,
+                        'type' => $inputObjectType,
+                        'description' => $descriptions[$filter],
+                    ];
+                    break;
 
-        if (in_array(FiltersDef::GT, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::GT] = [
-                'name' => FiltersDef::GT,
-                'type'        => $type,
-                'description' => 'Greater than',
-            ];
-        }
+                case FiltersDef::IN:
+                case FiltersDef::NOTIN:
+                    $configuration['fields'][$filter] = [
+                        'name' => $filter,
+                        'type'        => Type::listOf($type),
+                        'description' => $descriptions[$filter],
+                    ];
+                    break;
 
-        if (in_array(FiltersDef::GTE, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::GTE] = [
-                'name' => FiltersDef::GTE,
-                'type'        => $type,
-                'description' => 'Greater than or equals',
-            ];
-        }
-
-        if (in_array(FiltersDef::ISNULL, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::ISNULL] = [
-                'name' => FiltersDef::ISNULL,
-                'type'        => Type::boolean(),
-                'description' => 'Takes a boolean.  If TRUE return results where the field is null. '
-                    . 'If FALSE returns results where the field is not null. '
-                    . 'Acts as "isEmpty" for collection filters.  A value of false will '
-                    . 'be handled as though it were null.',
-            ];
-        }
-
-        if (in_array(FiltersDef::BETWEEN, $allowedFilters)) {
-            /** @psalm-suppress InvalidArgument */
-            $inputObjectType = new InputObjectType([
-                'name' => $typeName . '_' . $fieldName . '_filters_' . FiltersDef::BETWEEN . '_fields',
-                'fields' => [
-                    'from' => [
-                        'name' => 'from',
+                case FiltersDef::STARTSWITH:
+                case FiltersDef::ENDSWITH:
+                case FiltersDef::CONTAINS:
+                    if ($type !== Type::string() && $type !== Type::id()) {
+                        break;
+                    }
+                    // break intentionally omitted
+                default:
+                    $configuration['fields'][$filter] = [
+                        'name' => $filter,
                         'type' => $type,
-                        'description' => 'Low value of between',
-                    ],
-                    'to' => [
-                        'name' => 'to',
-                        'type' => $type,
-                        'description' => 'High value of between',
-                    ],
-                ],
-            ]);
-
-            $configuration['fields'][FiltersDef::BETWEEN] = [
-                'name' => FiltersDef::BETWEEN,
-                'type' => $inputObjectType,
-                'description' => 'Is between from and to inclusive of from and to.  Good substitute for DateTime Equals.',
-            ];
-        }
-
-        if (in_array(FiltersDef::IN, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::IN] = [
-                'name' => FiltersDef::IN,
-                'type'        => Type::listOf($type),
-                'description' => 'In the list of values as an array',
-            ];
-        }
-
-        if (in_array(FiltersDef::NOTIN, $allowedFilters)) {
-            $configuration['fields'][FiltersDef::NOTIN] = [
-                'name' => FiltersDef::NOTIN,
-                'type'        => Type::listOf($type),
-                'description' => 'Not in the list of values as an array',
-            ];
-        }
-
-        if (
-            in_array(FiltersDef::STARTSWITH, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())
-        ) {
-            $configuration['fields'][FiltersDef::STARTSWITH] = [
-                'name' => FiltersDef::STARTSWITH,
-                'type'        => $type,
-                'description' => 'Starts with the value.  Strings only.',
-            ];
-        }
-
-        if (
-            in_array(FiltersDef::ENDSWITH, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())
-        ) {
-            $configuration['fields'][FiltersDef::ENDSWITH] = [
-                'name' => FiltersDef::ENDSWITH,
-                'type'        => $type,
-                'description' => 'End with the value.  Strings only.',
-            ];
-        }
-
-        if (
-            in_array(FiltersDef::CONTAINS, $allowedFilters)
-            && ($type === Type::string() || $type === Type::id())
-        ) {
-            $configuration['fields'][FiltersDef::CONTAINS] = [
-                'name' => FiltersDef::CONTAINS,
-                'type'        => $type,
-                'description' => 'Contains the value.  Strings only.',
-            ];
+                        'description' => $descriptions[$filter],
+                    ];
+            }
         }
 
         /** @psalm-suppress InvalidArgument */
