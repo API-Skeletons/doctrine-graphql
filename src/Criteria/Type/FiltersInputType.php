@@ -87,7 +87,6 @@ class FiltersInputType extends InputObjectType
                         break;
                     }
                     // break intentionally omitted
-
                 default:
                     $configuration['fields'][$filter] = [
                         'name' => $filter,
