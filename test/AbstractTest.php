@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL;
 
+use ApiSkeletons\Doctrine\GraphQL\Driver;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManager;
@@ -38,6 +39,8 @@ abstract class AbstractTest extends TestCase
         $res                 = $tool->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
 
         $this->populateData();
+
+        Driver::$clearTypeManager = true;
     }
 
     protected function getEntityManager(): EntityManager
