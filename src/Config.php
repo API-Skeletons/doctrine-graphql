@@ -61,6 +61,15 @@ class Config
      */
     protected string|null $entityPrefix = null;
 
+    /**
+     * @var bool When set to false the driver will have a unique instance of the
+     *           TypeManager.  The default is true so all drivers share the same
+     *           TypeManager.  This prevents collisions when using more than one
+     *           TypeManager.  But if you're using events then a shared
+     *           TypeManager may cause unexpected results.
+     */
+    protected bool $sharedTypeManager = true;
+
     /** @param mixed[] $config */
     public function __construct(array $config = [])
     {
@@ -170,5 +179,17 @@ class Config
     public function getEntityPrefix(): string|null
     {
         return $this->entityPrefix;
+    }
+
+    protected function setSharedTypeManager(bool $sharedTypeManger): self
+    {
+        $this->sharedTypeManager = $sharedTypeManger;
+
+        return $this;
+    }
+
+    public function getSharedTypeManager(): bool
+    {
+        return $this->sharedTypeManager;
     }
 }

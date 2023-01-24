@@ -16,24 +16,9 @@ use Psr\Container\ContainerInterface;
 trait Services
 {
     /**
-     * By default all Driver instances share the same TypeManager.
-     * The reason for this is because PageInfo is a required type name and
-     * would collide if two drivers are used in the same schema.
-     * To override this and use a non-shared local TypeManager, set this flag
-     * before you instantiate the driver.
-     */
-    public static bool $clearTypeManager = false;
-
-    /**
      * This is the shared TypeManger for all Drivers
      */
     private static Type\TypeManager|null $typeManagerShared = null;
-
-    /**
-     * A local persisting flag for the value of $clearTypeManager when
-     * the Driver is created.
-     */
-    private bool $clearTypeManagerLocal = false;
 
     /**
      * @param string                 $entityManagerAlias required
@@ -45,10 +30,8 @@ trait Services
         Config|null $config = null,
         array|null $metadataConfig = null,
     ) {
-        $this->clearTypeManagerLocal = self::$clearTypeManager;
-
-        if (! self::$typeManagerShared) {
-            self::$typeManagerShared = new Type\TypeManager();
+        if (! $config) {
+            $config = new Config();
         }
 
         $this
@@ -57,10 +40,6 @@ trait Services
             ->set(
                 Config::class,
                 static function () use ($config) {
-                    if (! $config) {
-                        $config = new Config();
-                    }
-
                     return $config;
                 },
             )
@@ -70,9 +49,17 @@ trait Services
             )
             ->set(
                 Type\TypeManager::class,
-                fn () => $this->clearTypeManagerLocal ?
-                        new Type\TypeManager()
-                        : self::$typeManagerShared,
+                static function (ContainerInterface $container) {
+                    if (! $container->get(Config::class)->getSharedTypeManager()) {
+                        return new Type\TypeManager();
+                    }
+
+                    if (! self::$typeManagerShared) {
+                        self::$typeManagerShared = new Type\TypeManager();
+                    }
+
+                    return self::$typeManagerShared;
+                },
             )
             ->set(
                 Metadata\Metadata::class,

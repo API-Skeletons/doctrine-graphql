@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Event;
 
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
@@ -22,9 +23,7 @@ class EventDefinitionTest extends AbstractTest
 {
     public function testEvent(): void
     {
-        Driver::$clearTypeManager = true;
-
-        $driver = new Driver($this->getEntityManager());
+        $driver = new Driver($this->getEntityManager(), new Config(['sharedTypeManager' => false]));
 
         $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.definition',
