@@ -95,9 +95,7 @@ class ResolveEntityFactory
     }
 
     /**
-     * @param mixed[] $filterTypes
      * @param mixed[] $aliasMap
-     * @param mixed[] $args
      *
      * @return mixed[]
      */
@@ -105,7 +103,7 @@ class ResolveEntityFactory
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
-        ...$resolve,
+        mixed ...$resolve,
     ): array {
         $first  = 0;
         $after  = 0;
