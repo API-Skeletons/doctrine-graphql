@@ -51,7 +51,7 @@ class InputFactory extends AbstractContainer
                      * no reason to set or update an identifier.  For the case where an identifier
                      * should be set or updated, this facotry is not the correct solution.
                      */
-                    if (! empty($optionalFields)) {
+                    if (! empty($optionalFields) || ! empty($requiredFields)) {
                         // Include field as optional
                         if (in_array($fieldName, $optionalFields) || $optionalFields === ['*']) {
                             if ($optionalFields === ['*'] && $this->entityManager->getClassMetadata($id)->isIdentifier($fieldName)) {
@@ -61,8 +61,8 @@ class InputFactory extends AbstractContainer
                             $fields[$fieldName]['description'] = $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'];
                             $fields[$fieldName]['type']        = $this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']);
                         }
-                    } elseif (! empty($requiredFields)) {
-                        // Include fields as required
+
+                        // Include field as required
                         if (in_array($fieldName, $requiredFields) || $requiredFields === ['*']) {
                             if ($requiredFields === ['*'] && $this->entityManager->getClassMetadata($id)->isIdentifier($fieldName)) {
                                 continue;
