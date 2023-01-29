@@ -17,59 +17,41 @@ class FiltersInputType extends InputObjectType
         $descriptions = FiltersDef::getDescriptions();
 
         foreach ($allowedFilters as $filter) {
+            $filterType = $type;
+
             switch ($filter) {
                 case FiltersDef::SORT:
-                    $fields[$filter] = [
-                        'name'        => $filter,
-                        'type'        => Type::string(),
-                        'description' => $descriptions[$filter],
-                    ];
+                    $filterType = Type::string();
                     break;
-
                 case FiltersDef::ISNULL:
-                    $fields[$filter] = [
-                        'name'        => $filter,
-                        'type'        => Type::boolean(),
-                        'description' => $descriptions[$filter],
-                    ];
+                    $filterType = Type::boolean();
                     break;
-
                 case FiltersDef::BETWEEN:
-                    $fields[$filter] = [
-                        'name'        => $filter,
-
-                        'type'        =>  $this->buildBetweenInputObject(
-                            $typeName,
-                            $fieldName,
-                            $type,
-                        ),
-                        'description' => $descriptions[$filter],
-                    ];
+                    $filterType = $this->buildBetweenInputObject(
+                        $typeName,
+                        $fieldName,
+                        $type,
+                    );
                     break;
-
                 case FiltersDef::IN:
                 case FiltersDef::NOTIN:
-                    $fields[$filter] = [
-                        'name'        => $filter,
-                        'type'        => Type::listOf($type),
-                        'description' => $descriptions[$filter],
-                    ];
+                    $filterType = Type::listOf($type);
                     break;
-
                 case FiltersDef::STARTSWITH:
                 case FiltersDef::ENDSWITH:
                 case FiltersDef::CONTAINS:
                     if ($type !== Type::string() && $type !== Type::id()) {
-                        break;
+                        continue 2;
                     }
-                    // break intentionally omitted
-                default:
-                    $fields[$filter] = [
-                        'name'        => $filter,
-                        'type'        => $type,
-                        'description' => $descriptions[$filter],
-                    ];
+
+                    break;
             }
+
+            $fields[$filter] = [
+                'name'        => $filter,
+                'type'        => $filterType,
+                'description' => $descriptions[$filter],
+            ];
         }
 
         /** @psalm-suppress InvalidArgument */
