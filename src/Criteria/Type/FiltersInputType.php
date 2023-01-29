@@ -35,27 +35,14 @@ class FiltersInputType extends InputObjectType
                     break;
 
                 case FiltersDef::BETWEEN:
-                    /** @psalm-suppress InvalidArgument */
-                    $inputObjectType = new InputObjectType([
-                        'name' => $typeName . '_' . $fieldName . '_filters_' . FiltersDef::BETWEEN . '_fields',
-                        'fields' => [
-                            'from' => [
-                                'name'        => 'from',
-                                'type'        => $type,
-                                'description' => 'Low value of between',
-                            ],
-                            'to' => [
-                                'name'        => 'to',
-                                'type'        => $type,
-                                'description' => 'High value of between',
-                            ],
-                        ],
-                        'description' => 'Between `from` and `to',
-                    ]);
-
                     $fields[$filter] = [
                         'name'        => $filter,
-                        'type'        => $inputObjectType,
+
+                        'type'        =>  $this->buildBetweenInputObject(
+                            $typeName,
+                            $fieldName,
+                            $type,
+                        ),
                         'description' => $descriptions[$filter],
                     ];
                     break;
@@ -90,6 +77,34 @@ class FiltersInputType extends InputObjectType
             'name' => $typeName . '_' . $fieldName . '_filters',
             'description' => 'Field filters',
             'fields' => static fn () => $fields,
+        ]);
+    }
+
+    private function buildBetweenInputObject(
+        string $typeName,
+        string $fieldName,
+        Type $type,
+    ): InputObjectType {
+        /** @psalm-suppress InvalidArgument */
+        return new InputObjectType([
+            'name' => $typeName
+                . '_' . $fieldName
+                . '_filters_'
+                . FiltersDef::BETWEEN
+                . '_fields',
+            'fields' => [
+                'from' => [
+                    'name'        => 'from',
+                    'type'        => $type,
+                    'description' => 'Low value of between',
+                ],
+                'to' => [
+                    'name'        => 'to',
+                    'type'        => $type,
+                    'description' => 'High value of between',
+                ],
+            ],
+            'description' => 'Between `from` and `to`',
         ]);
     }
 }
