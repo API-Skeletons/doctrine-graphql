@@ -14,7 +14,7 @@ GraphQL specification defines PageInfo as a `Reserved Type <https://relay.dev/gr
 The problem is each driver will have its own definition for these types and they arne't identical (at runtime in PHP).
 To work around this you should use a shared type manager:
 
-.. code-block: php
+.. code-block:: php
    
    <?php
    
