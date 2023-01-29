@@ -26,6 +26,7 @@ you'll see, there's a lot of customizable power built in too.
     caching-metadata
     containers
     strategies
+    tips
 
 
 .. role:: raw-html(raw)
