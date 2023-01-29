@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\FiltersInputType;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Type\FiltersInputObjectType;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
@@ -16,7 +16,6 @@ use League\Event\EventDispatcher;
 
 use function array_filter;
 use function array_keys;
-use function assert;
 use function count;
 use function in_array;
 
@@ -72,11 +71,8 @@ class CriteriaFactory
                 continue;
             }
 
-            $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
-            $graphQLType   = $this->typeManager
+            $graphQLType = $this->typeManager
                 ->get($entityMetadata['fields'][$fieldName]['type']);
-
-            assert($graphQLType, 'GraphQL type not found for ' . $fieldMetadata['type']);
 
             if ($classMetadata->isIdentifier($fieldName)) {
                 $graphQLType = Type::id();
@@ -98,7 +94,7 @@ class CriteriaFactory
 
             $fields[$fieldName] = [
                 'name'        => $fieldName,
-                'type'        => new FiltersInputType($typeName, $fieldName, $graphQLType, $allowedFilters),
+                'type'        => new FiltersInputObjectType($typeName, $fieldName, $graphQLType, $allowedFilters),
                 'description' => 'Filters for ' . $fieldName,
             ];
         }
@@ -120,7 +116,7 @@ class CriteriaFactory
                     if (in_array(Filters::EQ, $allowedFilters)) {
                         $fields[$associationName] = [
                             'name' => $associationName,
-                            'type' => new FiltersInputType($typeName, $associationName, $graphQLType, ['eq']),
+                            'type' => new FiltersInputObjectType($typeName, $associationName, $graphQLType, ['eq']),
                             'description' => 'Filters for ' . $associationName,
                         ];
                     }

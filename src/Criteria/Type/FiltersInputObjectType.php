@@ -6,12 +6,14 @@ namespace ApiSkeletons\Doctrine\GraphQL\Criteria\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 
-class FiltersInputType extends InputObjectType
+class FiltersInputObjectType extends InputObjectType
 {
     /** @param string[] $allowedFilters */
-    public function __construct(string $typeName, string $fieldName, Type $type, array $allowedFilters)
+    public function __construct(string $typeName, string $fieldName, ScalarType|ListOfType $type, array $allowedFilters)
     {
         $fields       = [];
         $descriptions = FiltersDef::getDescriptions();
@@ -27,7 +29,7 @@ class FiltersInputType extends InputObjectType
                     $filterType = Type::boolean();
                     break;
                 case FiltersDef::BETWEEN:
-                    $filterType = $this->buildBetweenInputObject(
+                    $filterType = new BetweenInputObjectType(
                         $typeName,
                         $fieldName,
                         $type,
@@ -54,39 +56,10 @@ class FiltersInputType extends InputObjectType
             ];
         }
 
-        /** @psalm-suppress InvalidArgument */
         parent::__construct([
             'name' => $typeName . '_' . $fieldName . '_filters',
             'description' => 'Field filters',
             'fields' => static fn () => $fields,
-        ]);
-    }
-
-    private function buildBetweenInputObject(
-        string $typeName,
-        string $fieldName,
-        Type $type,
-    ): InputObjectType {
-        /** @psalm-suppress InvalidArgument */
-        return new InputObjectType([
-            'name' => $typeName
-                . '_' . $fieldName
-                . '_filters_'
-                . FiltersDef::BETWEEN
-                . '_fields',
-            'fields' => [
-                'from' => [
-                    'name'        => 'from',
-                    'type'        => $type,
-                    'description' => 'Low value of between',
-                ],
-                'to' => [
-                    'name'        => 'to',
-                    'type'        => $type,
-                    'description' => 'High value of between',
-                ],
-            ],
-            'description' => 'Between `from` and `to`',
         ]);
     }
 }

@@ -43,6 +43,12 @@ class TypeManager extends AbstractContainer
             ->set('pagination', static fn () => new Pagination());
     }
 
+    /** Use Type as return type */
+    public function get(string $id): mixed
+    {
+        return parent::get($id);
+    }
+
     /**
      * @param mixed[] $params
      *
