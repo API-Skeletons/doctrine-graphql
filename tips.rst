@@ -4,8 +4,8 @@ Tips and Tricks
 Here are tips for using this library in more edge-case ways.
 
 
-Shared Type Manager
--------------------
+Shared Type Manager **8.0.0**
+-----------------------------
 
 If you have more than one driver and it uses a different group and you use both drivers together in a single schema,
 you will have type collisions with the Pagination and PageInfo types.  The reason a collision occurs is because the
