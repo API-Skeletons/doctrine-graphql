@@ -93,8 +93,8 @@ class Entity
 
         $fields = [];
 
-        $this->addFields($this->getEntityClass(), $fields);
-        $this->addAssociations($this->getEntityClass(), $fields);
+        $this->addFields($fields);
+        $this->addAssociations($fields);
 
         $arrayObject = new ArrayObject([
             'name' => $this->getTypeName(),
@@ -117,7 +117,7 @@ class Entity
     }
 
     /** @param array<int, mixed[]> $fields */
-    protected function addFields(string $entityClass, array &$fields): void
+    protected function addFields(array &$fields): void
     {
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
@@ -135,7 +135,7 @@ class Entity
     }
 
     /** @param array<int, mixed[]> $fields */
-    protected function addAssociations(string $entityClass, array &$fields): void
+    protected function addAssociations(array &$fields): void
     {
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
