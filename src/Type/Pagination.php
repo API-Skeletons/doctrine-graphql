@@ -7,14 +7,12 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
-use function uniqid;
-
 class Pagination extends InputObjectType
 {
     public function __construct()
     {
         $configuration = [
-            'name' => 'Pagination_' . uniqid(), // must start with a letter
+            'name' => 'Pagination',
             'description' => 'Pagination fields for the GraphQL Complete Connection Model',
             'fields' => [
                 'first' => [
