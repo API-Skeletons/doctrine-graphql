@@ -53,6 +53,15 @@ trait Services
                 },
             )
             ->set(
+                Metadata\GlobalEnable::class,
+                static function (ContainerInterface $container) {
+                    return new Metadata\GlobalEnable(
+                        $container->get(EntityManager::class),
+                        $container->get(Config::class),
+                    );
+                },
+            )
+            ->set(
                 Resolve\FieldResolver::class,
                 static function (ContainerInterface $container) {
                     return new Resolve\FieldResolver(
