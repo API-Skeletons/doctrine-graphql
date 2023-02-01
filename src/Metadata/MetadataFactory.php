@@ -100,8 +100,8 @@ class MetadataFactory
                     continue;
                 }
 
-                $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = [];
-                $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $associationName;
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria']         = [];
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['description']             = $associationName;
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['filterCriteriaEventName']
                     = null;
 
@@ -259,9 +259,9 @@ class MetadataFactory
                 );
                 $associationInstance = $instance;
 
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['description']     =
+                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['description']             =
                     $instance->getDescription();
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['excludeCriteria'] =
+                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['excludeCriteria']         =
                     $instance->getExcludeCriteria();
                 $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['filterCriteriaEventName'] =
                     $instance->getFilterCriteriaEventName();

@@ -11,6 +11,7 @@ use League\Event\HasEventName;
 class FilterCriteria implements
     HasEventName
 {
+    /** @param mixed[] $args */
     public function __construct(
         protected Criteria $criteria,
         protected string $eventName,

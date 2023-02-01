@@ -7,7 +7,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
-use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
@@ -18,8 +17,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use GraphQL\Type\Definition\ResolveInfo;
-
 use League\Event\EventDispatcher;
+
 use function base64_decode;
 use function base64_encode;
 use function count;
@@ -69,7 +68,7 @@ class ResolveCollectionFactory
                 );
 
             $metadataConfig = $this->metadata->getMetadataConfig();
-            $entityClass   = ClassUtils::getRealClass($source::class);
+            $entityClass    = ClassUtils::getRealClass($source::class);
 
             return $this->buildPagination(
                 $args['pagination'] ?? [],
@@ -79,13 +78,13 @@ class ResolveCollectionFactory
                 $source,
                 $args,
                 $context,
-                $info
+                $info,
             );
         };
     }
 
     /** @param mixed[] $filter */
-    private function buildCriteria(array $filter, ClassMetadata $collectionMetadata,): Criteria
+    private function buildCriteria(array $filter, ClassMetadata $collectionMetadata): Criteria
     {
         $orderBy  = [];
         $criteria = Criteria::create();
@@ -135,7 +134,7 @@ class ResolveCollectionFactory
         PersistentCollection $collection,
         Criteria $criteria,
         string|null $filterCriteriaEventName,
-        ...$resolve,
+        mixed ...$resolve,
     ): array {
         $first  = 0;
         $after  = 0;

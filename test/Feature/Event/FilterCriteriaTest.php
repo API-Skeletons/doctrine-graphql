@@ -16,13 +16,13 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Schema;
 use League\Event\EventDispatcher;
 
+use function count;
+
 class FilterCriteriaTest extends AbstractTest
 {
     public function testEvent(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'group' => 'FilterCriteriaEvent',
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['group' => 'FilterCriteriaEvent']));
 
         $driver->get(EventDispatcher::class)->subscribeTo(
             Artist::class . '.performances.filterCriteria',
@@ -30,7 +30,7 @@ class FilterCriteriaTest extends AbstractTest
                 $this->assertInstanceOf(Criteria::class, $event->getCriteria());
 
                 $event->getCriteria()->andWhere(
-                    $event->getCriteria()->expr()->eq('venue', 'Delta Center')
+                    $event->getCriteria()->expr()->eq('venue', 'Delta Center'),
                 );
 
                 $this->assertInstanceOf(Artist::class, $event->getObjectValue());
@@ -74,13 +74,13 @@ class FilterCriteriaTest extends AbstractTest
         }';
 
         $result = GraphQL::executeQuery($schema, $query, null, 'contextTest');
-        $data = $result->toArray()['data'];
+        $data   = $result->toArray()['data'];
 
         $this->assertEquals(1, count($data['artist']['edges']));
         $this->assertEquals(1, count($data['artist']['edges'][0]['node']['performances']));
         $this->assertEquals(
             'Delta Center',
-            $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['venue']
+            $data['artist']['edges'][0]['node']['performances']['edges'][0]['node']['venue'],
         );
     }
 }
