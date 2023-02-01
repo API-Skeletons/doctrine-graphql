@@ -105,56 +105,37 @@ class ResolveEntityFactory
         string $eventName,
         mixed ...$resolve,
     ): array {
-        $first  = 0;
-        $after  = 0;
-        $last   = 0;
-        $before = 0;
-        $offset = 0;
-        $index  = 0;
-        $edges  = [];
+        $paginationFields = [
+            'first'  => 0,
+            'last'   => 0,
+            'before' => 0,
+            'after'  => 0,
+        ];
 
         if (isset($resolve['args']['pagination'])) {
             foreach ($resolve['args']['pagination'] as $field => $value) {
                 switch ($field) {
-                    case 'first':
-                        $first = $value;
-                        break;
                     case 'after':
-                        $after = (int) base64_decode($value, true) + 1;
-                        break;
-                    case 'last':
-                        $last = $value;
+                        $paginationFields[$field] = (int) base64_decode($value, true) + 1;
                         break;
                     case 'before':
-                        $before = (int) base64_decode($value, true);
+                        $paginationFields[$field] = (int) base64_decode($value, true);
+                        break;
+                    default:
+                        $paginationFields[$field] = $value;
                         break;
                 }
             }
         }
 
-        $limit         = $this->config->getLimit();
-        $adjustedLimit = $first ?: $last ?: $limit;
-        if ($adjustedLimit < $limit) {
-            $limit = $adjustedLimit;
+        $offsetAndLimit = $this->calculateOffsetAndLimit($paginationFields);
+
+        if ($offsetAndLimit['offset']) {
+            $queryBuilder->setFirstResult($offsetAndLimit['offset']);
         }
 
-        if ($after) {
-            $offset = $after;
-        } elseif ($before) {
-            $offset = $before - $limit;
-        }
-
-        if ($offset < 0) {
-            $limit += $offset;
-            $offset = 0;
-        }
-
-        if ($offset) {
-            $queryBuilder->setFirstResult($offset);
-        }
-
-        if ($limit) {
-            $queryBuilder->setMaxResults($limit);
+        if ($offsetAndLimit['limit']) {
+            $queryBuilder->setMaxResults($offsetAndLimit['limit']);
         }
 
         /**
@@ -170,47 +151,101 @@ class ResolveEntityFactory
             ),
         );
 
+        $edgesAndCursors = $this->buildEdgesAndCursors($queryBuilder, $offsetAndLimit, $paginationFields);
+
+        return [
+            'edges' => $edgesAndCursors['edges'],
+            'totalCount' => $edgesAndCursors['totalCount'],
+            'pageInfo' => [
+                'endCursor' => $edgesAndCursors['cursors']['end'],
+                'startCursor' => $edgesAndCursors['cursors']['start'],
+                'hasNextPage' => $edgesAndCursors['cursors']['end'] !== $edgesAndCursors['cursors']['last'],
+                'hasPreviousPage' => $edgesAndCursors['cursors']['first'] !== null
+                    && $edgesAndCursors['cursors']['start'] !== $edgesAndCursors['cursors']['first'],
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string, int> $offsetAndLimit
+     * @param array<string, int> $paginationFields
+     *
+     * @return array<string, mixed>
+     */
+    protected function buildEdgesAndCursors(QueryBuilder $queryBuilder, array $offsetAndLimit, array $paginationFields): array
+    {
+        $index   = 0;
+        $edges   = [];
+        $cursors = [
+            'start' => base64_encode((string) 0),
+            'first' => null,
+            'last'  => base64_encode((string) 0),
+        ];
+
         $paginator = new Paginator($queryBuilder->getQuery());
         $itemCount = $paginator->count();
 
         // Rebuild paginator if needed
-        if ($last && ! $before) {
-            $offset = $itemCount - $last;
-            $queryBuilder->setFirstResult($offset);
+        if ($paginationFields['last'] && ! $paginationFields['before']) {
+            $offsetAndLimit['offset'] = $itemCount - $paginationFields['last'];
+            $queryBuilder->setFirstResult($offsetAndLimit['offset']);
             $paginator = new Paginator($queryBuilder->getQuery());
         }
 
-        $lastCursor  = base64_encode((string) 0);
-        $firstCursor = null;
         foreach ($paginator->getQuery()->getResult() as $result) {
-            $cursor = base64_encode((string) ($index + $offset));
+            $cursors['last'] = base64_encode((string) ($index + $offsetAndLimit['offset']));
 
             $edges[] = [
                 'node' => $result,
-                'cursor' => $cursor,
+                'cursor' => $cursors['last'],
             ];
 
-            $lastCursor = $cursor;
-            if (! $firstCursor) {
-                $firstCursor = $cursor;
+            if (! $cursors['first']) {
+                $cursors['first'] = $cursors['last'];
             }
 
             $index++;
         }
 
-        $endCursor   = $paginator->count() ? $paginator->count() - 1 : 0;
-        $startCursor = base64_encode((string) 0);
-        $endCursor   = base64_encode((string) $endCursor);
+        $endIndex       = $paginator->count() ? $paginator->count() - 1 : 0;
+        $cursors['end'] = base64_encode((string) $endIndex);
 
         return [
-            'edges' => $edges,
+            'cursors'    => $cursors,
+            'edges'      => $edges,
             'totalCount' => $paginator->count(),
-            'pageInfo' => [
-                'endCursor' => $endCursor,
-                'startCursor' => $startCursor,
-                'hasNextPage' => $endCursor !== $lastCursor,
-                'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
-            ],
+        ];
+    }
+
+    /**
+     * @param array<string, int> $paginationFields
+     *
+     * @return array<string, int>
+     */
+    protected function calculateOffsetAndLimit(array $paginationFields): array
+    {
+        $offset = 0;
+        $limit  = $this->config->getLimit();
+
+        $adjustedLimit = $paginationFields['first'] ?: $paginationFields['last'] ?: $limit;
+        if ($adjustedLimit < $limit) {
+            $limit = $adjustedLimit;
+        }
+
+        if ($paginationFields['after']) {
+            $offset = $paginationFields['after'];
+        } elseif ($paginationFields['before']) {
+            $offset = $paginationFields['before'] - $limit;
+        }
+
+        if ($offset < 0) {
+            $limit += $offset;
+            $offset = 0;
+        }
+
+        return [
+            'offset' => $offset,
+            'limit'  => $limit,
         ];
     }
 }
