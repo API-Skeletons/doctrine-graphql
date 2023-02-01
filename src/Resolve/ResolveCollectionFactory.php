@@ -11,6 +11,7 @@ use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
@@ -183,43 +184,59 @@ class ResolveCollectionFactory
             );
         }
 
-        // Fetch slice of collection
-        $items = $collection->matching($criteria);
+        $edgesAndCursors = $this->buildEdgesAndCursors($collection->matching($criteria), $offsetAndLimit, $itemCount);
 
-        $edges       = [];
-        $index       = 0;
-        $lastCursor  = base64_encode((string) 0);
-        $firstCursor = null;
+        // Return entities
+        return [
+            'edges' => $edgesAndCursors['edges'],
+            'totalCount' => $itemCount,
+            'pageInfo' => [
+                'endCursor' => $edgesAndCursors['cursors']['end'],
+                'startCursor' => $edgesAndCursors['cursors']['start'],
+                'hasNextPage' => $edgesAndCursors['cursors']['end'] !== $edgesAndCursors['cursors']['last'],
+                'hasPreviousPage' => $edgesAndCursors['cursors']['first'] !== null
+                    && $edgesAndCursors['cursors']['start'] !== $edgesAndCursors['cursors']['first'],
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string, int>     $offsetAndLimit
+     * @param Collection<int, mixed> $items
+     *
+     * @return array<string, mixed>
+     */
+    protected function buildEdgesAndCursors(Collection $items, array $offsetAndLimit, int $itemCount): array
+    {
+        $edges   = [];
+        $index   = 0;
+        $cursors = [
+            'first' => null,
+            'last'  => base64_encode((string) 0),
+            'start' => base64_encode((string) 0),
+        ];
+
         foreach ($items as $item) {
-            $cursor = base64_encode((string) ($index + $offsetAndLimit['offset']));
+            $cursors['last'] = base64_encode((string) ($index + $offsetAndLimit['offset']));
 
             $edges[] = [
                 'node' => $item,
-                'cursor' => $cursor,
+                'cursor' => $cursors['last'],
             ];
 
-            $lastCursor = $cursor;
-            if (! $firstCursor) {
-                $firstCursor = $cursor;
+            if (! $cursors['first']) {
+                $cursors['first'] = $cursors['last'];
             }
 
             $index++;
         }
 
-        $endCursor   = $itemCount ? $itemCount - 1 : 0;
-        $startCursor = base64_encode((string) 0);
-        $endCursor   = base64_encode((string) $endCursor);
+        $endIndex       = $itemCount ? $itemCount - 1 : 0;
+        $cursors['end'] = base64_encode((string) $endIndex);
 
-        // Return entities
         return [
-            'edges' => $edges,
-            'totalCount' => $itemCount,
-            'pageInfo' => [
-                'endCursor' => $endCursor,
-                'startCursor' => $startCursor,
-                'hasNextPage' => $endCursor !== $lastCursor,
-                'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
-            ],
+            'cursors' => $cursors,
+            'edges'   => $edges,
         ];
     }
 
