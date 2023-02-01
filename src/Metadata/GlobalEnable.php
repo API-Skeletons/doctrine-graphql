@@ -24,7 +24,7 @@ final class GlobalEnable extends AbstractMetadataFactory
     /**
      * @param string[] $entityClasses
      *
-     * @return array<array-key, mixed>
+     * @return array<int, mixed>
      */
     public function __invoke(array $entityClasses): array
     {
