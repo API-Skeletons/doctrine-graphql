@@ -19,6 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[GraphQL\Entity(group: 'DuplicateGroup')]
 #[GraphQL\Entity(group: 'DuplicateGroupField')]
 #[GraphQL\Entity(group: 'DuplicateGroupAssociation')]
+#[GraphQL\Entity(group: 'FilterCriteriaEvent')]
 #[ORM\Entity]
 class Artist
 {
@@ -29,12 +30,14 @@ class Artist
     #[GraphQL\Field(group: 'DuplicateGroup')]
     #[GraphQL\Field(group: 'DuplicateGroupField')]
     #[GraphQL\Field(group: 'DuplicateGroupField')]
+    #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Column(type: 'string', nullable: false)]
     private string $name;
 
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     #[GraphQL\Field(group: 'TypeNameTest')]
+    #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Id]
     #[ORM\Column(type: 'bigint')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
@@ -47,6 +50,7 @@ class Artist
     #[GraphQL\Association(group: 'DuplicateGroup')]
     #[GraphQL\Association(group: 'DuplicateGroupAssociation')]
     #[GraphQL\Association(group: 'DuplicateGroupAssociation')]
+    #[GraphQL\Association(group: 'FilterCriteriaEvent', filterCriteriaEventName: self::class . '.performances.filterCriteria')]
     #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance', mappedBy: 'artist')]
     private Collection $performances;
 
