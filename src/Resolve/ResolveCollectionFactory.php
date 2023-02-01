@@ -136,60 +136,37 @@ class ResolveCollectionFactory
         string|null $filterCriteriaEventName,
         mixed ...$resolve,
     ): array {
-        $first  = 0;
-        $after  = 0;
-        $last   = 0;
-        $before = 0;
-        $offset = 0;
+        $paginationFields = [
+            'first' => 0,
+            'last' => 0,
+            'after' => 0,
+            'before' => 0,
+        ];
 
         // Pagination
         foreach ($pagination as $field => $value) {
             switch ($field) {
-                case 'first':
-                    $first = $value;
-                    break;
                 case 'after':
-                    $after = (int) base64_decode($value, true) + 1;
-                    break;
-                case 'last':
-                    $last = $value;
+                    $paginationFields[$field] = (int) base64_decode($value, true) + 1;
                     break;
                 case 'before':
-                    $before = (int) base64_decode($value, true);
+                    $paginationFields[$field] = (int) base64_decode($value, true);
+                    break;
+                default:
+                    $paginationFields[$field] = $value;
+                    $first = $value;
                     break;
             }
         }
 
-        $limit         = $this->config->getLimit();
-        $adjustedLimit = $first ?: $last ?: $limit;
-        if ($adjustedLimit < $limit) {
-            $limit = $adjustedLimit;
-        }
-
-        if ($after) {
-            $offset = $after;
-        } elseif ($before) {
-            $offset = $before - $limit;
-        }
-
-        if ($offset < 0) {
-            $limit += $offset;
-            $offset = 0;
-        }
-
-        // Get total count from collection then match
         $itemCount = count($collection->matching($criteria));
 
-        if ($last && ! $before) {
-            $offset = $itemCount - $last;
+        $offsetAndLimit = $this->calculateOffsetAndLimit($paginationFields, $itemCount);
+        if ($offsetAndLimit['offset']) {
+            $criteria->setFirstResult($offsetAndLimit['offset']);
         }
-
-        if ($offset) {
-            $criteria->setFirstResult($offset);
-        }
-
-        if ($limit) {
-            $criteria->setMaxResults($limit);
+        if ($offsetAndLimit['limit']) {
+            $criteria->setMaxResults($offsetAndLimit['limit']);
         }
 
         /**
@@ -212,11 +189,11 @@ class ResolveCollectionFactory
         $index       = 0;
         $lastCursor  = base64_encode((string) 0);
         $firstCursor = null;
-        foreach ($items as $result) {
-            $cursor = base64_encode((string) ($index + $offset));
+        foreach ($items as $item) {
+            $cursor = base64_encode((string) ($index + $offsetAndLimit['offset']));
 
             $edges[] = [
-                'node' => $result,
+                'node' => $item,
                 'cursor' => $cursor,
             ];
 
@@ -242,6 +219,43 @@ class ResolveCollectionFactory
                 'hasNextPage' => $endCursor !== $lastCursor,
                 'hasPreviousPage' => $firstCursor !== null && $startCursor !== $firstCursor,
             ],
+        ];
+    }
+
+    /**
+     * @param array<string, int> $paginationFields
+     *
+     * @return array<string, int>
+     */
+    protected function calculateOffsetAndLimit(array $paginationFields, int $itemCount): array
+    {
+        $offset = 0;
+
+        $limit         = $this->config->getLimit();
+        $adjustedLimit = $paginationFields['first'] ?: $paginationFields['last'] ?: $limit;
+
+        if ($adjustedLimit < $limit) {
+            $limit = $adjustedLimit;
+        }
+
+        if ($paginationFields['after']) {
+            $offset = $paginationFields['after'];
+        } elseif ($paginationFields['before']) {
+            $offset = $paginationFields['before'] - $limit;
+        }
+
+        if ($offset < 0) {
+            $limit += $offset;
+            $offset = 0;
+        }
+
+        if ($paginationFields['last'] && ! $paginationFields['before']) {
+            $offset = $itemCount - $paginationFields['last'];
+        }
+
+        return [
+            'offset' => $offset,
+            'limit'  => $limit,
         ];
     }
 }
