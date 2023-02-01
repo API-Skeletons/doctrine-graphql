@@ -45,7 +45,6 @@ class CriteriaFactory
         }
 
         $fields         = [];
-        $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
         $entityMetadata = $targetEntity->getMetadataConfig();
         $allowedFilters = Filters::toArray();
 
@@ -64,6 +63,28 @@ class CriteriaFactory
                 return ! in_array($value, $excludeCriteria);
             });
         }
+
+        $this->addFields($targetEntity, $typeName, $allowedFilters, $fields);
+        $this->addAssociations($targetEntity, $typeName, $allowedFilters, $fields);
+
+        $inputObject = new InputObjectType([
+            'name' => $typeName,
+            'fields' => static fn () => $fields,
+        ]);
+
+        $this->typeManager->set($typeName, $inputObject);
+
+        return $inputObject;
+    }
+
+    /**
+     * @param string[]                           $allowedFilters
+     * @param array<int, FiltersInputObjectType> $fields
+     */
+    protected function addFields(Entity $targetEntity, string $typeName, array $allowedFilters, array &$fields): void
+    {
+        $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
+        $entityMetadata = $targetEntity->getMetadataConfig();
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             // Only process fields that are in the graphql metadata
@@ -98,6 +119,16 @@ class CriteriaFactory
                 'description' => 'Filters for ' . $fieldName,
             ];
         }
+    }
+
+    /**
+     * @param string[]                           $allowedFilters
+     * @param array<int, FiltersInputObjectType> $fields
+     */
+    protected function addAssociations(Entity $targetEntity, string $typeName, array $allowedFilters, array &$fields): void
+    {
+        $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
+        $entityMetadata = $targetEntity->getMetadataConfig();
 
         // Add eq filter for to-one associations
         foreach ($classMetadata->getAssociationNames() as $associationName) {
@@ -122,14 +153,5 @@ class CriteriaFactory
                     }
             }
         }
-
-        $inputObject = new InputObjectType([
-            'name' => $typeName,
-            'fields' => static fn () => $fields,
-        ]);
-
-        $this->typeManager->set($typeName, $inputObject);
-
-        return $inputObject;
     }
 }

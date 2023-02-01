@@ -29,21 +29,51 @@ class InputFactory extends AbstractContainer
     }
 
     /**
-     * @param string[]                           $optionalFields
-     * @param array<array-key, InputObjectField> $fields
+     * @param string[] $requiredFields An optional list of just the required fields you want for the mutation.
+     *                                 This allows specific fields per mutation.
+     * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
+     *                                 This allows specific fields per mutation.
      *
-     * @return array<array-key, InputObjectField>
+     * @throws Error
+     */
+    public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
+    {
+        $fields       = [];
+        $targetEntity = $this->metadata->get($id);
+
+        if (! count($requiredFields) && ! count($optionalFields)) {
+            $this->addAllFieldsAsRequired($targetEntity, $fields);
+        } else {
+            $this->addRequiredFields($targetEntity, $requiredFields, $fields);
+            $this->addOptionalFields($targetEntity, $optionalFields, $fields);
+        }
+
+        return new InputObjectType([
+            'name' => $targetEntity->getTypeName() . '_Input',
+            'description' => $targetEntity->getDescription(),
+            'fields' => static fn () => $fields,
+        ]);
+    }
+
+    /**
+     * @param string[]                     $optionalFields
+     * @param array<int, InputObjectField> $fields
      */
     protected function addOptionalFields(
         mixed $targetEntity,
         array $optionalFields,
-        array $fields,
-    ): array {
+        array &$fields,
+    ): void {
         foreach ($this->entityManager->getClassMetadata($targetEntity->getEntityClass())->getFieldNames() as $fieldName) {
             if (! in_array($fieldName, $optionalFields) && $optionalFields !== ['*']) {
                 continue;
             }
 
+            /**
+             * Do not include identifiers as input.  In the majority of cases there will be
+             * no reason to set or update an identifier.  For the case where an identifier
+             * should be set or updated, this factory is not the correct solution.
+             */
             if ($optionalFields === ['*'] && $this->entityManager->getClassMetadata($targetEntity->getEntityClass())->isIdentifier($fieldName)) {
                 continue;
             }
@@ -54,27 +84,31 @@ class InputFactory extends AbstractContainer
                 'type' => $this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']),
             ]);
         }
-
-        return $fields;
     }
 
     /**
-     * @param string[]                           $requiredFields
-     * @param array<array-key, InputObjectField> $fields
-     *
-     * @return array<array-key, InputObjectField>
+     * @param string[]                     $requiredFields
+     * @param array<int, InputObjectField> $fields
      */
     protected function addRequiredFields(
         mixed $targetEntity,
         array $requiredFields,
-        array $fields,
-    ): array {
+        array &$fields,
+    ): void {
         foreach ($this->entityManager->getClassMetadata($targetEntity->getEntityClass())->getFieldNames() as $fieldName) {
             if (! in_array($fieldName, $requiredFields) && $requiredFields !== ['*']) {
                 continue;
             }
 
-            if ($requiredFields === ['*'] && $this->entityManager->getClassMetadata($targetEntity->getEntityClass())->isIdentifier($fieldName)) {
+            /**
+             * Do not include identifiers as input.  In the majority of cases there will be
+             * no reason to set or update an identifier.  For the case where an identifier
+             * should be set or updated, this factory is not the correct solution.
+             */
+            if (
+                $requiredFields === ['*']
+                && $this->entityManager->getClassMetadata($targetEntity->getEntityClass())->isIdentifier($fieldName)
+            ) {
                 continue;
             }
 
@@ -85,21 +119,22 @@ class InputFactory extends AbstractContainer
             $fields[$fieldName] = new InputObjectField([
                 'name' => $fieldName,
                 'description' => (string) $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'],
-                'type' => Type::nonNull($this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type'])),
+                'type' => Type::nonNull($this->typeManager->get(
+                    $targetEntity->getMetadataConfig()['fields'][$fieldName]['type'],
+                )),
             ]);
         }
-
-        return $fields;
     }
 
-    /**
-     * @param array<array-key, InputObjectField> $fields
-     *
-     * @return array<array-key, InputObjectField>
-     */
-    protected function addAllFieldsAsRequired(mixed $targetEntity, array $fields): array
+    /** @param array<int, InputObjectField> $fields */
+    protected function addAllFieldsAsRequired(mixed $targetEntity, array &$fields): void
     {
         foreach ($this->entityManager->getClassMetadata($targetEntity->getEntityClass())->getFieldNames() as $fieldName) {
+            /**
+             * Do not include identifiers as input.  In the majority of cases there will be
+             * no reason to set or update an identifier.  For the case where an identifier
+             * should be set or updated, this factory is not the correct solution.
+             */
             if ($this->entityManager->getClassMetadata($targetEntity->getEntityClass())->isIdentifier($fieldName)) {
                 continue;
             }
@@ -110,40 +145,5 @@ class InputFactory extends AbstractContainer
                 'type' => Type::nonNull($this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type'])),
             ]);
         }
-
-        return $fields;
-    }
-
-    /**
-     * @param string[] $requiredFields An optional list of just the required fields you want for the mutation.
-     *                              This allows specific fields per mutation.
-     * @param string[] $optionalFields An optional list of optional fields you want for the mutation.
-     *                              This allows specific fields per mutation.
-     *
-     * @throws Error
-     */
-    public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
-    {
-        $fields       = [];
-        $targetEntity = $this->metadata->get($id);
-
-        /**
-         * Do not include identifiers as input.  In the majority of cases there will be
-         * no reason to set or update an identifier.  For the case where an identifier
-         * should be set or updated, this facotry is not the correct solution.
-         */
-
-        if (! count($requiredFields) && ! count($optionalFields)) {
-            $fields = $this->addAllFieldsAsRequired($targetEntity, $fields);
-        } else {
-            $fields = $this->addRequiredFields($targetEntity, $requiredFields, $fields);
-            $fields = $this->addOptionalFields($targetEntity, $optionalFields, $fields);
-        }
-
-        return new InputObjectType([
-            'name' => $targetEntity->getTypeName() . '_Input',
-            'description' => $targetEntity->getDescription(),
-            'fields' => static fn () => $fields,
-        ]);
     }
 }

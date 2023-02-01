@@ -91,22 +91,53 @@ class Entity
             return $this->typeManager->get($this->getTypeName());
         }
 
+        $fields = [];
+
+        $this->addFields($fields);
+        $this->addAssociations($fields);
+
+        $arrayObject = new ArrayObject([
+            'name' => $this->getTypeName(),
+            'description' => $this->getDescription(),
+            'fields' => static fn () => $fields,
+            'resolveField' => $this->fieldResolver,
+        ]);
+
+        /**
+         * Dispatch event to allow modifications to the ObjectType definition
+         */
+        $this->eventDispatcher->dispatch(
+            new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition'),
+        );
+
+        $objectType = new ObjectType($arrayObject->getArrayCopy());
+        $this->typeManager->set($this->getTypeName(), $objectType);
+
+        return $objectType;
+    }
+
+    /** @param array<int, mixed[]> $fields */
+    protected function addFields(array &$fields): void
+    {
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
-        $graphQLFields = [];
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             if (! in_array($fieldName, array_keys($this->metadataConfig['fields']))) {
                 continue;
             }
 
-            $graphQLType = $this->typeManager
-                ->get($this->getMetadataConfig()['fields'][$fieldName]['type']);
-
-            $graphQLFields[$fieldName] = [
-                'type' => $graphQLType,
+            $fields[$fieldName] = [
+                'type' => $this->typeManager
+                    ->get($this->getMetadataConfig()['fields'][$fieldName]['type']),
                 'description' => $this->metadataConfig['fields'][$fieldName]['description'],
             ];
         }
+    }
+
+    /** @param array<int, mixed[]> $fields */
+    protected function addAssociations(array &$fields): void
+    {
+        $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
             if (! in_array($associationName, array_keys($this->metadataConfig['fields']))) {
@@ -119,8 +150,8 @@ class Entity
                 case ClassMetadataInfo::ONE_TO_ONE:
                 case ClassMetadataInfo::MANY_TO_ONE:
                 case ClassMetadataInfo::TO_ONE:
-                    $targetEntity                    = $associationMetadata['targetEntity'];
-                    $graphQLFields[$associationName] = function () use ($targetEntity) {
+                    $targetEntity             = $associationMetadata['targetEntity'];
+                    $fields[$associationName] = function () use ($targetEntity) {
                         $entity = $this->metadata->get($targetEntity);
 
                         return [
@@ -132,8 +163,8 @@ class Entity
                 case ClassMetadataInfo::ONE_TO_MANY:
                 case ClassMetadataInfo::MANY_TO_MANY:
                 case ClassMetadataInfo::TO_MANY:
-                    $targetEntity                    = $associationMetadata['targetEntity'];
-                    $graphQLFields[$associationName] = function () use ($targetEntity, $associationName) {
+                    $targetEntity             = $associationMetadata['targetEntity'];
+                    $fields[$associationName] = function () use ($targetEntity, $associationName) {
                         $entity    = $this->metadata->get($targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
@@ -159,27 +190,5 @@ class Entity
                     break;
             }
         }
-
-        $arrayObject = new ArrayObject([
-            'name' => $this->getTypeName(),
-            'description' => $this->getDescription(),
-            'fields' => static function () use ($graphQLFields) {
-                return $graphQLFields;
-            },
-            'resolveField' => $this->fieldResolver,
-        ]);
-
-        /**
-         * Dispatch event to allow modifications to the ObjectType definition
-         */
-        $this->eventDispatcher->dispatch(
-            new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition'),
-        );
-
-        $objectType = new ObjectType($arrayObject->getArrayCopy());
-
-        $this->typeManager->set($this->getTypeName(), $objectType);
-
-        return $objectType;
     }
 }
