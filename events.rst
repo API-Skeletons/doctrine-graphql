@@ -65,13 +65,60 @@ user, create at least one listener.  You may add multiple listeners.
       }
   );
 
-The ``FilterQueryBuilder`` event has two functions:
+The ``FilterQueryBuilder`` event has two functions in addition to getters for
+all resolve parameters:
 
 * ``getQueryBuilder`` - Will return a query builder with the user specified
   filters already applied.
 * ``getEntityAliasMap`` - Returns an array of entities used in the QueryBuilder
   and the aliases used for each.  Use this to help you apply more filters to
   the QueryBuider.
+
+
+Filtering Criteria
+------------------
+
+When an association is resolved from an entity or another association you may
+listen to the filterCriteria event to add additional criteria for filtering
+the association if you assigned an event name in the attributes.
+
+.. code-block:: php
+
+  <?php
+
+  use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+  use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
+  use App\ORM\Entity\Artist;
+  use League\Event\EventDispatcher;
+
+  #[GraphQL\Entity]
+  class Artist
+  {
+      #[GraphQL\Field]
+      public $id;
+
+      #[GraphQL\Field]
+      public $name;
+
+      #[GraphQL\Association(filterCriteriaEventName: self::class . '.performances.filterCriteria')]
+      public $performances;
+  }
+
+  // Add a listener to your driver
+  $driver->get(EventDispatcher::class)->subscribeTo(
+      Artist::class . '.performances.filterCriteria',
+      function (FilterCriteria $event): void {
+          $event->getCriteria()->andWhere(
+              $event->getCriteria()->expr()->eq('isDeleted', false)
+          );
+      },
+  );
+
+The ``FilterQueryBuilder`` event has one function in addition to getters for
+all resolve parameters:
+
+* ``getCriteria`` - Will return a Criteria object with the user specified
+  filters already applied.
 
 
 Modify an Entity Definition

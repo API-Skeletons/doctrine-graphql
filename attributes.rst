@@ -116,6 +116,9 @@ associated with.  Associations of the to many variety will be filterable.
 * ``group`` - You can have multiple GraphQL configurations organzied by
   ``group``.  Only one ``Association`` attribute per group is allowed.
 * ``description`` - A description of the ``Association``.
+* ``filterCriteriaEventName`` - An event to fire when resolving this collection.
+  Additional filters can be added to the criteria.  An example of this use is for
+  associations with soft deletes.
 * ``excludeCriteria`` - An array of criteria to exclude from available
   filters for the association. Entity level ``excludeCriteria`` are applied to
   associations.  For instance, to exclude filters that use a ``like`` database
