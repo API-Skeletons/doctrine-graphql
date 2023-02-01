@@ -28,8 +28,6 @@ final class GlobalEnable extends AbstractMetadataFactory
      */
     public function __invoke(array $entityClasses): array
     {
-        $globalIgnore = $this->config->getGlobalIgnore();
-
         foreach ($entityClasses as $entityClass) {
             // Get extract by value or reference
             $byValue = $this->config->getGlobalByValue() ?? true;
