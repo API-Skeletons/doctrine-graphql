@@ -102,6 +102,8 @@ class MetadataFactory
 
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria'] = [];
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['description']     = $associationName;
+                $this->metadataConfig[$entityClass]['fields'][$associationName]['filterCriteriaEventName']
+                    = null;
 
                 // NullifyOwningAssociation is not used for globalEnable
                 $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
@@ -261,6 +263,8 @@ class MetadataFactory
                     $instance->getDescription();
                 $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['excludeCriteria'] =
                     $instance->getExcludeCriteria();
+                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['filterCriteriaEventName'] =
+                    $instance->getFilterCriteriaEventName();
 
                 if ($instance->getStrategy()) {
                     $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['strategy']

@@ -15,6 +15,7 @@ class Association
         protected string|null $strategy = null,
         protected string|null $description = null,
         protected array $excludeCriteria = [],
+        protected string|null $filterCriteriaEventName = null,
     ) {
     }
 
@@ -37,5 +38,10 @@ class Association
     public function getExcludeCriteria(): array
     {
         return $this->excludeCriteria;
+    }
+
+    public function getFilterCriteriaEventName(): string|null
+    {
+        return $this->filterCriteriaEventName;
     }
 }

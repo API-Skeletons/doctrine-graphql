@@ -6,6 +6,9 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
+use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
+use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
+use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
@@ -16,6 +19,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\PersistentCollection;
 use GraphQL\Type\Definition\ResolveInfo;
 
+use League\Event\EventDispatcher;
 use function base64_decode;
 use function base64_encode;
 use function count;
@@ -27,6 +31,8 @@ class ResolveCollectionFactory
         protected Config $config,
         protected FieldResolver $fieldResolver,
         protected TypeManager $typeManager,
+        protected EventDispatcher $eventDispatcher,
+        protected Metadata $metadata,
     ) {
     }
 
@@ -51,27 +57,35 @@ class ResolveCollectionFactory
 
     public function get(Entity $entity): Closure
     {
-        return function ($source, $args, $context, ResolveInfo $resolveInfo) {
+        return function ($source, array $args, $context, ResolveInfo $info) {
             $fieldResolver = $this->fieldResolver;
-            $collection    = $fieldResolver($source, $args, $context, $resolveInfo);
+            $collection    = $fieldResolver($source, $args, $context, $info);
 
             $collectionMetadata = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor(
                     (string) $this->entityManager->getMetadataFactory()
                         ->getMetadataFor(ClassUtils::getRealClass($source::class))
-                        ->getAssociationTargetClass($resolveInfo->fieldName),
+                        ->getAssociationTargetClass($info->fieldName),
                 );
+
+            $metadataConfig = $this->metadata->getMetadataConfig();
+            $entityClass   = ClassUtils::getRealClass($source::class);
 
             return $this->buildPagination(
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
+                $metadataConfig[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
+                $source,
+                $args,
+                $context,
+                $info
             );
         };
     }
 
     /** @param mixed[] $filter */
-    private function buildCriteria(array $filter, ClassMetadata $collectionMetadata): Criteria
+    private function buildCriteria(array $filter, ClassMetadata $collectionMetadata,): Criteria
     {
         $orderBy  = [];
         $criteria = Criteria::create();
@@ -116,8 +130,13 @@ class ResolveCollectionFactory
      *
      * @return mixed[]
      */
-    private function buildPagination(array $pagination, PersistentCollection $collection, Criteria $criteria): array
-    {
+    private function buildPagination(
+        array $pagination,
+        PersistentCollection $collection,
+        Criteria $criteria,
+        string|null $filterCriteriaEventName,
+        ...$resolve,
+    ): array {
         $first  = 0;
         $after  = 0;
         $last   = 0;
@@ -172,6 +191,19 @@ class ResolveCollectionFactory
 
         if ($limit) {
             $criteria->setMaxResults($limit);
+        }
+
+        /**
+         * Fire the event dispatcher using the passed event name.
+         */
+        if ($filterCriteriaEventName) {
+            $this->eventDispatcher->dispatch(
+                new FilterCriteria(
+                    $criteria,
+                    $filterCriteriaEventName,
+                    ...$resolve,
+                ),
+            );
         }
 
         // Fetch slice of collection

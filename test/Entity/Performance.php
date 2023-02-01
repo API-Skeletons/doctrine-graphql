@@ -15,19 +15,23 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[GraphQL\Entity(typeName: 'performance', description: 'Performances')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest', excludeCriteria: ['contains'])]
+#[GraphQL\Entity(group: 'FilterCriteriaEvent')]
 #[ORM\Entity]
 class Performance
 {
     #[GraphQL\Field(description: 'Venue name')]
     #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $venue = null;
 
     #[GraphQL\Field(description: 'City name')]
+    #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $city = null;
 
     #[GraphQL\Field(description: 'State name')]
+    #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $state = null;
 
