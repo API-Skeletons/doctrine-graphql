@@ -154,7 +154,7 @@ class ResolveCollectionFactory
                     break;
                 default:
                     $paginationFields[$field] = $value;
-                    $first = $value;
+                    $first                    = $value;
                     break;
             }
         }
@@ -165,6 +165,7 @@ class ResolveCollectionFactory
         if ($offsetAndLimit['offset']) {
             $criteria->setFirstResult($offsetAndLimit['offset']);
         }
+
         if ($offsetAndLimit['limit']) {
             $criteria->setMaxResults($offsetAndLimit['limit']);
         }
