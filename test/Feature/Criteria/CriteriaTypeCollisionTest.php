@@ -6,6 +6,7 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Criteria;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use GraphQL\GraphQL;
@@ -18,6 +19,8 @@ class CriteriaTypeCollisionTest extends AbstractTest
     {
         $driver1 = new Driver($this->getEntityManager());
         $driver2 = new Driver($this->getEntityManager(), new Config(['group' => 'ExcludeCriteriaTest']));
+
+        $driver2->set(TypeManager::class, $driver1->get(TypeManager::class));
 
         $schema = new Schema([
             'query' => new ObjectType([
@@ -43,11 +46,53 @@ class CriteriaTypeCollisionTest extends AbstractTest
             ]),
         ]);
 
-        $query  = '{ one: performance1 ( filter: { id: { eq: 2 } } ) { edges { node { id  } } }, two: performance2 ( filter: { id: { eq: 2 } } ) { edges { node { id  } } } }';
+        $query  = '{
+            one: performance1 (
+              filter: {
+                id: {
+                  eq: 2
+                }
+              }
+            ) {
+              edges {
+                node {
+                  id
+                }
+              }
+              pageInfo {
+                hasNextPage
+              }
+            },
+            two: performance2 (
+              filter: {
+                id: {
+                  eq: 2
+                }
+              }
+            ) {
+              edges {
+                node {
+                  id
+                }
+              }
+              pageInfo {
+                hasNextPage
+              }
+            }
+        }';
         $result = GraphQL::executeQuery($schema, $query);
 
         $data = $result->toArray()['data'];
 
         $this->assertEquals($data['one']['edges'][0]['node']['id'], $data['two']['edges'][0]['node']['id']);
+        $this->assertSame($driver1->get(TypeManager::class), $driver2->get(TypeManager::class));
+        $this->assertSame(
+            $driver1->get(TypeManager::class)->get('pageinfo'),
+            $driver2->get(TypeManager::class)->get('pageinfo'),
+        );
+        $this->assertSame(
+            $driver1->get(TypeManager::class)->get('pagination'),
+            $driver2->get(TypeManager::class)->get('pagination'),
+        );
     }
 }
