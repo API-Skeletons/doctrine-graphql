@@ -24,7 +24,7 @@ final class GlobalEnable extends AbstractMetadataFactory
     /**
      * @param string[] $entityClasses
      *
-     * @return mixed[]
+     * @return array<array-key, mixed>
      */
     public function __invoke(array $entityClasses): array
     {
@@ -60,21 +60,16 @@ final class GlobalEnable extends AbstractMetadataFactory
                 continue;
             }
 
-            $this->metadataConfig[$entityClass]['fields'][$fieldName]['description']
-                = $fieldName;
-
-            $this->metadataConfig[$entityClass]['fields'][$fieldName]['type']
-                = $entityClassMetadata->getTypeOfField($fieldName);
-
-            // Set default strategy based on field type
-            $this->metadataConfig[$entityClass]['fields'][$fieldName]['strategy']
-                = $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
-
-            $this->metadataConfig[$entityClass]['fields'][$fieldName]['excludeCriteria'] = [];
+            $this->metadataConfig[$entityClass]['fields'][$fieldName] = [
+                'description' => $fieldName,
+                'type' => $entityClassMetadata->getTypeOfField($fieldName),
+                'strategy' => $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName)),
+                'excludeCriteria' => [],
+            ];
         }
     }
 
-    public function buildAssociationMetadata(string $entityClass): void
+    private function buildAssociationMetadata(string $entityClass): void
     {
         $entityClassMetadata = $this->entityManager->getMetadataFactory()->getMetadataFor($entityClass);
 
@@ -83,14 +78,12 @@ final class GlobalEnable extends AbstractMetadataFactory
                 continue;
             }
 
-            $this->metadataConfig[$entityClass]['fields'][$associationName]['excludeCriteria']         = [];
-            $this->metadataConfig[$entityClass]['fields'][$associationName]['description']             = $associationName;
-            $this->metadataConfig[$entityClass]['fields'][$associationName]['filterCriteriaEventName']
-                = null;
-
-            // NullifyOwningAssociation is not used for globalEnable
-            $this->metadataConfig[$entityClass]['fields'][$associationName]['strategy'] =
-                Strategy\AssociationDefault::class;
+            $this->metadataConfig[$entityClass]['fields'][$associationName] = [
+                'excludeCriteria' => [],
+                'description' => $associationName,
+                'filterCriteriaEventName' => null,
+                'strategy' => Strategy\AssociationDefault::class,
+            ];
         }
     }
 }
