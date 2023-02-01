@@ -298,6 +298,42 @@ $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryB
 );
 ```
 
+### Filter Criteria (embedded collections)
+
+You may modify the criteria object used to filter associations.  For instance, if you use soft 
+deletes then you would want to filter out deleted rows from an association.
+
+```php
+use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
+use App\ORM\Entity\Artist;
+use League\Event\EventDispatcher;
+
+#[GraphQL\Entity]
+class Artist 
+{
+    #[GraphQL\Field]
+    public $id;
+    
+    #[GraphQL\Field]
+    public $name;
+    
+    #[GraphQL\Association(filterCriteriaEventName: self::class . '.performances.filterCriteria')]
+    public $performances;
+}
+
+// Add a listener to your driver
+$driver->get(EventDispatcher::class)->subscribeTo(
+    Artist::class . '.performances.filterCriteria',
+    function (FilterCriteria $event): void {
+        $event->getCriteria()->andWhere(
+            $event->getCriteria()->expr()->eq('isDeleted', false)
+        );
+    },
+);
+```
+
+
 ### Entity ObjectType Definition
 
 You may modify the array used to define an entity type before it is created. This can be used for generated data and the like. 
