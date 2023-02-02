@@ -298,7 +298,7 @@ $driver->get(EventDispatcher::class)->subscribeTo(Artist::class . '.filterQueryB
 );
 ```
 
-### Filter Criteria (embedded collections)
+### Filter Association Criteria
 
 You may modify the criteria object used to filter associations.  For instance, if you use soft 
 deletes then you would want to filter out deleted rows from an association.
