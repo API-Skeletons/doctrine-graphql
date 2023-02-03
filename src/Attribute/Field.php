@@ -9,13 +9,19 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Field
 {
-    /** @param string[] $excludeCriteria */
+    use ExcludeCriteria;
+
+    /** 
+     * @param string[] $excludeCriteria
+     * @param string[] $includeCriteria 
+     */
     public function __construct(
         protected string $group = 'default',
         protected string|null $strategy = null,
         protected string|null $description = null,
         protected string|null $type = null,
         private array $excludeCriteria = [],
+        private array $includeCriteria = [],
     ) {
     }
 
@@ -38,10 +44,5 @@ class Field
     {
         return $this->type;
     }
-
-    /** @return string[] */
-    public function getExcludeCriteria(): array
-    {
-        return $this->excludeCriteria;
-    }
 }
+

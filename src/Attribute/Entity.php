@@ -9,6 +9,8 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 final class Entity
 {
+    use ExcludeCriteria;
+
     /** @var string The GraphQL group */
     private string $group;
 
@@ -30,6 +32,7 @@ final class Entity
     /**
      * @param mixed[]  $filters
      * @param string[] $excludeCriteria
+     * @param string[] $includeCriteria
      */
     public function __construct(
         string $group = 'default',
@@ -39,6 +42,7 @@ final class Entity
         array $filters = [],
         private string|null $namingStrategy = null,
         private array $excludeCriteria = [],
+        private array $includeCriteria = [],
     ) {
         $this->group       = $group;
         $this->byValue     = $byValue;
@@ -75,11 +79,5 @@ final class Entity
     public function getNamingStrategy(): string|null
     {
         return $this->namingStrategy;
-    }
-
-    /** @return string[] */
-    public function getExcludeCriteria(): array
-    {
-        return $this->excludeCriteria;
     }
 }
