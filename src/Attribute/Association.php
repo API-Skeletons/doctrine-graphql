@@ -11,9 +11,9 @@ class Association
 {
     use ExcludeCriteria;
 
-    /** 
+    /**
      * @param string[] $excludeCriteria
-     * @param string[] $includeCriteria 
+     * @param string[] $includeCriteria
      */
     public function __construct(
         protected string $group = 'default',
