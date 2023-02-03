@@ -26,7 +26,7 @@ Library Highlights
 * Support for all default [Doctrine Types](https://www.doctrine-project.org/projects/doctrine-dbal/en/latest/reference/types.html) & custom types
 * Support for the [GraphQL Complete Connection Model](https://graphql.org/learn/pagination/#complete-connection-model)
 * Supports [filtering of sub-collections](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/queries.html)
-* [Events](https://github.com/API-Skeletons/doctrine-graphql#events) for modifying Doctrine queries
+* [Events](https://github.com/API-Skeletons/doctrine-graphql#events) for modifying queries and entity type
 * Uses the [Doctrine Laminas Hydrator](https://www.doctrine-project.org/projects/doctrine-laminas-hydrator/en/3.1/index.html) for extraction
 * Conforms to the [Doctrine Coding Standard](https://www.doctrine-project.org/projects/doctrine-coding-standard/en/9.0/index.html)
 * Written by a [Doctrine Maintainer](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/about.html)
