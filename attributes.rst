@@ -88,7 +88,7 @@ in your graph. Optional parameters are:
 * ``excludeCriteria`` - An array of filters to exclude from available
   filters for this field.  Combined with ``excludeCriteria`` for the entity.
 * ``includeCriteria`` - An array of filters to include from available
-  filters for all fields and associations in the entity.  ``includeCriteria``
+  filters for the field.  ``includeCriteria``
   and ``excludeCriteria`` are mutually exclusive within one attribute.
 
 .. code-block:: php
@@ -133,7 +133,7 @@ associated with.  Associations of the to many variety will be filterable.
     #[GraphQL\Association(excludeCriteria: ['contains', 'startswith', 'endswith'])]
 
 * ``includeCriteria`` - An array of filters to include from available
-  filters for all fields and associations in the entity.  ``includeCriteria``
+  filters for all fields in the association.  ``includeCriteria``
   and ``excludeCriteria`` are mutually exclusive within one attribute.
 * ``strategy`` - A custom hydrator strategy class.
   Class must be injected into the HydratorFactory container.  See `containers <containers.html>`_
