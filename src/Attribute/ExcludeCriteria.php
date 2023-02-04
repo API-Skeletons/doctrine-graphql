@@ -15,7 +15,7 @@ trait ExcludeCriteria
     /** @return string[] */
     public function getExcludeCriteria(): array
     {
-        if ($this->includeCriteria && $this->exccludeCriteria) {
+        if ($this->includeCriteria && $this->excludeCriteria) {
             throw new Exception('includeCriteria and excludeCriteria are mutually exclusive.');
         }
 

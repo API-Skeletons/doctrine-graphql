@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,7 +46,8 @@ class Artist
 
     /** @var Collection<id, Performance> */
     #[GraphQL\Association(description: 'Performances')]
-    #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: ['neq'])]
+    #[GraphQL\Association(group: 'ExcludeCriteriaTest', excludeCriteria: [Filters::NEQ])]
+    #[GraphQL\Association(group: 'IncludeCriteriaTest', includeCriteria: [Filters::EQ])]
     #[GraphQL\Association(group: 'DuplicateGroup')]
     #[GraphQL\Association(group: 'DuplicateGroup')]
     #[GraphQL\Association(group: 'DuplicateGroupAssociation')]

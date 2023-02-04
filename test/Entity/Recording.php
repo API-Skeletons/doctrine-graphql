@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[GraphQL\Entity(typeName: 'recording', description: 'Performance recordings')]
 #[GraphQL\Entity(typeName: 'entitytestrecording', description: 'Entity Test Recordings', group: 'entityTest')]
+#[GraphQL\Entity(group: 'IncludeCriteriaTest')]
 #[GraphQL\Entity(group: 'CustomFieldStrategyTest')]
 #[ORM\Entity]
 class Recording
@@ -21,6 +22,7 @@ class Recording
     #[GraphQL\Field(description: 'Source')]
     #[GraphQL\Field(description: 'Entity Test Source', group: 'entityTest')]
     #[GraphQL\Field(group: 'CustomFieldStrategyTest')]
+    #[GraphQL\Field(group: 'IncludeCriteriaTest')]
     #[ORM\Column(type: 'text', nullable: false)]
     private string $source;
 
