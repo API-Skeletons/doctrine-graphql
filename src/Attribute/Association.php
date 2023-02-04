@@ -9,12 +9,18 @@ use Attribute;
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Association
 {
-    /** @param string[] $excludeCriteria */
+    use ExcludeCriteria;
+
+    /**
+     * @param string[] $excludeCriteria
+     * @param string[] $includeCriteria
+     */
     public function __construct(
         protected string $group = 'default',
         protected string|null $strategy = null,
         protected string|null $description = null,
         protected array $excludeCriteria = [],
+        protected array $includeCriteria = [],
         protected string|null $filterCriteriaEventName = null,
     ) {
     }
@@ -32,12 +38,6 @@ class Association
     public function getDescription(): string|null
     {
         return $this->description;
-    }
-
-    /** @return string[] */
-    public function getExcludeCriteria(): array
-    {
-        return $this->excludeCriteria;
     }
 
     public function getFilterCriteriaEventName(): string|null

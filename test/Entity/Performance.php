@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Entity;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
+use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,23 +16,45 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[GraphQL\Entity(typeName: 'performance', description: 'Performances')]
 #[GraphQL\Entity(group: 'ExcludeCriteriaTest', excludeCriteria: ['contains'])]
+#[GraphQL\Entity(group: 'IncludeCriteriaTest', includeCriteria: [
+    Filters::EQ,
+    Filters::NEQ,
+    Filters::CONTAINS,
+])]
+#[GraphQL\Entity(
+    group: 'IncludeExcludeCriteriaTest',
+    excludeCriteria: [Filters::IN],
+    includeCriteria: [
+        Filters::EQ,
+        Filters::NEQ,
+        Filters::CONTAINS,
+    ],
+)]
 #[GraphQL\Entity(group: 'FilterCriteriaEvent')]
 #[ORM\Entity]
 class Performance
 {
     #[GraphQL\Field(description: 'Venue name')]
     #[GraphQL\Field(description: 'Venue name', group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'IncludeCriteriaTest')]
     #[GraphQL\Field(group: 'FilterCriteriaEvent')]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $venue = null;
 
     #[GraphQL\Field(description: 'City name')]
     #[GraphQL\Field(group: 'FilterCriteriaEvent')]
+    #[GraphQL\Field(group: 'IncludeCriteriaTest', includeCriteria: [
+        Filters::EQ,
+        Filters::NEQ,
+    ])]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $city = null;
 
     #[GraphQL\Field(description: 'State name')]
     #[GraphQL\Field(group: 'FilterCriteriaEvent')]
+    #[GraphQL\Field(group: 'IncludeCriteriaTest', excludeCriteria: [
+        Filters::EQ,
+    ])]
     #[ORM\Column(type: 'string', nullable: true)]
     private string|null $state = null;
 
@@ -41,6 +64,7 @@ class Performance
 
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
+    #[GraphQL\Field(group: 'IncludeCriteriaTest')]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
@@ -48,6 +72,7 @@ class Performance
 
     /** @var Collection<id, Recording> */
     #[GraphQL\Association(description: 'Recordings by artist')]
+    #[GraphQL\Association(group: 'IncludeCriteriaTest', includeCriteria: [Filters::CONTAINS])]
     #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording', mappedBy: 'performance')]
     private Collection $recordings;
 
