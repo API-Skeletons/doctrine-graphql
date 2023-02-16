@@ -26,3 +26,7 @@ To work around this you must use a shared type manager:
    
    $driver2->set(TypeManager::class, $driver1->get(TypeManager::class));
    
+.. role:: raw-html(raw)
+   :format: html
+
+.. include:: footer.rst
