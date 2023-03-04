@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
-/**
- * This class is used for parameter differentiation when creating the driver
- *   $partialContext->setLimit(1000);
- */
 class Config
 {
     /**
      * @var string The GraphQL group. This allows multiple GraphQL
-     *               configurations within the same application or
-     *               even within the same group of entities and Object Manager.
+     *             configurations within the same application or
+     *             even within the same group of entities and Object Manager.
      */
     protected string $group = 'default';
 
@@ -48,9 +44,9 @@ class Config
 
     /**
      * @var bool|null When set to true, all entities will be extracted by value
-     *           across all hydrators in the driver.  When set to false,
-     *           all hydrators will extract by reference.  This overrides
-     *           per-entity attribute configuration.
+     *                across all hydrators in the driver.  When set to false,
+     *                all hydrators will extract by reference.  This overrides
+     *                per-entity attribute configuration.
      */
     protected bool|null $globalByValue = null;
 
