@@ -21,6 +21,7 @@ jobs:
         php-version:
           - "8.0"
           - "8.1"
+          - "8.2"
         dependencies:
           - "highest"
         optional-dependencies:
@@ -53,14 +54,14 @@ jobs:
         if: "! startsWith(matrix.php-version, '8')"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "--prefer-dist --no-suggest"
+          composer-options: "--prefer-dist"
 
       - name: "Install dependencies with Composer (--ignore-platform-req=php)"
         uses: "ramsey/composer-install@v1"
         if: "startsWith(matrix.php-version, '8')"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
-          composer-options: "--prefer-dist --no-suggest --ignore-platform-req=php"
+          composer-options: "--prefer-dist --ignore-platform-req=php"
 
       - name: "Run PHPUnit"
         run: "vendor/bin/phpunit --coverage-clover=coverage.xml"
