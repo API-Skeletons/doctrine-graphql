@@ -24,16 +24,10 @@ jobs:
           - "8.2"
         dependencies:
           - "highest"
+          - "lowest"
         optional-dependencies:
           - true
           - false
-        include:
-          -   php-version: "8.0"
-              dependencies: "lowest"
-              optional-dependencies: false
-          -   php-version: "8.0"
-              dependencies: "lowest"
-              optional-dependencies: true
 
     steps:
       - name: "Checkout"
