@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\Type;
 
 use function count;
 use function in_array;
+use function uniqid;
 
 class InputFactory extends AbstractContainer
 {

@@ -46,9 +46,9 @@ class FieldResolver
         if (! $this->config->getUseHydratorCache()) {
             if (isset($this->extractValues[$splObjectHash])) {
                 return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
-            } else {
-                $this->extractValues = [];
             }
+
+            $this->extractValues = [];
 
             $this->extractValues[$splObjectHash] = $this->metadata
                 ->get($entityClass)->getHydrator()->extract($source);
