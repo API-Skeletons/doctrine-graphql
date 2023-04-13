@@ -49,7 +49,7 @@ class InputFactory extends AbstractContainer
         }
 
         return new InputObjectType([
-            'name' => $targetEntity->getTypeName() . '_Input',
+            'name' => $targetEntity->getTypeName() . '_Input_' . uniqid(),
             'description' => $targetEntity->getDescription(),
             'fields' => static fn () => $fields,
         ]);
