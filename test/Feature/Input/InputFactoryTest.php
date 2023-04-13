@@ -17,6 +17,83 @@ use Throwable;
 
 class InputFactoryTest extends AbstractTest
 {
+    /**
+     * TypeNames for inputs was EntityType_Input but that has been changed to
+     * EntityType_Input_uniqid to avoid collisions
+     */
+    public function testMultipeInputsWithSameEntity(): void
+    {
+        $config = new Config(['group' => 'InputFactoryTest']);
+        $driver = new Driver($this->getEntityManager(), $config);
+
+        $schema = new Schema([
+            'mutation' => new ObjectType([
+                'name' => 'mutation',
+                'fields' => [
+                    'testInput1' => [
+                        'type' => $driver->type(User::class),
+                        'args' => [
+                            'id' => Type::nonNull(Type::id()),
+                            'input' => Type::nonNull($driver->input(User::class, ['name'])),
+                        ],
+                        'resolve' => static function ($root, $args) use ($driver): User {
+                            $user = $driver->get(EntityManager::class)
+                                ->getRepository(User::class)
+                                ->find($args['id']);
+
+                            $user->setName($args['input']['name']);
+                            $driver->get(EntityManager::class)->flush();
+
+                            return $user;
+                        },
+                    ],
+                    'testInput2' => [
+                        'type' => $driver->type(User::class),
+                        'args' => [
+                            'id' => Type::nonNull(Type::id()),
+                            'input' => Type::nonNull($driver->input(User::class, ['email'])),
+                        ],
+                        'resolve' => static function ($root, $args) use ($driver): User {
+                            $user = $driver->get(EntityManager::class)
+                                ->getRepository(User::class)
+                                ->find($args['id']);
+
+                            $user->setName($args['input']['name']);
+                            $driver->get(EntityManager::class)->flush();
+
+                            return $user;
+                        },
+                    ],
+                ],
+            ]),
+        ]);
+
+        $query = 'mutation TestInput($id: ID!, $name: String!) {
+            testInput1(id: $id, input: { name: $name }) {
+                id
+                name
+                email
+            }
+        }';
+
+        $result = GraphQL::executeQuery(
+            schema: $schema,
+            source: $query,
+            variableValues: ['id' => 1, 'name' => 'inputTest'],
+            operationName: 'TestInput',
+        );
+
+        $output = $result->toArray();
+
+        $this->getEntityManager()->clear();
+        $user = $this->getEntityManager()->getRepository(User::class)
+            ->find(1);
+
+        $this->assertEquals('inputTest', $user->getName());
+        $this->assertEquals(1, $output['data']['testInput1']['id']);
+        $this->assertEquals('inputTest', $output['data']['testInput1']['name']);
+    }
+
     public function testInputWithRequiredField(): void
     {
         $config = new Config(['group' => 'InputFactoryTest']);

@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\Type;
 
 use function count;
 use function in_array;
+use function uniqid;
 
 class InputFactory extends AbstractContainer
 {
@@ -49,7 +50,7 @@ class InputFactory extends AbstractContainer
         }
 
         return new InputObjectType([
-            'name' => $targetEntity->getTypeName() . '_Input',
+            'name' => $targetEntity->getTypeName() . '_Input_' . uniqid(),
             'description' => $targetEntity->getDescription(),
             'fields' => static fn () => $fields,
         ]);
