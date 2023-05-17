@@ -6,7 +6,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 
-class Metadata extends AbstractContainer
+class Metadata
 {
     public function __construct(
         protected AbstractContainer $container,
