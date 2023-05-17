@@ -110,6 +110,7 @@ class Entity
             new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition'),
         );
 
+        /** @psalm-suppress InvalidArgument */
         $objectType = new ObjectType($arrayObject->getArrayCopy());
         $this->typeManager->set($this->getTypeName(), $objectType);
 
