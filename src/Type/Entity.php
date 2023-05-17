@@ -9,7 +9,6 @@ use ApiSkeletons\Doctrine\GraphQL\Buildable;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ArrayObject;
@@ -40,8 +39,6 @@ class Entity implements Buildable
 
     protected HydratorFactory $hydratorFactory;
 
-    protected Metadata $metadata;
-
     protected ResolveCollectionFactory $collectionFactory;
 
     protected TypeManager $typeManager;
@@ -58,16 +55,15 @@ class Entity implements Buildable
         $this->eventDispatcher   = $container->get(EventDispatcher::class);
         $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->hydratorFactory   = $container->get(HydratorFactory::class);
-        $this->metadata          = $container->get(Metadata::class);
         $this->typeManager       = $container->get(TypeManager::class);
 
-        if (! isset(($this->metadata)()[$typeName])) {
+        if (! isset($container->get('metadataConfig')[$typeName])) {
             throw new Error(
                 'Entity ' . $typeName . ' is not mapped in the metadata',
             );
         }
 
-        $this->metadataConfig = ($this->metadata)()[$typeName];
+        $this->metadataConfig = $container->get('metadataConfig')[$typeName];
     }
 
     public function __invoke(): ObjectType

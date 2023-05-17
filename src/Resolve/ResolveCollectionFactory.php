@@ -7,7 +7,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
@@ -32,7 +31,7 @@ class ResolveCollectionFactory
         protected FieldResolver $fieldResolver,
         protected TypeManager $typeManager,
         protected EventDispatcher $eventDispatcher,
-        protected Metadata $metadata,
+        protected array|null $metadataConfig,
     ) {
     }
 
@@ -74,7 +73,7 @@ class ResolveCollectionFactory
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
-                ($this->metadata)()[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
+                $this->metadataConfig[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
                 $source,
                 $args,
                 $context,

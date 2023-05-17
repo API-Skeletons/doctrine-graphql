@@ -2,15 +2,8 @@
 
 declare(strict_types=1);
 
-namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
+namespace ApiSkeletons\Doctrine\GraphQL;
 
-use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Criteria;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator;
-use ApiSkeletons\Doctrine\GraphQL\Input;
-use ApiSkeletons\Doctrine\GraphQL\Metadata;
-use ApiSkeletons\Doctrine\GraphQL\Resolve;
-use ApiSkeletons\Doctrine\GraphQL\Type;
 use Doctrine\ORM\EntityManager;
 use League\Event\EventDispatcher;
 use Psr\Container\ContainerInterface;
@@ -23,14 +16,14 @@ use Psr\Container\ContainerInterface;
 trait Services
 {
     /**
-     * @param string                 $entityManagerAlias required
-     * @param Config                 $config             required
-     * @param Metadata\Metadata|null $metadata           optional so cached metadata can be loaded
+     * @param string  $entityManagerAlias required
+     * @param Config  $config             required
+     * @param mixed[] $metadataConfig     optional so cached metadata can be loaded
      */
     public function __construct(
         EntityManager $entityManager,
         Config|null $config = null,
-        array|null $metadataConfig = null,
+        array $metadataConfig = [],
     ) {
         $this
             // Plain classes
@@ -54,9 +47,9 @@ trait Services
                 static fn (ContainerInterface $container) => new Type\TypeManager($container)
             )
             ->set(
-                Metadata\Metadata::class,
+                'metadataConfig',
                 static function (ContainerInterface $container) use ($metadataConfig) {
-                    return (new Metadata\MetadataFactory($container, $metadataConfig))->getMetadata();
+                    return (new Metadata\MetadataFactory($container, $metadataConfig))();
                 },
             )
             ->set(
@@ -86,7 +79,7 @@ trait Services
                         $container->get(Resolve\FieldResolver::class),
                         $container->get(Type\TypeManager::class),
                         $container->get(EventDispatcher::class),
-                        $container->get(Metadata\Metadata::class),
+                        $container->get('metadataConfig'),
                     );
                 },
             )

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
@@ -19,7 +18,8 @@ class CachingTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager());
 
-        $metadataConfig = $driver->get(Metadata::class)();
+        $metadataConfig = $driver->get('metadataConfig');
+
         unset($driver);
 
         $driver = new Driver($this->getEntityManager(), null, $metadataConfig);

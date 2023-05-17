@@ -17,34 +17,23 @@ use function assert;
 
 class MetadataFactory extends AbstractMetadataFactory
 {
-    protected Metadata|null $metadata = null;
     protected EntityManager $entityManager;
     protected Config $config;
 
-    /** @param mixed|null $metadataConfig */
-    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig)
+    /** @param mixed[] $metadataConfig */
+    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig = [])
     {
         $this->entityManager = $container->get(EntityManager::class);
         $this->config        = $container->get(Config::class);
-
-        if (empty($metadataConfig)) {
-            return;
-        }
-
-        $this->metadata = new Metadata($metadataConfig);
     }
 
-    public function getMetadata(): Metadata
+    /** @return mixed[]|null */
+    public function __invoke(): array|null
     {
-        if ($this->metadata) {
-            return $this->metadata;
+        if ($this->metadataConfig) {
+            return $this->metadataConfig;
         }
 
-        return $this->buildMetadata();
-    }
-
-    protected function buildMetadata(): Metadata
-    {
         $entityClasses = [];
         foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $metadata) {
             $entityClasses[] = $metadata->getName();
@@ -53,7 +42,7 @@ class MetadataFactory extends AbstractMetadataFactory
         if ($this->config->getGlobalEnable()) {
             $globalEnable = $this->container->get(GlobalEnable::class);
 
-            return new Metadata($globalEnable($entityClasses));
+            return $globalEnable($entityClasses);
         }
 
         foreach ($entityClasses as $entityClass) {
@@ -66,9 +55,7 @@ class MetadataFactory extends AbstractMetadataFactory
             $this->buildMetadataConfigForAssociations($entityClassMetadata, $reflectionClass);
         }
 
-        $this->metadata = new Metadata($this->metadataConfig);
-
-        return $this->metadata;
+        return $this->metadataConfig;
     }
 
     /**

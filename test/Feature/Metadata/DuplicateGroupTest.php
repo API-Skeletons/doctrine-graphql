@@ -6,7 +6,6 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use AssertionError;
 
@@ -18,7 +17,7 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroup']));
 
-        $metadataConfig = $driver->get(Metadata::class)->getMetadataConfig();
+        $driver->get('metadataConfig');
     }
 
     public function testDuplicateEntityAttributeForField(): void
@@ -27,7 +26,7 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroupField']));
 
-        $metadataConfig = $driver->get(Metadata::class)->getMetadataConfig();
+        $driver->get('metadataConfig');
     }
 
     public function testDuplicateEntityAttributeForAssociation(): void
@@ -36,6 +35,6 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroupAssociation']));
 
-        $metadataConfig = $driver->get(Metadata::class)->getMetadataConfig();
+        $driver->get('metadataConfig');
     }
 }
