@@ -68,14 +68,13 @@ class ResolveCollectionFactory
                         ->getAssociationTargetClass($info->fieldName),
                 );
 
-            $metadataConfig = $this->metadata;
-            $entityClass    = ClassUtils::getRealClass($source::class);
+            $entityClass = ClassUtils::getRealClass($source::class);
 
             return $this->buildPagination(
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
-                $metadataConfig()[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
+                ($this->metadata)()[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
                 $source,
                 $args,
                 $context,
