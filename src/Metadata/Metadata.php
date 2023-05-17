@@ -24,17 +24,17 @@ class Metadata extends AbstractContainer
     /** @throws Error */
     public function get(string $id): Entity
     {
+        if ($this->has($id)) {
+            return parent::get($id);
+        }
+
         if (! isset($this->metadataConfig[$id])) {
             throw new Error(
                 'Entity ' . $id . ' is not mapped in the metadata',
             );
         }
 
-        if (! $this->has($id)) {
-            $this->build(Entity::class, $id, $this->metadataConfig[$id]);
-        }
-
-        return parent::get($id);
+        return $this->build(Entity::class, $id, $this->metadataConfig[$id]);
     }
 
     public function getMetadataConfig(): array|null
