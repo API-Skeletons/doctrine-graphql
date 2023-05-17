@@ -106,7 +106,7 @@ class Entity implements Buildable
      *
      * @throws MappingException
      */
-    public function getGraphQLType(): ObjectType
+    protected function getGraphQLType(): ObjectType
     {
         if ($this->typeManager->has($this->getTypeName())) {
             return $this->typeManager->get($this->getTypeName());

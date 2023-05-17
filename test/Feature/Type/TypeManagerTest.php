@@ -18,7 +18,7 @@ class TypeManagerTest extends AbstractTest
         $driver      = new Driver($this->getEntityManager());
         $typeManager = $driver->get(TypeManager::class);
 
-        $objectType = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)->getGraphQLType();
+        $objectType = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)();
         $connection = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
         $this->assertEquals($objectType->name . '_Connection', $connection->name);
     }
@@ -28,7 +28,7 @@ class TypeManagerTest extends AbstractTest
         $driver      = new Driver($this->getEntityManager());
         $typeManager = $driver->get(TypeManager::class);
 
-        $objectType  = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)->getGraphQLType();
+        $objectType  = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)();
         $connection1 = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
         $connection2 = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
 
