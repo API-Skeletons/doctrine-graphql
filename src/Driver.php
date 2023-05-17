@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use ApiSkeletons\Doctrine\GraphQL\Resolve\Services;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
 use GraphQL\Error\Error;

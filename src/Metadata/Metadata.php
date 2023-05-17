@@ -11,7 +11,7 @@ class Metadata
     ) {
     }
 
-    public function getMetadataConfig(): array|null
+    public function __invoke(): array|null
     {
         return $this->metadataConfig;
     }

@@ -61,13 +61,13 @@ class Entity implements Buildable
         $this->metadata          = $container->get(Metadata::class);
         $this->typeManager       = $container->get(TypeManager::class);
 
-        if (! isset($this->metadata->getMetadataConfig()[$typeName])) {
+        if (! isset(($this->metadata)()[$typeName])) {
             throw new Error(
                 'Entity ' . $typeName . ' is not mapped in the metadata',
             );
         }
 
-        $this->metadataConfig = $this->metadata->getMetadataConfig()[$typeName];
+        $this->metadataConfig = ($this->metadata)()[$typeName];
     }
 
     public function __invoke(): ObjectType

@@ -2,8 +2,15 @@
 
 declare(strict_types=1);
 
-namespace ApiSkeletons\Doctrine\GraphQL;
+namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
+use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Criteria;
+use ApiSkeletons\Doctrine\GraphQL\Hydrator;
+use ApiSkeletons\Doctrine\GraphQL\Input;
+use ApiSkeletons\Doctrine\GraphQL\Metadata;
+use ApiSkeletons\Doctrine\GraphQL\Resolve;
+use ApiSkeletons\Doctrine\GraphQL\Type;
 use Doctrine\ORM\EntityManager;
 use League\Event\EventDispatcher;
 use Psr\Container\ContainerInterface;

@@ -19,7 +19,7 @@ class CachingTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager());
 
-        $metadataConfig = $driver->get(Metadata::class)->getMetadataConfig();
+        $metadataConfig = $driver->get(Metadata::class)();
         unset($driver);
 
         $driver = new Driver($this->getEntityManager(), null, $metadataConfig);
