@@ -31,7 +31,7 @@ class MetadataFactory extends AbstractMetadataFactory
             return;
         }
 
-        $this->metadata = new Metadata($this->container, $metadataConfig);
+        $this->metadata = new Metadata($metadataConfig);
     }
 
     public function getMetadata(): Metadata
@@ -53,7 +53,7 @@ class MetadataFactory extends AbstractMetadataFactory
         if ($this->config->getGlobalEnable()) {
             $globalEnable = $this->container->get(GlobalEnable::class);
 
-            return new Metadata($this->container, $globalEnable($entityClasses));
+            return new Metadata($globalEnable($entityClasses));
         }
 
         foreach ($entityClasses as $entityClass) {
@@ -66,7 +66,7 @@ class MetadataFactory extends AbstractMetadataFactory
             $this->buildMetadataConfigForAssociations($entityClassMetadata, $reflectionClass);
         }
 
-        $this->metadata = new Metadata($this->container, $this->metadataConfig);
+        $this->metadata = new Metadata($this->metadataConfig);
 
         return $this->metadata;
     }
