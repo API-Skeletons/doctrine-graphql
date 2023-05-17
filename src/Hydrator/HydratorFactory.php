@@ -6,20 +6,12 @@ namespace ApiSkeletons\Doctrine\GraphQL\Hydrator;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Filter\Password;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
-use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Error\Error;
-use Laminas\Hydrator\Filter\FilterComposite;
-use Laminas\Hydrator\Filter\FilterEnabledInterface;
-use Laminas\Hydrator\Filter\FilterInterface;
+use Laminas\Hydrator\Filter;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyEnabledInterface;
 use Laminas\Hydrator\NamingStrategy\NamingStrategyInterface;
 use Laminas\Hydrator\Strategy\StrategyEnabledInterface;
@@ -39,12 +31,12 @@ class HydratorFactory extends AbstractContainer
     {
         // Register project defaults
         $this
-            ->set(AssociationDefault::class, new AssociationDefault())
-            ->set(FieldDefault::class, new FieldDefault())
-            ->set(NullifyOwningAssociation::class, new NullifyOwningAssociation())
-            ->set(ToBoolean::class, new ToBoolean())
-            ->set(ToFloat::class, new ToFloat())
-            ->set(ToInteger::class, new ToInteger())
+            ->set(Strategy\AssociationDefault::class, new Strategy\AssociationDefault())
+            ->set(Strategy\FieldDefault::class, new Strategy\FieldDefault())
+            ->set(Strategy\NullifyOwningAssociation::class, new Strategy\NullifyOwningAssociation())
+            ->set(Strategy\ToBoolean::class, new Strategy\ToBoolean())
+            ->set(Strategy\ToFloat::class, new Strategy\ToFloat())
+            ->set(Strategy\ToInteger::class, new Strategy\ToInteger())
             ->set(Password::class, new Password());
     }
 
@@ -73,13 +65,13 @@ class HydratorFactory extends AbstractContainer
         }
 
         // Create filters and assign to hydrator
-        if ($hydrator instanceof FilterEnabledInterface) {
+        if ($hydrator instanceof Filter\FilterEnabledInterface) {
             foreach ($config['filters'] as $name => $filterConfig) {
                 // Default filters to AND
-                $condition   = $filterConfig['condition'] ?? FilterComposite::CONDITION_AND;
+                $condition   = $filterConfig['condition'] ?? Filter\FilterComposite::CONDITION_AND;
                 $filterClass = $filterConfig['filter'];
                 assert(
-                    in_array(FilterInterface::class, class_implements($filterClass)),
+                    in_array(Filter\FilterInterface::class, class_implements($filterClass)),
                     'Filter must implement ' . StrategyInterface::class,
                 );
 

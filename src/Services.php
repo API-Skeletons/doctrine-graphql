@@ -6,12 +6,11 @@ namespace ApiSkeletons\Doctrine\GraphQL;
 
 use Doctrine\ORM\EntityManager;
 use League\Event\EventDispatcher;
-use Psr\Container\ContainerInterface;
 
 /**
  * This trait is used to remove complexity from the Driver class.
  * It doesn't change what the Driver does.  It just separates the container work
- * from the GraphQL Driver.
+ * from the Driver.
  */
 trait Services
 {
@@ -44,17 +43,17 @@ trait Services
             )
             ->set(
                 Type\TypeManager::class,
-                static fn (ContainerInterface $container) => new Type\TypeManager($container)
+                static fn (AbstractContainer $container) => new Type\TypeManager($container)
             )
             ->set(
                 'metadataConfig',
-                static function (ContainerInterface $container) use ($metadataConfig) {
+                static function (AbstractContainer $container) use ($metadataConfig) {
                     return (new Metadata\MetadataFactory($container, $metadataConfig))();
                 },
             )
             ->set(
                 Metadata\GlobalEnable::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Metadata\GlobalEnable(
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
@@ -63,7 +62,7 @@ trait Services
             )
             ->set(
                 Resolve\FieldResolver::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Resolve\FieldResolver(
                         $container->get(Config::class),
                         $container->get(Type\TypeManager::class),
@@ -72,7 +71,7 @@ trait Services
             )
             ->set(
                 Resolve\ResolveCollectionFactory::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Resolve\ResolveCollectionFactory(
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
@@ -85,7 +84,7 @@ trait Services
             )
             ->set(
                 Resolve\ResolveEntityFactory::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Resolve\ResolveEntityFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
@@ -95,7 +94,7 @@ trait Services
             )
             ->set(
                 Criteria\CriteriaFactory::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Criteria\CriteriaFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
@@ -106,7 +105,7 @@ trait Services
             )
             ->set(
                 Hydrator\HydratorFactory::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Hydrator\HydratorFactory(
                         $container->get(EntityManager::class),
                         $container->get(Type\TypeManager::class),
@@ -115,7 +114,7 @@ trait Services
             )
             ->set(
                 Input\InputFactory::class,
-                static function (ContainerInterface $container) {
+                static function (AbstractContainer $container) {
                     return new Input\InputFactory(
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
