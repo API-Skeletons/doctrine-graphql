@@ -10,28 +10,26 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
 use function assert;
 
 class MetadataFactory extends AbstractMetadataFactory
 {
-    protected EntityManager $entityManager;
-    protected Config $config;
-
-    /** @param mixed[] $metadataConfig */
-    public function __construct(protected ContainerInterface $container, protected array|null $metadataConfig = [])
-    {
-        $this->entityManager = $container->get(EntityManager::class);
-        $this->config        = $container->get(Config::class);
+    /** @param mixed[] $metadata */
+    public function __construct(
+        protected array $metadata,
+        protected EntityManager $entityManager,
+        protected Config $config,
+        protected GlobalEnable $globalEnable,
+    ) {
     }
 
     /** @return mixed[]|null */
     public function __invoke(): array|null
     {
-        if ($this->metadataConfig) {
-            return $this->metadataConfig;
+        if ($this->metadata) {
+            return $this->metadata;
         }
 
         $entityClasses = [];
@@ -40,9 +38,9 @@ class MetadataFactory extends AbstractMetadataFactory
         }
 
         if ($this->config->getGlobalEnable()) {
-            $globalEnable = $this->container->get(GlobalEnable::class);
+            $this->metadata = ($this->globalEnable)($entityClasses);
 
-            return $globalEnable($entityClasses);
+            return $this->metadata;
         }
 
         foreach ($entityClasses as $entityClass) {
@@ -50,20 +48,20 @@ class MetadataFactory extends AbstractMetadataFactory
             $entityClassMetadata = $this->entityManager
                 ->getMetadataFactory()->getMetadataFor($reflectionClass->getName());
 
-            $this->buildMetadataConfigForEntity($reflectionClass);
-            $this->buildMetadataConfigForFields($entityClassMetadata, $reflectionClass);
-            $this->buildMetadataConfigForAssociations($entityClassMetadata, $reflectionClass);
+            $this->buildMetadataForEntity($reflectionClass);
+            $this->buildMetadataForFields($entityClassMetadata, $reflectionClass);
+            $this->buildMetadataForAssociations($entityClassMetadata, $reflectionClass);
         }
 
-        return $this->metadataConfig;
+        return $this->metadata;
     }
 
     /**
-     * Using the entity class attributes, generate the metadataConfig.
-     * The buildMetadataConfig* functions exist to simplify the buildMetadata
+     * Using the entity class attributes, generate the metadata.
+     * The buildmetadata* functions exist to simplify the buildMetadata
      * function.
      */
-    private function buildMetadataConfigForEntity(ReflectionClass $reflectionClass): void
+    private function buildMetadataForEntity(ReflectionClass $reflectionClass): void
     {
         $entityInstance = null;
 
@@ -85,7 +83,7 @@ class MetadataFactory extends AbstractMetadataFactory
             $entityInstance = $instance;
 
             // Save entity-level metadata
-            $this->metadataConfig[$reflectionClass->getName()] = [
+            $this->metadata[$reflectionClass->getName()] = [
                 'entityClass' => $reflectionClass->getName(),
                 'byValue' => $this->config->getGlobalByValue() ?? $instance->getByValue(),
                 'namingStrategy' => $instance->getNamingStrategy(),
@@ -100,7 +98,7 @@ class MetadataFactory extends AbstractMetadataFactory
         }
     }
 
-    private function buildMetadataConfigForFields(
+    private function buildMetadataForFields(
         ClassMetadata $entityClassMetadata,
         ReflectionClass $reflectionClass,
     ): void {
@@ -124,30 +122,30 @@ class MetadataFactory extends AbstractMetadataFactory
                 );
                 $fieldInstance = $instance;
 
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['description'] =
+                $this->metadata[$reflectionClass->getName()]['fields'][$fieldName]['description'] =
                     $instance->getDescription();
 
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['type'] =
+                $this->metadata[$reflectionClass->getName()]['fields'][$fieldName]['type'] =
                     $instance->getType() ?? $entityClassMetadata->getTypeOfField($fieldName);
 
                 if ($instance->getStrategy()) {
-                    $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['strategy'] =
+                    $this->metadata[$reflectionClass->getName()]['fields'][$fieldName]['strategy'] =
                         $instance->getStrategy();
 
                     continue;
                 }
 
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['excludeCriteria'] =
+                $this->metadata[$reflectionClass->getName()]['fields'][$fieldName]['excludeCriteria'] =
                     $instance->getExcludeCriteria();
 
                 // Set default strategy based on field type
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$fieldName]['strategy'] =
+                $this->metadata[$reflectionClass->getName()]['fields'][$fieldName]['strategy'] =
                     $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName));
             }
         }
     }
 
-    private function buildMetadataConfigForAssociations(
+    private function buildMetadataForAssociations(
         ClassMetadata $entityClassMetadata,
         ReflectionClass $reflectionClass,
     ): void {
@@ -175,15 +173,15 @@ class MetadataFactory extends AbstractMetadataFactory
                 );
                 $associationInstance = $instance;
 
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['description']             =
+                $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['description']             =
                     $instance->getDescription();
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['excludeCriteria']         =
+                $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['excludeCriteria']         =
                     $instance->getExcludeCriteria();
-                $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['filterCriteriaEventName'] =
+                $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['filterCriteriaEventName'] =
                     $instance->getFilterCriteriaEventName();
 
                 if ($instance->getStrategy()) {
-                    $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['strategy']
+                    $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['strategy']
                         = $instance->getStrategy();
 
                     continue;
@@ -193,10 +191,10 @@ class MetadataFactory extends AbstractMetadataFactory
 
                 // See comment on NullifyOwningAssociation for details of why this is done
                 if ($mapping['type'] === ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
-                    $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['strategy'] =
+                    $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['strategy'] =
                         Strategy\NullifyOwningAssociation::class;
                 } else {
-                    $this->metadataConfig[$reflectionClass->getName()]['fields'][$associationName]['strategy'] =
+                    $this->metadata[$reflectionClass->getName()]['fields'][$associationName]['strategy'] =
                         Strategy\AssociationDefault::class;
                 }
             }

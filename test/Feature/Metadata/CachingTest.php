@@ -18,17 +18,17 @@ class CachingTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager());
 
-        $metadataConfig = $driver->get('metadataConfig');
+        $metadata = $driver->get('metadata');
 
         unset($driver);
 
-        $driver = new Driver($this->getEntityManager(), null, $metadataConfig);
+        $driver = new Driver($this->getEntityManager(), null, $metadata);
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
     }
 
     public function testStaticMetadata(): void
     {
-        $metadataConfig = [
+        $metadata = [
             'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User' => [
                 'entityClass' => 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User',
                 'documentation' => '',
@@ -57,7 +57,7 @@ class CachingTest extends AbstractTest
             ],
         ];
 
-        $driver = new Driver($this->getEntityManager(), null, $metadataConfig);
+        $driver = new Driver($this->getEntityManager(), null, $metadata);
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
 
         $this->expectException(Error::class);

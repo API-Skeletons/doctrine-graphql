@@ -49,7 +49,7 @@ class HydratorFactory extends AbstractContainer
         }
 
         $entity   = $this->typeManager->build(Entity::class, $id);
-        $config   = $entity->getMetadataConfig();
+        $config   = $entity->getMetadata();
         $hydrator = new DoctrineObject($this->entityManager, $config['byValue']);
 
         // Create field strategy and assign to hydrator

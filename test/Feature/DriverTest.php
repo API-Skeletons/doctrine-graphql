@@ -34,7 +34,7 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager());
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertIsArray($driver->get('metadataConfig'));
+        $this->assertIsArray($driver->get('metadata'));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Artist::class));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Performance::class));
@@ -53,7 +53,7 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager(), $config, [], $container);
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertIsArray($driver->get('metadataConfig'));
+        $this->assertIsArray($driver->get('metadata'));
     }
 
     public function testNonDefaultGroup(): void

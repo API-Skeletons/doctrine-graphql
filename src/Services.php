@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL;
 
+use ApiSkeletons\Doctrine\GraphQL\Metadata\GlobalEnable;
 use Doctrine\ORM\EntityManager;
 use League\Event\EventDispatcher;
 
@@ -17,12 +18,12 @@ trait Services
     /**
      * @param string  $entityManagerAlias required
      * @param Config  $config             required
-     * @param mixed[] $metadataConfig     optional so cached metadata can be loaded
+     * @param mixed[] $metadata           optional so cached metadata can be loaded
      */
     public function __construct(
         EntityManager $entityManager,
         Config|null $config = null,
-        array $metadataConfig = [],
+        array $metadata = [],
     ) {
         $this
             // Plain classes
@@ -46,9 +47,14 @@ trait Services
                 static fn (AbstractContainer $container) => new Type\TypeManager($container)
             )
             ->set(
-                'metadataConfig',
-                static function (AbstractContainer $container) use ($metadataConfig) {
-                    return (new Metadata\MetadataFactory($container, $metadataConfig))();
+                'metadata',
+                static function (AbstractContainer $container) use ($metadata) {
+                    return (new Metadata\MetadataFactory(
+                        $metadata,
+                        $container->get(EntityManager::class),
+                        $container->get(Config::class),
+                        $container->get(GlobalEnable::class),
+                    ))();
                 },
             )
             ->set(
@@ -78,7 +84,7 @@ trait Services
                         $container->get(Resolve\FieldResolver::class),
                         $container->get(Type\TypeManager::class),
                         $container->get(EventDispatcher::class),
-                        $container->get('metadataConfig'),
+                        $container->get('metadata'),
                     );
                 },
             )

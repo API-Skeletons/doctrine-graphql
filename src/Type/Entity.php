@@ -27,7 +27,7 @@ use function in_array;
 class Entity implements Buildable
 {
     /** @var mixed[]  */
-    protected array $metadataConfig;
+    protected array $metadata;
 
     protected CriteriaFactory $criteriaFactory;
 
@@ -57,13 +57,13 @@ class Entity implements Buildable
         $this->hydratorFactory   = $container->get(HydratorFactory::class);
         $this->typeManager       = $container->get(TypeManager::class);
 
-        if (! isset($container->get('metadataConfig')[$typeName])) {
+        if (! isset($container->get('metadata')[$typeName])) {
             throw new Error(
                 'Entity ' . $typeName . ' is not mapped in the metadata',
             );
         }
 
-        $this->metadataConfig = $container->get('metadataConfig')[$typeName];
+        $this->metadata = $container->get('metadata')[$typeName];
     }
 
     public function __invoke(): ObjectType
@@ -78,23 +78,23 @@ class Entity implements Buildable
 
     public function getTypeName(): string
     {
-        return $this->metadataConfig['typeName'];
+        return $this->metadata['typeName'];
     }
 
     public function getDescription(): string|null
     {
-        return $this->metadataConfig['description'];
+        return $this->metadata['description'];
     }
 
     /** @return mixed[] */
-    public function getMetadataConfig(): array
+    public function getMetadata(): array
     {
-        return $this->metadataConfig;
+        return $this->metadata;
     }
 
     public function getEntityClass(): string
     {
-        return $this->metadataConfig['entityClass'];
+        return $this->metadata['entityClass'];
     }
 
     /**
@@ -140,14 +140,14 @@ class Entity implements Buildable
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            if (! in_array($fieldName, array_keys($this->metadataConfig['fields']))) {
+            if (! in_array($fieldName, array_keys($this->metadata['fields']))) {
                 continue;
             }
 
             $fields[$fieldName] = [
                 'type' => $this->typeManager
-                    ->get($this->getMetadataConfig()['fields'][$fieldName]['type']),
-                'description' => $this->metadataConfig['fields'][$fieldName]['description'],
+                    ->get($this->getmetadata()['fields'][$fieldName]['type']),
+                'description' => $this->metadata['fields'][$fieldName]['description'],
             ];
         }
     }
@@ -158,7 +158,7 @@ class Entity implements Buildable
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (! in_array($associationName, array_keys($this->metadataConfig['fields']))) {
+            if (! in_array($associationName, array_keys($this->metadata['fields']))) {
                 continue;
             }
 
@@ -197,11 +197,11 @@ class Entity implements Buildable
                                     $entity,
                                     $this,
                                     $associationName,
-                                    $this->metadataConfig['fields'][$associationName],
+                                    $this->metadata['fields'][$associationName],
                                 ),
                                 'pagination' => $this->typeManager->get('pagination'),
                             ],
-                            'description' => $this->metadataConfig['fields'][$associationName]['description'],
+                            'description' => $this->metadata['fields'][$associationName]['description'],
                             'resolve' => $this->collectionFactory->get($entity),
                         ];
                     };

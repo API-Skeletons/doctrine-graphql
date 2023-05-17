@@ -25,13 +25,14 @@ use function count;
 
 class ResolveCollectionFactory
 {
+    /** @param mixed[] $metadata */
     public function __construct(
         protected EntityManager $entityManager,
         protected Config $config,
         protected FieldResolver $fieldResolver,
         protected TypeManager $typeManager,
         protected EventDispatcher $eventDispatcher,
-        protected array|null $metadataConfig,
+        protected array $metadata,
     ) {
     }
 
@@ -73,7 +74,7 @@ class ResolveCollectionFactory
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
-                $this->metadataConfig[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
+                $this->metadata[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
                 $source,
                 $args,
                 $context,

@@ -45,7 +45,7 @@ class CriteriaFactory
         }
 
         $fields         = [];
-        $entityMetadata = $targetEntity->getMetadataConfig();
+        $entityMetadata = $targetEntity->getMetadata();
         $allowedFilters = Filters::toArray();
 
         // Limit entity filters
@@ -84,7 +84,7 @@ class CriteriaFactory
     protected function addFields(Entity $targetEntity, string $typeName, array $allowedFilters, array &$fields): void
     {
         $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
-        $entityMetadata = $targetEntity->getMetadataConfig();
+        $entityMetadata = $targetEntity->getMetadata();
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
             // Only process fields that are in the graphql metadata
@@ -128,7 +128,7 @@ class CriteriaFactory
     protected function addAssociations(Entity $targetEntity, string $typeName, array $allowedFilters, array &$fields): void
     {
         $classMetadata  = $this->entityManager->getClassMetadata($targetEntity->getEntityClass());
-        $entityMetadata = $targetEntity->getMetadataConfig();
+        $entityMetadata = $targetEntity->getMetadata();
 
         // Add eq filter for to-one associations
         foreach ($classMetadata->getAssociationNames() as $associationName) {

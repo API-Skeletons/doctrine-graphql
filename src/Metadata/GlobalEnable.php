@@ -13,7 +13,7 @@ use function in_array;
 final class GlobalEnable extends AbstractMetadataFactory
 {
     /** @var mixed[] */
-    private array $metadataConfig = [];
+    private array $metadata = [];
 
     public function __construct(
         private EntityManager $entityManager,
@@ -33,7 +33,7 @@ final class GlobalEnable extends AbstractMetadataFactory
             $byValue = $this->config->getGlobalByValue() ?? true;
 
             // Save entity-level metadata
-            $this->metadataConfig[$entityClass] = [
+            $this->metadata[$entityClass] = [
                 'entityClass' => $entityClass,
                 'byValue' => $byValue,
                 'namingStrategy' => null,
@@ -48,7 +48,7 @@ final class GlobalEnable extends AbstractMetadataFactory
             $this->buildAssociationMetadata($entityClass);
         }
 
-        return $this->metadataConfig;
+        return $this->metadata;
     }
 
     private function buildFieldMetadata(string $entityClass): void
@@ -60,7 +60,7 @@ final class GlobalEnable extends AbstractMetadataFactory
                 continue;
             }
 
-            $this->metadataConfig[$entityClass]['fields'][$fieldName] = [
+            $this->metadata[$entityClass]['fields'][$fieldName] = [
                 'description' => $fieldName,
                 'type' => $entityClassMetadata->getTypeOfField($fieldName),
                 'strategy' => $this->getDefaultStrategy($entityClassMetadata->getTypeOfField($fieldName)),
@@ -78,7 +78,7 @@ final class GlobalEnable extends AbstractMetadataFactory
                 continue;
             }
 
-            $this->metadataConfig[$entityClass]['fields'][$associationName] = [
+            $this->metadata[$entityClass]['fields'][$associationName] = [
                 'excludeCriteria' => [],
                 'description' => $associationName,
                 'filterCriteriaEventName' => null,

@@ -80,8 +80,8 @@ class InputFactory extends AbstractContainer
 
             $fields[$fieldName] = new InputObjectField([
                 'name' => $fieldName,
-                'description' => (string) $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'],
-                'type' => $this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type']),
+                'description' => (string) $targetEntity->getMetadata()['fields'][$fieldName]['description'],
+                'type' => $this->typeManager->get($targetEntity->getMetadata()['fields'][$fieldName]['type']),
             ]);
         }
     }
@@ -118,9 +118,9 @@ class InputFactory extends AbstractContainer
 
             $fields[$fieldName] = new InputObjectField([
                 'name' => $fieldName,
-                'description' => (string) $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'],
+                'description' => (string) $targetEntity->getMetadata()['fields'][$fieldName]['description'],
                 'type' => Type::nonNull($this->typeManager->get(
-                    $targetEntity->getMetadataConfig()['fields'][$fieldName]['type'],
+                    $targetEntity->getMetadata()['fields'][$fieldName]['type'],
                 )),
             ]);
         }
@@ -141,8 +141,8 @@ class InputFactory extends AbstractContainer
 
             $fields[$fieldName] = new InputObjectField([
                 'name' => $fieldName,
-                'description' => (string) $targetEntity->getMetadataConfig()['fields'][$fieldName]['description'],
-                'type' => Type::nonNull($this->typeManager->get($targetEntity->getMetadataConfig()['fields'][$fieldName]['type'])),
+                'description' => (string) $targetEntity->getMetadata()['fields'][$fieldName]['description'],
+                'type' => Type::nonNull($this->typeManager->get($targetEntity->getMetadata()['fields'][$fieldName]['type'])),
             ]);
         }
     }

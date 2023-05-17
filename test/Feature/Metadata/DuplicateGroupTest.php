@@ -17,7 +17,7 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroup']));
 
-        $driver->get('metadataConfig');
+        $driver->get('metadata');
     }
 
     public function testDuplicateEntityAttributeForField(): void
@@ -26,7 +26,7 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroupField']));
 
-        $driver->get('metadataConfig');
+        $driver->get('metadata');
     }
 
     public function testDuplicateEntityAttributeForAssociation(): void
@@ -35,6 +35,6 @@ class DuplicateGroupTest extends AbstractTest
 
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'DuplicateGroupAssociation']));
 
-        $driver->get('metadataConfig');
+        $driver->get('metadata');
     }
 }
