@@ -6,7 +6,7 @@ namespace ApiSkeletons\Doctrine\GraphQL\Input;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -25,7 +25,6 @@ class InputFactory extends AbstractContainer
         protected Config $config,
         protected EntityManager $entityManager,
         protected TypeManager $typeManager,
-        protected Metadata $metadata,
     ) {
     }
 
@@ -40,7 +39,7 @@ class InputFactory extends AbstractContainer
     public function get(string $id, array $requiredFields = [], array $optionalFields = []): InputObjectType
     {
         $fields       = [];
-        $targetEntity = $this->metadata->get($id);
+        $targetEntity = $this->typeManager->build(Entity::class, $id);
 
         if (! count($requiredFields) && ! count($optionalFields)) {
             $this->addAllFieldsAsRequired($targetEntity, $fields);

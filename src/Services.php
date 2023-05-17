@@ -44,7 +44,7 @@ trait Services
             )
             ->set(
                 Type\TypeManager::class,
-                static fn () => new Type\TypeManager()
+                static fn (ContainerInterface $container) => new Type\TypeManager($container)
             )
             ->set(
                 Metadata\Metadata::class,
@@ -66,7 +66,7 @@ trait Services
                 static function (ContainerInterface $container) {
                     return new Resolve\FieldResolver(
                         $container->get(Config::class),
-                        $container->get(Metadata\Metadata::class),
+                        $container->get(Type\TypeManager::class),
                     );
                 },
             )
@@ -109,7 +109,7 @@ trait Services
                 static function (ContainerInterface $container) {
                     return new Hydrator\HydratorFactory(
                         $container->get(EntityManager::class),
-                        $container->get(Metadata\Metadata::class),
+                        $container->get(Type\TypeManager::class),
                     );
                 },
             )
@@ -120,7 +120,6 @@ trait Services
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(Type\TypeManager::class),
-                        $container->get(Metadata\Metadata::class),
                     );
                 },
             );

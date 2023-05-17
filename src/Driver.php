@@ -35,7 +35,7 @@ class Driver extends AbstractContainer
      */
     public function type(string $entityClass): ObjectType
     {
-        return $this->get(Metadata\Metadata::class)->get($entityClass)->getGraphQLType();
+        return $this->get(Type\TypeManager::class)->build(Type\Entity::class, $entityClass)();
     }
 
     /**
@@ -45,8 +45,10 @@ class Driver extends AbstractContainer
      */
     public function filter(string $entityClass): object
     {
-        return $this->get(Criteria\CriteriaFactory::class)
-            ->get($this->get(Metadata\Metadata::class)->get($entityClass));
+        return $this->get(Criteria\CriteriaFactory::class)->get(
+            $this->get(Type\TypeManager::class)
+                ->build(Type\Entity::class, $entityClass),
+        );
     }
 
     /**
@@ -66,8 +68,11 @@ class Driver extends AbstractContainer
      */
     public function resolve(string $entityClass, string $eventName = 'filter.querybuilder'): Closure
     {
-        return $this->get(Resolve\ResolveEntityFactory::class)
-            ->get($this->get(Metadata\Metadata::class)->get($entityClass), $eventName);
+        return $this->get(Resolve\ResolveEntityFactory::class)->get(
+            $this->get(Type\TypeManager::class)
+                ->build(Type\Entity::class, $entityClass),
+            $eventName,
+        );
     }
 
     /**

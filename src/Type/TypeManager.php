@@ -9,7 +9,7 @@ use GraphQL\Type\Definition\Type;
 
 class TypeManager extends AbstractContainer
 {
-    public function __construct()
+    public function __construct(protected AbstractContainer $container)
     {
         $this
             ->set('tinyint', static fn () => Type::int())
@@ -36,5 +36,10 @@ class TypeManager extends AbstractContainer
             ->set('time_immutable', static fn () => new TimeImmutable())
             ->set('pageinfo', static fn () => new PageInfo())
             ->set('pagination', static fn () => new Pagination());
+    }
+
+    public function getContainer(): AbstractContainer
+    {
+        return $this->container;
     }
 }

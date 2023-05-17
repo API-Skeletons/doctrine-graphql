@@ -9,8 +9,8 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
 
@@ -20,7 +20,7 @@ class EntityTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'entityTest']));
 
-        $entity = $driver->get(Metadata::class)->get(Recording::class);
+        $entity = $driver->get(TypeManager::class)->build(Entity::class, Recording::class);
 
         $this->assertInstanceOf(Entity::class, $entity);
         $this->assertEquals(Recording::class, $entity->getEntityClass());

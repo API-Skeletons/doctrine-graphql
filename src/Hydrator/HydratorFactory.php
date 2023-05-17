@@ -12,7 +12,8 @@ use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\Laminas\Hydrator\DoctrineObject;
 use Doctrine\ORM\EntityManager;
 use GraphQL\Error\Error;
@@ -34,7 +35,7 @@ use function in_array;
  */
 class HydratorFactory extends AbstractContainer
 {
-    public function __construct(protected EntityManager $entityManager, protected Metadata $metadata)
+    public function __construct(protected EntityManager $entityManager, protected TypeManager $typeManager)
     {
         // Register project defaults
         $this
@@ -55,7 +56,7 @@ class HydratorFactory extends AbstractContainer
             return parent::get($id);
         }
 
-        $entity   = $this->metadata->get($id);
+        $entity   = $this->typeManager->build(Entity::class, $id);
         $config   = $entity->getMetadataConfig();
         $hydrator = new DoctrineObject($this->entityManager, $config['byValue']);
 

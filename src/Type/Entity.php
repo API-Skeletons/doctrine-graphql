@@ -16,6 +16,7 @@ use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use Laminas\Hydrator\HydratorInterface;
 use League\Event\EventDispatcher;
@@ -48,10 +49,9 @@ class Entity implements Buildable
     /** @param mixed[] $params */
     public function __construct(AbstractContainer $container, string $typeName, array $params)
     {
-        assert($container instanceof Metadata);
+        assert($container instanceof TypeManager);
         $container = $container->getContainer();
 
-        $this->metadataConfig    = $params[0];
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
         $this->entityManager     = $container->get(EntityManager::class);
@@ -60,6 +60,19 @@ class Entity implements Buildable
         $this->hydratorFactory   = $container->get(HydratorFactory::class);
         $this->metadata          = $container->get(Metadata::class);
         $this->typeManager       = $container->get(TypeManager::class);
+
+        if (! isset($this->metadata->getMetadataConfig()[$typeName])) {
+            throw new Error(
+                'Entity ' . $typeName . ' is not mapped in the metadata',
+            );
+        }
+
+        $this->metadataConfig = $this->metadata->getMetadataConfig()[$typeName];
+    }
+
+    public function __invoke(): ObjectType
+    {
+        return $this->getGraphQLType();
     }
 
     public function getHydrator(): HydratorInterface
@@ -161,7 +174,7 @@ class Entity implements Buildable
                 case ClassMetadataInfo::TO_ONE:
                     $targetEntity             = $associationMetadata['targetEntity'];
                     $fields[$associationName] = function () use ($targetEntity) {
-                        $entity = $this->metadata->get($targetEntity);
+                        $entity = $this->typeManager->build(self::class, $targetEntity);
 
                         return [
                             'type' => $entity->getGraphQLType(),
@@ -174,7 +187,7 @@ class Entity implements Buildable
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity             = $associationMetadata['targetEntity'];
                     $fields[$associationName] = function () use ($targetEntity, $associationName) {
-                        $entity    = $this->metadata->get($targetEntity);
+                        $entity    = $this->typeManager->build(self::class, $targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
                         return [
