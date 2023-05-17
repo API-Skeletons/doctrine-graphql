@@ -14,15 +14,15 @@ rebuilding it with each request.
   use ApiSkeletons\Doctrine\GraphQL\Driver;
   use ApiSkeletons\Doctrine\GraphQL\Metadata;
 
-  $metadataConfig = $cache->get('GraphQL');
+  $metadata = $cache->get('GraphQLMetadata');
 
-  if (! $metadataConfig) {
+  if (! $metadata) {
       $driver = new Driver($entityManager);
-      $metadataConfig = $driver->get(Metadata::class)->getMetadataConfig();
-      $cache->set('GraphQL', $metadataConfig);
+      $metadata = $driver->get('metadata');
+      $cache->set('GraphQLMetadata', $metadata);
   } else {
       // The second parameter is the Config object
-      $driver = new Driver($entityManager, null, $metadataConfig);
+      $driver = new Driver($entityManager, null, $metadata);
   }
 
 .. role:: raw-html(raw)

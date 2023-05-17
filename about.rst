@@ -1,7 +1,7 @@
 About
 =====
 
-Authored by Tom H Anderson <tom.h.anderson@gmail.com> of
+Originally authored by Tom H Anderson <tom.h.anderson@gmail.com> of
 `API Skeletons <https://apiskeletons.com>`_
 and a member of the `Doctrine Maintainers <https://www.doctrine-project.org/team/maintainers.html>`_.
 
