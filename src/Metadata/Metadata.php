@@ -7,14 +7,18 @@ namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use GraphQL\Error\Error;
-use Psr\Container\ContainerInterface;
 
 class Metadata extends AbstractContainer
 {
     public function __construct(
-        protected ContainerInterface $container,
+        protected AbstractContainer $container,
         protected array|null $metadataConfig,
     ) {
+    }
+
+    public function getContainer(): AbstractContainer
+    {
+        return $this->container;
     }
 
     /** @throws Error */
@@ -27,7 +31,7 @@ class Metadata extends AbstractContainer
         }
 
         if (! $this->has($id)) {
-            $this->set($id, new Entity($this->container, $this->metadataConfig[$id]));
+            $this->build(Entity::class, $id, $this->metadataConfig[$id]);
         }
 
         return parent::get($id);

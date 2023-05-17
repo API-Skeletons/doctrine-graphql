@@ -21,6 +21,9 @@ class Driver extends AbstractContainer
      */
     public function connection(ObjectType $objectType): ObjectType
     {
+        /**
+         * Connections rely on the entity ObjectType so the build() method is used
+         */
         return $this->get(Type\TypeManager::class)
             ->build(Type\Connection::class, $objectType->name . '_Connection', $objectType);
     }

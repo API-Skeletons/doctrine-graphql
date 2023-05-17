@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
+use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
+use ApiSkeletons\Doctrine\GraphQL\Buildable;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
@@ -17,14 +19,16 @@ use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
 use Laminas\Hydrator\HydratorInterface;
 use League\Event\EventDispatcher;
-use Psr\Container\ContainerInterface;
 
 use function array_keys;
+use function assert;
 use function in_array;
 
-class Entity
+class Entity implements Buildable
 {
-//    protected Driver $driver;
+    /** @var mixed[]  */
+    protected array $metadataConfig;
+
     protected CriteriaFactory $criteriaFactory;
 
     protected EntityManager $entityManager;
@@ -41,9 +45,13 @@ class Entity
 
     protected TypeManager $typeManager;
 
-    /** @param mixed[] $metadataConfig */
-    public function __construct(ContainerInterface $container, protected array $metadataConfig)
+    /** @param mixed[] $params */
+    public function __construct(AbstractContainer $container, string $typeName, array $params)
     {
+        assert($container instanceof Metadata);
+        $container = $container->getContainer();
+
+        $this->metadataConfig    = $params[0];
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
         $this->entityManager     = $container->get(EntityManager::class);

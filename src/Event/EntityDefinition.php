@@ -11,8 +11,10 @@ class EntityDefinition implements
     HasEventName
 {
     /** @param string[] $entityAliasMap */
-    public function __construct(protected ArrayObject $definition, protected string $eventName)
-    {
+    public function __construct(
+        protected ArrayObject $definition,
+        protected string $eventName,
+    ) {
     }
 
     public function eventName(): string
