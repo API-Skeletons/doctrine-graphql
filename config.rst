@@ -25,7 +25,7 @@ group
 Each attribute has an optional ``group`` parameter that allows
 for multiple configurations within the entities.  Specify the group in the
 ``Config`` to load only those attributes with the same ``group``.
-If no ``group` is specified the group value is ``default``.
+If no ``group`` is specified the group value is ``default``.
 
 
 groupSuffix
