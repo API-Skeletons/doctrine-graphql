@@ -4,32 +4,33 @@ Hydrator Strategies
 Some hydrator strategies are supplied with this library.  You may also add your own hydrator
 strategies if you desire.
 
+All strategies are in the namespace ApiSkeletons\\Doctrine\\GraphQL\\Hydrator\\Strategy
 
-ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault
+FieldDefault
 ------------------------------------------------------------
 
 This strategy is applied to most field values.  It will return the exact value of the field.
 
 
-ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger
+ToInteger
 ---------------------------------------------------------
 
 This strategy will convert the field value to an integer to be handled as an integer internal to PHP.
 
 
-ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToFloat
+ToFloat
 -------------------------------------------------------
 
 Similar to ``ToInteger``, this will convert the field value to a float to be handled as a float internal to PHP.
 
 
-ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToBoolean
+ToBoolean
 ---------------------------------------------------------
 
 Similar to ``ToInteger``, this will convert the field value to a boolean to be handled as a boolean internal to PHP.
 
 
-ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation
+NullifyOwningAssociation
 ------------------------------------------------------------------------
 
 Nullify an association.
