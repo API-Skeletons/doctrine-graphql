@@ -6,8 +6,8 @@ namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
@@ -34,11 +34,11 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager());
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertInstanceOf(Metadata::class, $driver->get(Metadata::class));
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(User::class));
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Artist::class));
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Performance::class));
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Recording::class));
+        $this->assertIsArray($driver->get('metadata'));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Artist::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Performance::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Recording::class));
     }
 
     public function testCreateDriverWithConfig(): void
@@ -50,10 +50,10 @@ class DriverTest extends AbstractTest
             'limit' => 1000,
         ]);
 
-        $driver = new Driver($this->getEntityManager(), $config, null, $container);
+        $driver = new Driver($this->getEntityManager(), $config, [], $container);
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertInstanceOf(Metadata::class, $driver->get(Metadata::class));
+        $this->assertIsArray($driver->get('metadata'));
     }
 
     public function testNonDefaultGroup(): void
@@ -65,10 +65,10 @@ class DriverTest extends AbstractTest
         ]);
 
         $driver = new Driver($this->getEntityManager(), $config);
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(User::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
 
         $this->expectException(Error::class);
-        $this->assertInstanceOf(Entity::class, $driver->get(Metadata::class)->get(Artist::class));
+        $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Artist::class));
     }
 
     /**

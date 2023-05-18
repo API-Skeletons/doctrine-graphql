@@ -7,7 +7,10 @@ namespace ApiSkeletons\Doctrine\GraphQL;
 use Closure;
 use GraphQL\Error\Error;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use ReflectionException;
 
+use function assert;
 use function strtolower;
 
 abstract class AbstractContainer implements ContainerInterface
@@ -48,5 +51,28 @@ abstract class AbstractContainer implements ContainerInterface
         $this->register[$id] = $value;
 
         return $this;
+    }
+
+    /**
+     * This function allows for buildable types.  The Type\Connection type is created this way
+     * because it relies on the entity object type.  To create a custom buildable object type
+     * it must implement the Buildable interface.
+     *
+     * @param mixed[] $params
+     *
+     * @throws Error
+     * @throws ReflectionException
+     */
+    public function build(string $typeClassName, string $typeName, mixed ...$params): mixed
+    {
+        if ($this->has($typeName)) {
+            return $this->get($typeName);
+        }
+
+        assert((new ReflectionClass($typeClassName))->implementsInterface(Buildable::class));
+
+        return $this
+            ->set($typeName, new $typeClassName($this, $typeName, $params))
+            ->get($typeName);
     }
 }

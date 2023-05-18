@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace ApiSkeletonsTest\Doctrine\GraphQL\Feature\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Driver;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Connection;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
@@ -18,7 +18,7 @@ class TypeManagerTest extends AbstractTest
         $driver      = new Driver($this->getEntityManager());
         $typeManager = $driver->get(TypeManager::class);
 
-        $objectType = $driver->get(Metadata::class)->get(Artist::class)->getGraphQLType();
+        $objectType = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)();
         $connection = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
         $this->assertEquals($objectType->name . '_Connection', $connection->name);
     }
@@ -28,7 +28,7 @@ class TypeManagerTest extends AbstractTest
         $driver      = new Driver($this->getEntityManager());
         $typeManager = $driver->get(TypeManager::class);
 
-        $objectType  = $driver->get(Metadata::class)->get(Artist::class)->getGraphQLType();
+        $objectType  = $driver->get(TypeManager::class)->build(Entity::class, Artist::class)();
         $connection1 = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
         $connection2 = $typeManager->build(Connection::class, $objectType->name . '_Connection', $objectType);
 

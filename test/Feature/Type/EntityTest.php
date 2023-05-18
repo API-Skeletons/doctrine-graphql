@@ -9,8 +9,8 @@ use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy\ToInteger;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
 
@@ -20,42 +20,42 @@ class EntityTest extends AbstractTest
     {
         $driver = new Driver($this->getEntityManager(), new Config(['group' => 'entityTest']));
 
-        $entity = $driver->get(Metadata::class)->get(Recording::class);
+        $entity = $driver->get(TypeManager::class)->build(Entity::class, Recording::class);
 
         $this->assertInstanceOf(Entity::class, $entity);
         $this->assertEquals(Recording::class, $entity->getEntityClass());
         $this->assertEquals('Entity Test Recordings', $entity->getDescription());
 
-        $metadataConfig = $entity->getMetadataConfig();
+        $metadata = $entity->getMetadata();
 
-        $this->assertEquals(1, $metadataConfig['byValue']);
-        $this->assertEquals(null, $metadataConfig['namingStrategy']);
+        $this->assertEquals(1, $metadata['byValue']);
+        $this->assertEquals(null, $metadata['namingStrategy']);
 
         $this->assertEquals(
             ToInteger::class,
-            $metadataConfig['fields']['id']['strategy'],
+            $metadata['fields']['id']['strategy'],
         );
         $this->assertEquals(
             FieldDefault::class,
-            $metadataConfig['fields']['source']['strategy'],
+            $metadata['fields']['source']['strategy'],
         );
         $this->assertEquals(
             AssociationDefault::class,
-            $metadataConfig['fields']['performance']['strategy'],
+            $metadata['fields']['performance']['strategy'],
         );
         $this->assertEquals(
             AssociationDefault::class,
-            $metadataConfig['fields']['users']['strategy'],
+            $metadata['fields']['users']['strategy'],
         );
 
-        $this->assertEquals([], $metadataConfig['filters']);
+        $this->assertEquals([], $metadata['filters']);
 
-        $this->assertEquals('Entity Test Recordings', $metadataConfig['description']);
-        $this->assertEquals('Entity Test ID', $metadataConfig['fields']['id']['description']);
-        $this->assertEquals('Entity Test Source', $metadataConfig['fields']['source']['description']);
-        $this->assertEquals('Entity Test Performance', $metadataConfig['fields']['performance']['description']);
-        $this->assertEquals('Entity Test Users', $metadataConfig['fields']['users']['description']);
+        $this->assertEquals('Entity Test Recordings', $metadata['description']);
+        $this->assertEquals('Entity Test ID', $metadata['fields']['id']['description']);
+        $this->assertEquals('Entity Test Source', $metadata['fields']['source']['description']);
+        $this->assertEquals('Entity Test Performance', $metadata['fields']['performance']['description']);
+        $this->assertEquals('Entity Test Users', $metadata['fields']['users']['description']);
 
-        $this->assertEquals('entitytestrecording_entityTest', $metadataConfig['typeName']);
+        $this->assertEquals('entitytestrecording_entityTest', $metadata['typeName']);
     }
 }

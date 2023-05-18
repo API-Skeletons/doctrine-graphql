@@ -5,16 +5,11 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
-use GraphQL\Error\Error;
 use GraphQL\Type\Definition\Type;
-use ReflectionClass;
-use ReflectionException;
-
-use function assert;
 
 class TypeManager extends AbstractContainer
 {
-    public function __construct()
+    public function __construct(protected AbstractContainer $container)
     {
         $this
             ->set('tinyint', static fn () => Type::int())
@@ -43,28 +38,8 @@ class TypeManager extends AbstractContainer
             ->set('pagination', static fn () => new Pagination());
     }
 
-    /** Use Type as return type */
-    public function get(string $id): mixed
+    public function getContainer(): AbstractContainer
     {
-        return parent::get($id);
-    }
-
-    /**
-     * @param mixed[] $params
-     *
-     * @throws Error
-     * @throws ReflectionException
-     */
-    public function build(string $typeClassName, string $typeName, mixed ...$params): Type
-    {
-        if ($this->has($typeName)) {
-            return $this->get($typeName);
-        }
-
-        assert((new ReflectionClass($typeClassName))->implementsInterface(Buildable::class));
-
-        return $this
-            ->set($typeName, new $typeClassName($this, $typeName, $params))
-            ->get($typeName);
+        return $this->container;
     }
 }

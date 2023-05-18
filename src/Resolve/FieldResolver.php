@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
+use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
+use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
@@ -26,7 +27,7 @@ class FieldResolver
      */
     private array $extractValues = [];
 
-    public function __construct(protected Config $config, protected Metadata $metadata)
+    public function __construct(protected Config $config, protected TypeManager $typeManager)
     {
     }
 
@@ -50,8 +51,9 @@ class FieldResolver
 
             $this->extractValues = [];
 
-            $this->extractValues[$splObjectHash] = $this->metadata
-                ->get($entityClass)->getHydrator()->extract($source);
+            $this->extractValues[$splObjectHash] = $this->typeManager
+                ->build(Entity::class, $entityClass)
+                    ->getHydrator()->extract($source);
 
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
@@ -61,8 +63,9 @@ class FieldResolver
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        $this->extractValues[$splObjectHash] = $this->metadata
-            ->get($entityClass)->getHydrator()->extract($source);
+        $this->extractValues[$splObjectHash] = $this->typeManager
+            ->build(Entity::class, $entityClass)
+            ->getHydrator()->extract($source);
 
         return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
     }

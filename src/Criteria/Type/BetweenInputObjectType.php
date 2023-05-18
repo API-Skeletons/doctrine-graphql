@@ -34,7 +34,7 @@ class BetweenInputObjectType extends InputObjectType
                 . FiltersDef::BETWEEN
                 . '_fields',
             'description' => 'Between `from` and `to`',
-            'fields' => static fn () => $fields,
+            'fields'      => static fn () => $fields,
         ]);
     }
 }

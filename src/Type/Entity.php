@@ -4,27 +4,31 @@ declare(strict_types=1);
 
 namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
+use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
+use ApiSkeletons\Doctrine\GraphQL\Buildable;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ObjectType;
 use Laminas\Hydrator\HydratorInterface;
 use League\Event\EventDispatcher;
-use Psr\Container\ContainerInterface;
 
 use function array_keys;
+use function assert;
 use function in_array;
 
-class Entity
+class Entity implements Buildable
 {
-//    protected Driver $driver;
+    /** @var mixed[]  */
+    protected array $metadata;
+
     protected CriteriaFactory $criteriaFactory;
 
     protected EntityManager $entityManager;
@@ -35,23 +39,36 @@ class Entity
 
     protected HydratorFactory $hydratorFactory;
 
-    protected Metadata $metadata;
-
     protected ResolveCollectionFactory $collectionFactory;
 
     protected TypeManager $typeManager;
 
-    /** @param mixed[] $metadataConfig */
-    public function __construct(ContainerInterface $container, protected array $metadataConfig)
+    /** @param mixed[] $params */
+    public function __construct(AbstractContainer $container, string $typeName, array $params)
     {
+        assert($container instanceof TypeManager);
+        $container = $container->getContainer();
+
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
         $this->entityManager     = $container->get(EntityManager::class);
         $this->eventDispatcher   = $container->get(EventDispatcher::class);
         $this->fieldResolver     = $container->get(FieldResolver::class);
         $this->hydratorFactory   = $container->get(HydratorFactory::class);
-        $this->metadata          = $container->get(Metadata::class);
         $this->typeManager       = $container->get(TypeManager::class);
+
+        if (! isset($container->get('metadata')[$typeName])) {
+            throw new Error(
+                'Entity ' . $typeName . ' is not mapped in the metadata',
+            );
+        }
+
+        $this->metadata = $container->get('metadata')[$typeName];
+    }
+
+    public function __invoke(): ObjectType
+    {
+        return $this->getGraphQLType();
     }
 
     public function getHydrator(): HydratorInterface
@@ -61,23 +78,23 @@ class Entity
 
     public function getTypeName(): string
     {
-        return $this->metadataConfig['typeName'];
+        return $this->metadata['typeName'];
     }
 
     public function getDescription(): string|null
     {
-        return $this->metadataConfig['description'];
+        return $this->metadata['description'];
     }
 
     /** @return mixed[] */
-    public function getMetadataConfig(): array
+    public function getMetadata(): array
     {
-        return $this->metadataConfig;
+        return $this->metadata;
     }
 
     public function getEntityClass(): string
     {
-        return $this->metadataConfig['entityClass'];
+        return $this->metadata['entityClass'];
     }
 
     /**
@@ -85,7 +102,7 @@ class Entity
      *
      * @throws MappingException
      */
-    public function getGraphQLType(): ObjectType
+    protected function getGraphQLType(): ObjectType
     {
         if ($this->typeManager->has($this->getTypeName())) {
             return $this->typeManager->get($this->getTypeName());
@@ -123,14 +140,14 @@ class Entity
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
         foreach ($classMetadata->getFieldNames() as $fieldName) {
-            if (! in_array($fieldName, array_keys($this->metadataConfig['fields']))) {
+            if (! in_array($fieldName, array_keys($this->metadata['fields']))) {
                 continue;
             }
 
             $fields[$fieldName] = [
                 'type' => $this->typeManager
-                    ->get($this->getMetadataConfig()['fields'][$fieldName]['type']),
-                'description' => $this->metadataConfig['fields'][$fieldName]['description'],
+                    ->get($this->getmetadata()['fields'][$fieldName]['type']),
+                'description' => $this->metadata['fields'][$fieldName]['description'],
             ];
         }
     }
@@ -141,7 +158,7 @@ class Entity
         $classMetadata = $this->entityManager->getClassMetadata($this->getEntityClass());
 
         foreach ($classMetadata->getAssociationNames() as $associationName) {
-            if (! in_array($associationName, array_keys($this->metadataConfig['fields']))) {
+            if (! in_array($associationName, array_keys($this->metadata['fields']))) {
                 continue;
             }
 
@@ -153,7 +170,7 @@ class Entity
                 case ClassMetadataInfo::TO_ONE:
                     $targetEntity             = $associationMetadata['targetEntity'];
                     $fields[$associationName] = function () use ($targetEntity) {
-                        $entity = $this->metadata->get($targetEntity);
+                        $entity = $this->typeManager->build(self::class, $targetEntity);
 
                         return [
                             'type' => $entity->getGraphQLType(),
@@ -166,7 +183,7 @@ class Entity
                 case ClassMetadataInfo::TO_MANY:
                     $targetEntity             = $associationMetadata['targetEntity'];
                     $fields[$associationName] = function () use ($targetEntity, $associationName) {
-                        $entity    = $this->metadata->get($targetEntity);
+                        $entity    = $this->typeManager->build(self::class, $targetEntity);
                         $shortName = $this->getTypeName() . '_' . $associationName;
 
                         return [
@@ -180,11 +197,11 @@ class Entity
                                     $entity,
                                     $this,
                                     $associationName,
-                                    $this->metadataConfig['fields'][$associationName],
+                                    $this->metadata['fields'][$associationName],
                                 ),
                                 'pagination' => $this->typeManager->get('pagination'),
                             ],
-                            'description' => $this->metadataConfig['fields'][$associationName]['description'],
+                            'description' => $this->metadata['fields'][$associationName]['description'],
                             'resolve' => $this->collectionFactory->get($entity),
                         ];
                     };

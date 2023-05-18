@@ -7,7 +7,6 @@ namespace ApiSkeletons\Doctrine\GraphQL\Resolve;
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
-use ApiSkeletons\Doctrine\GraphQL\Metadata\Metadata;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
 use Closure;
@@ -26,13 +25,14 @@ use function count;
 
 class ResolveCollectionFactory
 {
+    /** @param mixed[] $metadata */
     public function __construct(
         protected EntityManager $entityManager,
         protected Config $config,
         protected FieldResolver $fieldResolver,
         protected TypeManager $typeManager,
         protected EventDispatcher $eventDispatcher,
-        protected Metadata $metadata,
+        protected array $metadata,
     ) {
     }
 
@@ -68,14 +68,13 @@ class ResolveCollectionFactory
                         ->getAssociationTargetClass($info->fieldName),
                 );
 
-            $metadataConfig = $this->metadata->getMetadataConfig();
-            $entityClass    = ClassUtils::getRealClass($source::class);
+            $entityClass = ClassUtils::getRealClass($source::class);
 
             return $this->buildPagination(
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
-                $metadataConfig[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
+                $this->metadata[$entityClass]['fields'][$info->fieldName]['filterCriteriaEventName'],
                 $source,
                 $args,
                 $context,
