@@ -17,7 +17,7 @@ This library provides a framework agnostic GraphQL driver for Doctrine ORM for u
 
 [Detailed documentation](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/) is available.
 
-Example application at `https://graphql.lcdb.org/graphql`; post only.
+For an example application post to `https://graphql.lcdb.org/`
 
 
 Library Highlights
