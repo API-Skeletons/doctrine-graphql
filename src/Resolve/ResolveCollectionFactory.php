@@ -63,15 +63,15 @@ class ResolveCollectionFactory
 
             $entityClass = ClassUtils::getRealClass($source::class);
 
+            $targetClassName = (string) $this->entityManager->getMetadataFactory()
+                ->getMetadataFor($entityClass)
+                ->getAssociationTargetClass($info->fieldName);
+
             $collectionMetadata = $this->entityManager->getMetadataFactory()
-                ->getMetadataFor(
-                    (string) $this->entityManager->getMetadataFactory()
-                        ->getMetadataFor($entityClass)
-                        ->getAssociationTargetClass($info->fieldName),
-                );
+                ->getMetadataFor($targetClassName);
 
             return $this->buildPagination(
-                $entityClass,
+                $targetClassName,
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
@@ -131,7 +131,7 @@ class ResolveCollectionFactory
      * @return mixed[]
      */
     private function buildPagination(
-        string $entityClass,
+        string $targetClassName,
         array $pagination,
         PersistentCollection $collection,
         Criteria $criteria,
@@ -163,7 +163,7 @@ class ResolveCollectionFactory
 
         $itemCount = count($collection->matching($criteria));
 
-        $offsetAndLimit = $this->calculateOffsetAndLimit($entityClass, $paginationFields, $itemCount);
+        $offsetAndLimit = $this->calculateOffsetAndLimit($targetClassName, $paginationFields, $itemCount);
         if ($offsetAndLimit['offset']) {
             $criteria->setFirstResult($offsetAndLimit['offset']);
         }
@@ -246,11 +246,11 @@ class ResolveCollectionFactory
      *
      * @return array<string, int>
      */
-    protected function calculateOffsetAndLimit(string $entityClass, array $paginationFields, int $itemCount): array
+    protected function calculateOffsetAndLimit(string $targetClassName, array $paginationFields, int $itemCount): array
     {
         $offset = 0;
 
-        $limit = $this->metadata[$entityClass]['limit'];
+        $limit = $this->metadata[$targetClassName]['limit'];
 
         if (! $limit) {
             $limit  = $this->config->getLimit();
