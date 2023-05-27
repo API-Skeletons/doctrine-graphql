@@ -18,8 +18,9 @@ rebuilding it with each request.
 
   if (! $metadata) {
       $driver = new Driver($entityManager);
+
       $metadata = $driver->get('metadata');
-      $cache->set('GraphQLMetadata', $metadata);
+      $cache->set('GraphQLMetadata', $metadataConfig->getArrayCopy());
   } else {
       // The second parameter is the Config object
       $driver = new Driver($entityManager, null, $metadata);
