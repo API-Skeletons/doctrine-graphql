@@ -16,6 +16,7 @@ use League\Event\EventDispatcher;
 use ReflectionClass;
 
 use function assert;
+use function count;
 
 class MetadataFactory extends AbstractMetadataFactory
 {

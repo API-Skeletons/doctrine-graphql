@@ -233,7 +233,7 @@ class ResolveEntityFactory
         $limit = $this->metadata[$entity->getEntityClass()]['limit'];
 
         if (! $limit) {
-            $limit  = $this->config->getLimit();
+            $limit = $this->config->getLimit();
         }
 
         $adjustedLimit = $paginationFields['first'] ?: $paginationFields['last'] ?: $limit;

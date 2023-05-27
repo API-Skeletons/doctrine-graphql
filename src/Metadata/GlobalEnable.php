@@ -6,32 +6,26 @@ namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Event\BuildMetadata;
-use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
 use ArrayObject;
 use Doctrine\ORM\EntityManager;
-
 use League\Event\EventDispatcher;
+
 use function in_array;
 
 final class GlobalEnable extends AbstractMetadataFactory
 {
-    /** @var mixed[] */
     private ArrayObject $metadata;
 
     public function __construct(
         private EntityManager $entityManager,
         protected Config $config,
-        protected EventDispatcher $eventDispatcher
+        protected EventDispatcher $eventDispatcher,
     ) {
         $this->metadata = new ArrayObject();
     }
 
-    /**
-     * @param string[] $entityClasses
-     *
-     * @return array<int, mixed>
-     */
+    /** @param string[] $entityClasses */
     public function __invoke(array $entityClasses): ArrayObject
     {
         foreach ($entityClasses as $entityClass) {

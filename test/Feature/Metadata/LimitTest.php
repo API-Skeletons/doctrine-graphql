@@ -13,13 +13,13 @@ use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 
+use function count;
+
 class LimitTest extends AbstractTest
 {
     public function testEntityLimit(): void
     {
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'group' => 'LimitTest',
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['group' => 'LimitTest']));
 
         $schema = new Schema([
             'query' => new ObjectType([

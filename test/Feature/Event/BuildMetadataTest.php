@@ -33,13 +33,12 @@ class BuildMetadataTest extends AbstractTest
                 $test->assertEquals(0, $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit']);
 
                 $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit'] = 100;
-
             },
         );
 
         $metadata = $driver->get('metadata');
 
-        $this->assertInstanceOf(\ArrayObject::class, $metadata);
+        $this->assertInstanceOf(ArrayObject::class, $metadata);
         $test->assertEquals(100, $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit']);
     }
 
@@ -47,9 +46,7 @@ class BuildMetadataTest extends AbstractTest
     {
         $test = $this;
 
-        $driver = new Driver($this->getEntityManager(), new Config([
-            'globalEnable' => true,
-        ]));
+        $driver = new Driver($this->getEntityManager(), new Config(['globalEnable' => true]));
 
         $driver->get(EventDispatcher::class)->subscribeTo(
             'metadata.build',
@@ -61,13 +58,12 @@ class BuildMetadataTest extends AbstractTest
                 $test->assertEquals(0, $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit']);
 
                 $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit'] = 100;
-
             },
         );
 
         $metadata = $driver->get('metadata');
 
-        $this->assertInstanceOf(\ArrayObject::class, $metadata);
+        $this->assertInstanceOf(ArrayObject::class, $metadata);
         $test->assertEquals(100, $metadata['ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance']['limit']);
     }
 }
