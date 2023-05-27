@@ -31,6 +31,7 @@ use Doctrine\ORM\Mapping as ORM;
     ],
 )]
 #[GraphQL\Entity(group: 'FilterCriteriaEvent')]
+#[GraphQL\Entity(group: 'LimitTest')]
 #[ORM\Entity]
 class Performance
 {
@@ -59,12 +60,14 @@ class Performance
     private string|null $state = null;
 
     #[GraphQL\Field(description: 'Performance date')]
+    #[GraphQL\Field(group: 'LimitTest')]
     #[ORM\Column(type: 'datetime', nullable: false)]
     private DateTime $performanceDate;
 
     #[GraphQL\Field(description: 'Primary key')]
     #[GraphQL\Field(group: 'ExcludeCriteriaTest')]
     #[GraphQL\Field(group: 'IncludeCriteriaTest')]
+    #[GraphQL\Field(group: 'LimitTest')]
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
     #[ORM\GeneratedValue(strategy: 'AUTO')]

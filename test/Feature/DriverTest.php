@@ -13,6 +13,7 @@ use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Recording;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\User;
+use ArrayObject;
 use GraphQL\Error\Error;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
@@ -34,7 +35,7 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager());
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertIsArray($driver->get('metadata'));
+        $this->assertInstanceOf(ArrayObject::class, $driver->get('metadata'));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Artist::class));
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, Performance::class));
@@ -53,7 +54,7 @@ class DriverTest extends AbstractTest
         $driver = new Driver($this->getEntityManager(), $config, [], $container);
 
         $this->assertInstanceOf(Driver::class, $driver);
-        $this->assertIsArray($driver->get('metadata'));
+        $this->assertInstanceOf(ArrayObject::class, $driver->get('metadata'));
     }
 
     public function testNonDefaultGroup(): void
