@@ -22,7 +22,7 @@ class CachingTest extends AbstractTest
 
         unset($driver);
 
-        $driver = new Driver($this->getEntityManager(), null, $metadata);
+        $driver = new Driver($this->getEntityManager(), null, $metadata->getArrayCopy());
         $this->assertInstanceOf(Entity::class, $driver->get(TypeManager::class)->build(Entity::class, User::class));
     }
 

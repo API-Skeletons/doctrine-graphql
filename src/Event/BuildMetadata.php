@@ -7,11 +7,11 @@ namespace ApiSkeletons\Doctrine\GraphQL\Event;
 use ArrayObject;
 use League\Event\HasEventName;
 
-class EntityDefinition implements
+class BuildMetadata implements
     HasEventName
 {
     public function __construct(
-        protected ArrayObject $definition,
+        protected ArrayObject $metadata,
         protected string $eventName,
     ) {
     }
@@ -21,8 +21,8 @@ class EntityDefinition implements
         return $this->eventName;
     }
 
-    public function getDefinition(): ArrayObject
+    public function getMetadata(): ArrayObject
     {
-        return $this->definition;
+        return $this->metadata;
     }
 }

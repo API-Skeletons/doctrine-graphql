@@ -6,29 +6,31 @@ namespace ApiSkeletons\Doctrine\GraphQL\Metadata;
 
 use ApiSkeletons\Doctrine\GraphQL\Attribute;
 use ApiSkeletons\Doctrine\GraphQL\Config;
+use ApiSkeletons\Doctrine\GraphQL\Event\BuildMetadata;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\Strategy;
+use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use League\Event\EventDispatcher;
 use ReflectionClass;
 
 use function assert;
 
 class MetadataFactory extends AbstractMetadataFactory
 {
-    /** @param mixed[] $metadata */
     public function __construct(
-        protected array $metadata,
+        protected ArrayObject $metadata,
         protected EntityManager $entityManager,
         protected Config $config,
         protected GlobalEnable $globalEnable,
+        protected EventDispatcher $eventDispatcher,
     ) {
     }
 
-    /** @return mixed[]|null */
-    public function __invoke(): array|null
+    public function __invoke(): ArrayObject
     {
-        if ($this->metadata) {
+        if (count($this->metadata)) {
             return $this->metadata;
         }
 
@@ -52,6 +54,10 @@ class MetadataFactory extends AbstractMetadataFactory
             $this->buildMetadataForFields($entityClassMetadata, $reflectionClass);
             $this->buildMetadataForAssociations($entityClassMetadata, $reflectionClass);
         }
+
+        $this->eventDispatcher->dispatch(
+            new BuildMetadata($this->metadata, 'metadata.build'),
+        );
 
         return $this->metadata;
     }
@@ -86,6 +92,7 @@ class MetadataFactory extends AbstractMetadataFactory
             $this->metadata[$reflectionClass->getName()] = [
                 'entityClass' => $reflectionClass->getName(),
                 'byValue' => $this->config->getGlobalByValue() ?? $instance->getByValue(),
+                'limit' => $instance->getLimit(),
                 'namingStrategy' => $instance->getNamingStrategy(),
                 'fields' => [],
                 'filters' => $instance->getFilters(),

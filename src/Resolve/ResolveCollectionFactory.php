@@ -9,6 +9,7 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterCriteria;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\GraphQL\Type\TypeManager;
+use ArrayObject;
 use Closure;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -25,14 +26,13 @@ use function count;
 
 class ResolveCollectionFactory
 {
-    /** @param mixed[] $metadata */
     public function __construct(
         protected EntityManager $entityManager,
         protected Config $config,
         protected FieldResolver $fieldResolver,
         protected TypeManager $typeManager,
         protected EventDispatcher $eventDispatcher,
-        protected array $metadata,
+        protected ArrayObject $metadata,
     ) {
     }
 
@@ -61,16 +61,17 @@ class ResolveCollectionFactory
             $fieldResolver = $this->fieldResolver;
             $collection    = $fieldResolver($source, $args, $context, $info);
 
+            $entityClass = ClassUtils::getRealClass($source::class);
+
             $collectionMetadata = $this->entityManager->getMetadataFactory()
                 ->getMetadataFor(
                     (string) $this->entityManager->getMetadataFactory()
-                        ->getMetadataFor(ClassUtils::getRealClass($source::class))
+                        ->getMetadataFor($entityClass)
                         ->getAssociationTargetClass($info->fieldName),
                 );
 
-            $entityClass = ClassUtils::getRealClass($source::class);
-
             return $this->buildPagination(
+                $entityClass,
                 $args['pagination'] ?? [],
                 $collection,
                 $this->buildCriteria($args['filter'] ?? [], $collectionMetadata),
@@ -130,6 +131,7 @@ class ResolveCollectionFactory
      * @return mixed[]
      */
     private function buildPagination(
+        string $entityClass,
         array $pagination,
         PersistentCollection $collection,
         Criteria $criteria,
@@ -161,7 +163,7 @@ class ResolveCollectionFactory
 
         $itemCount = count($collection->matching($criteria));
 
-        $offsetAndLimit = $this->calculateOffsetAndLimit($paginationFields, $itemCount);
+        $offsetAndLimit = $this->calculateOffsetAndLimit($entityClass, $paginationFields, $itemCount);
         if ($offsetAndLimit['offset']) {
             $criteria->setFirstResult($offsetAndLimit['offset']);
         }
@@ -244,11 +246,16 @@ class ResolveCollectionFactory
      *
      * @return array<string, int>
      */
-    protected function calculateOffsetAndLimit(array $paginationFields, int $itemCount): array
+    protected function calculateOffsetAndLimit(string $entityClass, array $paginationFields, int $itemCount): array
     {
         $offset = 0;
 
-        $limit         = $this->config->getLimit();
+        $limit = $this->metadata[$entityClass]['limit'];
+
+        if (! $limit) {
+            $limit  = $this->config->getLimit();
+        }
+
         $adjustedLimit = $paginationFields['first'] ?: $paginationFields['last'] ?: $limit;
 
         if ($adjustedLimit < $limit) {
