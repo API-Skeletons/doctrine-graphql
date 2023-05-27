@@ -45,6 +45,8 @@ Optional parameters are:
   ``group``.  Only one ``Entity`` attribute per group is allowed.
 * ``description`` - A description of the ``Entity``.
 * ``typeName`` - A name to reference the type internal to GraphQL.
+* ``limit`` - A hard limit for all queries on this entity.  Use this
+  to prevent abuse of GraphQL.  Defaults to global config ``limit``.
 * ``excludeCriteria`` - An array of filters to exclude from available
   filters for all fields and associations in the entity.  For instance, to
   exclude filters that use a ``like`` database query, set the following::

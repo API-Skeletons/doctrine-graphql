@@ -171,6 +171,42 @@ The ``EntityDefinition`` event has one function:
   needed and the value is set by reference, just like the
   QueryBuilder event above.
 
+Manually change the Metadata
+----------------------------
+
+You may modify the metadata directly when built.  This event must be subscribed
+to immediatly after creating the driver.
+
+This event is named ``'metadata.build'``.
+
+.. code-block:: php
+
+  <?php
+
+  use ApiSkeletons\Doctrine\GraphQL\Driver;
+  use ApiSkeletons\Doctrine\GraphQL\Event\BuildMetadata;
+  use App\ORM\Entity\Performance;
+  use League\Event\EventDispatcher;
+
+  $driver = new Driver($entityManager);
+
+  $driver->get(EventDispatcher::class)->subscribeTo(
+      'metadata.build',
+      static function (BuildMetadata $event): void {
+          $metadata = $event->getMetadata();
+
+          $metadata[Performance::class]['limit'] = 100;
+      },
+  );
+
+The ``BuildMetadata`` event has one function:
+
+* ``getMetadata`` - Will return an ArrayObject with the metadata.
+  Because this is an ArrayObject you may manipulate it as
+  needed and the value is set by reference, just like the
+  QueryBuilder event above.
+
+
 .. role:: raw-html(raw)
    :format: html
 
