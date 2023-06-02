@@ -69,10 +69,18 @@ is used and that is, by default, extract by value.
 
 
 limit
---------- 
+----- 
 
 A hard limit for all queries throughout the entities.  Use this
 to prevent abuse of GraphQL.  Default is 1000.
+
+
+sortFields
+----------
+
+When entity types are created, and after the definition event,
+the fields will be sorted alphabetically when set to true.
+This can aid reading of the documentation created by GraphQL.
 
 
 useHydratorCache
@@ -100,6 +108,7 @@ Creating a ``Driver`` with all config options:
       'globalIgnore' => ['password'],
       'globalByValue' => true,
       'limit' => 500,
+      'sortFields' => true,
       'useHydratorCache' => true,
   ]);
 
