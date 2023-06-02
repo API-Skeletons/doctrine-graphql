@@ -19,6 +19,7 @@ use ArrayObject;
 use League\Event\EventDispatcher;
 
 use function array_keys;
+use function array_values;
 use function sort;
 
 class EntityTest extends AbstractTest
@@ -90,8 +91,11 @@ class EntityTest extends AbstractTest
         $fields       = array_keys($graphQLType->getFields());
         $fieldsSorted = $fields;
         sort($fieldsSorted);
+        $unsortedFieldsSorted = $unsortedFields['fields'];
+        sort($unsortedFieldsSorted);
 
-        $this->assertNotEquals(array_keys($unsortedFields['fields']), $fields);
+        $this->assertNotEquals(array_values($unsortedFields['fields']), $fields);
         $this->assertEquals($fields, $fieldsSorted);
+        $this->assertEquals($fields, $unsortedFieldsSorted);
     }
 }
