@@ -171,6 +171,9 @@ The ``EntityDefinition`` event has one function:
   needed and the value is set by reference, just like the
   QueryBuilder event above.
 
+A clever use of this event is to add a new field for related data and specify
+a custom FilterQueryBuilder event in the ``$driver->resolve()`` function.
+
 Manually change the Metadata
 ----------------------------
 
