@@ -61,6 +61,12 @@ class Config
      */
     protected string|null $entityPrefix = null;
 
+    /**
+     * @var bool|null When set to true entity fields will be
+     *                sorted alphabetically
+     */
+    protected bool|null $sortFields = null;
+
     /** @param mixed[] $config */
     public function __construct(array $config = [])
     {
@@ -170,5 +176,17 @@ class Config
     public function getEntityPrefix(): string|null
     {
         return $this->entityPrefix;
+    }
+
+    public function setSortFields(bool|null $sortFields): self
+    {
+        $this->sortFields = $sortFields;
+
+        return $this;
+    }
+
+    public function getSortFields(): bool|null
+    {
+        return $this->sortFields;
     }
 }

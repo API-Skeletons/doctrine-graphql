@@ -6,12 +6,14 @@ namespace ApiSkeletons\Doctrine\GraphQL\Type;
 
 use ApiSkeletons\Doctrine\GraphQL\AbstractContainer;
 use ApiSkeletons\Doctrine\GraphQL\Buildable;
+use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Criteria\CriteriaFactory;
 use ApiSkeletons\Doctrine\GraphQL\Event\EntityDefinition;
 use ApiSkeletons\Doctrine\GraphQL\Hydrator\HydratorFactory;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\FieldResolver;
 use ApiSkeletons\Doctrine\GraphQL\Resolve\ResolveCollectionFactory;
 use ArrayObject;
+use Closure;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
@@ -23,11 +25,16 @@ use League\Event\EventDispatcher;
 use function array_keys;
 use function assert;
 use function in_array;
+use function ksort;
+
+use const SORT_REGULAR;
 
 class Entity implements Buildable
 {
     /** @var mixed[]  */
     protected array $metadata;
+
+    protected Config $config;
 
     protected CriteriaFactory $criteriaFactory;
 
@@ -50,6 +57,7 @@ class Entity implements Buildable
         $container = $container->getContainer();
 
         $this->collectionFactory = $container->get(ResolveCollectionFactory::class);
+        $this->config            = $container->get(Config::class);
         $this->criteriaFactory   = $container->get(CriteriaFactory::class);
         $this->entityManager     = $container->get(EntityManager::class);
         $this->eventDispatcher   = $container->get(EventDispatcher::class);
@@ -126,6 +134,17 @@ class Entity implements Buildable
         $this->eventDispatcher->dispatch(
             new EntityDefinition($arrayObject, $this->getEntityClass() . '.definition'),
         );
+
+        /**
+         * If sortFields then resolve the fiels and sort them
+         */
+        if ($this->config->getSortFields()) {
+            if ($arrayObject['fields'] instanceof Closure) {
+                $arrayObject['fields'] = $arrayObject['fields']();
+            }
+
+            ksort($arrayObject['fields'], SORT_REGULAR);
+        }
 
         /** @psalm-suppress InvalidArgument */
         $objectType = new ObjectType($arrayObject->getArrayCopy());
