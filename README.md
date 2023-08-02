@@ -49,72 +49,10 @@ Entity Relationship Diagram
 ![Entity Relationship Diagram](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/test/doctrine-graphql.png)
 
 
-Enable GraphQL on an entire Entity Manager (quickest start)
-----------------------------------------------------------
-
-```php
-use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
-use GraphQL\GraphQL;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Schema;
-
-$driver = new Driver($entityManager, new Config([
-    'globalEnable' => true,
-]);
-
-$schema = new Schema([
-    'query' => new ObjectType([
-        'name' => 'query',
-        'fields' => [
-            'artists' => [
-                'type' => $driver->connection($driver->type(Artist::class)),
-                'args' => [
-                    'filter' => $driver->filter(Artist::class),
-                    'pagination' => $driver->pagination(),
-                ],
-                'resolve' => $driver->resolve(Artist::class),
-            ],
-        ],
-    ]),
-]);
-
-$query = '{ 
-    artists { 
-        edges { 
-            node { 
-                id 
-                name 
-                performances { 
-                    edges { 
-                        node { 
-                            venue 
-                        } 
-                    } 
-                } 
-            } 
-        } 
-    }
-}';
-
-$result = GraphQL::executeQuery(
-    schema: $schema,
-    source: $query,
-    variableValues: null,
-    operationName: null
-);
-$output = $result->toArray();
-
-```
-
-This quickest start example uses a feature of this library that turns an entire Doctrine schema
-into GraphQL without any configuration of the entities by enabling [globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable), intended only for development, in the driver configuration.
-
-
 Quick Start
 -----------
 
-For finer control over your GraphQL, add attributes to your Doctrine entities
+Add attributes to your Doctrine entities
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
