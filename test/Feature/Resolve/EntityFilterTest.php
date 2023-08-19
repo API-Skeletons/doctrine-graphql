@@ -18,7 +18,7 @@ class EntityFilterTest extends AbstractTest
     /** @var Schema[] */
     private array $schemas = [];
 
-    /*** @return Schema[] */
+    /** @return Schema[] */
     public function schemaProvider(): array
     {
         parent::setUp();
