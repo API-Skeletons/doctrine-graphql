@@ -12,7 +12,7 @@ entityPrefix
 ----------------
 
 This is a common namespace prefix for all entities in a group.  When specified,
-the ``entityPrefix`` will be stripped from type Type name.  So
+the ``entityPrefix`` such as, 'App\\ORM\\Entity\\', will be stripped from driver name.  So
 ``App_ORM_Entity_Artist_groupName``
 becomes
 ``Artist_groupName``
