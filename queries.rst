@@ -5,10 +5,7 @@ This section is intended for the developer who needs to write queries against
 an implementation of this repository.
 
 Queries are not special to this repository.  The format of queries are exactly
-what GraphQL is spec'd out to be.  For each implementation of GraphQL the
-filtering of data is not defined.  In order to build the filters for this
-an underscore approach is used.  `fieldName_filter` is the format for all
-filters.
+what GraphQL is spec'd out to be.
 
 Pagination of collections supports
 `GraphQL's Complete Connection Model <https://graphql.org/learn/pagination/#complete-connection-model>`_.
