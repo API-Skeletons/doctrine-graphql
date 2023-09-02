@@ -8,7 +8,7 @@ You will need a Doctrine object manager with entities configured with
 appropriate associations throughout.  Support for ad-hoc joins between
 entities is not supported but you can use the EntityDefinition event
 in combination with the FilterQueryBuilder event to add a new field to
-an entity with such ad-hoc support.  Your Doctrine metadata must contain all the
+a Type with such ad-hoc support.  Your Doctrine metadata must contain all the
 associations.  This requriement relates to the very basics of working in
 Doctrine.
 
