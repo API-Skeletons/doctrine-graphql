@@ -192,6 +192,50 @@ $result = GraphQL::executeQuery(
 $output = $result->toArray();
 ```
 
+Filtering
+---------
+
+For every attributed field and every attributed association, filters are available in your
+GraphQL query.
+
+Example
+
+```gql
+{
+  artists ( filter: { name: { contains: "dead" } } ) {
+    edges {
+      node {
+        id
+        name
+        performances ( filter: { venue: { eq: "The Fillmore" } } ) {
+          edges { 
+            node {
+              venue
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Each field has their own set of filters.  Most fields have the following:
+
+* eq - Equals.
+* neq - Not equals.
+* lt - Less than.
+* lte - Less than or equal to.
+* gt - Greater than.
+* gte - Greater than or equal to.
+* isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
+* between - Between.  Identical to using gte & lte on the same field.  Give values as `low, high`.
+* in - Exists within a list of comma-delimited values.
+* notin - Does not exist within a list of comma-delimited values.
+* startwith - A like query with a wildcard on the right side of the value.
+* endswith - A like query with a wildcard on the left side of the value.
+* contains - A like query.
+
 
 Events
 ------
@@ -308,50 +352,6 @@ $driver->get(EventDispatcher::class)->subscribeTo(
     }
 );
 ```
-
-Filtering
----------
-
-For every attributed field and every attributed association, filters are available in your
-GraphQL query.
-
-Example
-
-```gql
-{
-  artists ( filter: { name: { contains: "dead" } } ) {
-    edges {
-      node {
-        id
-        name
-        performances ( filter: { venue: { eq: "The Fillmore" } } ) {
-          edges { 
-            node {
-              venue
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Each field has their on set of filters.  Most fields have the following:
-
-* eq - Equals
-* neq - Not equals
-* lt - Less than
-* lte - Less than or equal to
-* gt - Greater than
-* gte - Greater than or equal to
-* isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
-* between - Between.  Identical to using gte & lte on the same field.  Give values as `low,high`
-* in - Exists within a list of comma-delimited values.
-* notin - Does not exist within a list of comma-delimited values.
-* startwith - A like query with a wildcard on the right side of the value.
-* endswith - A like query with a wildcard on the left side of the value.
-* contains - A like query.
 
 
 Further Reading
