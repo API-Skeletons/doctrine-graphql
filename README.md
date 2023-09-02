@@ -49,72 +49,10 @@ Entity Relationship Diagram
 ![Entity Relationship Diagram](https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/test/doctrine-graphql.png)
 
 
-Enable GraphQL on an entire Entity Manager (quickest start)
-----------------------------------------------------------
-
-```php
-use ApiSkeletons\Doctrine\GraphQL\Config;
-use ApiSkeletons\Doctrine\GraphQL\Driver;
-use GraphQL\GraphQL;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Schema;
-
-$driver = new Driver($entityManager, new Config([
-    'globalEnable' => true,
-]);
-
-$schema = new Schema([
-    'query' => new ObjectType([
-        'name' => 'query',
-        'fields' => [
-            'artists' => [
-                'type' => $driver->connection($driver->type(Artist::class)),
-                'args' => [
-                    'filter' => $driver->filter(Artist::class),
-                    'pagination' => $driver->pagination(),
-                ],
-                'resolve' => $driver->resolve(Artist::class),
-            ],
-        ],
-    ]),
-]);
-
-$query = '{ 
-    artists { 
-        edges { 
-            node { 
-                id 
-                name 
-                performances { 
-                    edges { 
-                        node { 
-                            venue 
-                        } 
-                    } 
-                } 
-            } 
-        } 
-    }
-}';
-
-$result = GraphQL::executeQuery(
-    schema: $schema,
-    source: $query,
-    variableValues: null,
-    operationName: null
-);
-$output = $result->toArray();
-
-```
-
-This quickest start example uses a feature of this library that turns an entire Doctrine schema
-into GraphQL without any configuration of the entities by enabling [globalEnable](https://apiskeletons-doctrine-graphql.readthedocs.io/en/latest/config.html#globalenable), intended only for development, in the driver configuration.
-
-
 Quick Start
 -----------
 
-For finer control over your GraphQL, add attributes to your Doctrine entities
+Add attributes to your Doctrine entities
 
 ```php
 use ApiSkeletons\Doctrine\GraphQL\Attribute as GraphQL;
@@ -254,6 +192,50 @@ $result = GraphQL::executeQuery(
 $output = $result->toArray();
 ```
 
+Filtering
+---------
+
+For every attributed field and every attributed association, filters are available in your
+GraphQL query.
+
+Example
+
+```gql
+{
+  artists ( filter: { name: { contains: "dead" } } ) {
+    edges {
+      node {
+        id
+        name
+        performances ( filter: { venue: { eq: "The Fillmore" } } ) {
+          edges { 
+            node {
+              venue
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Each field has their own set of filters.  Most fields have the following:
+
+* eq - Equals.
+* neq - Not equals.
+* lt - Less than.
+* lte - Less than or equal to.
+* gt - Greater than.
+* gte - Greater than or equal to.
+* isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
+* between - Between.  Identical to using gte & lte on the same field.  Give values as `low, high`.
+* in - Exists within a list of comma-delimited values.
+* notin - Does not exist within a list of comma-delimited values.
+* startwith - A like query with a wildcard on the right side of the value.
+* endswith - A like query with a wildcard on the left side of the value.
+* contains - A like query.
+
 
 Events
 ------
@@ -370,50 +352,6 @@ $driver->get(EventDispatcher::class)->subscribeTo(
     }
 );
 ```
-
-Filtering
----------
-
-For every attributed field and every attributed association, filters are available in your
-GraphQL query.
-
-Example
-
-```gql
-{
-  artists ( filter: { name: { contains: "dead" } } ) {
-    edges {
-      node {
-        id
-        name
-        performances ( filter: { venue: { eq: "The Fillmore" } } ) {
-          edges { 
-            node {
-              venue
-            }
-          }
-        }
-      }
-    }
-  }
-}
-```
-
-Each field has their on set of filters.  Most fields have the following:
-
-* eq - Equals
-* neq - Not equals
-* lt - Less than
-* lte - Less than or equal to
-* gt - Greater than
-* gte - Greater than or equal to
-* isnull - Is null.  If value is true, the field must be null.  If value is false, the field must not be null.
-* between - Between.  Identical to using gte & lte on the same field.  Give values as `low,high`
-* in - Exists within a list of comma-delimited values.
-* notin - Does not exist within a list of comma-delimited values.
-* startwith - A like query with a wildcard on the right side of the value.
-* endswith - A like query with a wildcard on the left side of the value.
-* contains - A like query.
 
 
 Further Reading
