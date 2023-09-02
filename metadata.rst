@@ -10,7 +10,10 @@ The metadata is an array with a key for each enabled entity.
 
 .. code-block:: php
   :linenos:
-    [
+
+  <?php
+
+  [
       'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User' => [
           'entityClass' => 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\User',
           'documentation' => '',
