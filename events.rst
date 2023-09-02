@@ -178,7 +178,7 @@ Manually change the Metadata
 ----------------------------
 
 You may modify the metadata directly when built.  This event must be subscribed
-to immediatly after creating the driver.
+to immediatly after creating the driver. See `Metadata documentation <metadata.html>`_.
 
 This event is named ``'metadata.build'``.
 
