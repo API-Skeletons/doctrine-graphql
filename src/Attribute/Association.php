@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL\Attribute;
 
 use Attribute;
+use RuntimeException;
 
 #[Attribute(Attribute::TARGET_PROPERTY | Attribute::IS_REPEATABLE)]
 class Association
@@ -22,7 +23,16 @@ class Association
         protected array $excludeCriteria = [],
         protected array $includeCriteria = [],
         protected string|null $filterCriteriaEventName = null,
+        protected int|null $limit = null,
     ) {
+        if ($limit && $limit < 0) {
+            throw new RuntimeException('Association limits must be positive integers.');
+        }
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
     }
 
     public function getGroup(): string
