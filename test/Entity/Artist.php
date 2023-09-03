@@ -61,6 +61,7 @@ class Artist
     #[GraphQL\Association(group: 'FilterCriteriaEvent', filterCriteriaEventName: self::class . '.performances.filterCriteria')]
     #[GraphQL\Association(group: 'LimitTest')]
     #[GraphQL\Association(group: 'AttributeLimit', limit: 3)]
+
     #[ORM\OneToMany(targetEntity: 'ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance', mappedBy: 'artist')]
     private Collection $performances;
 

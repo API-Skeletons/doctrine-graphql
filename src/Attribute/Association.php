@@ -25,9 +25,6 @@ class Association
         protected string|null $filterCriteriaEventName = null,
         protected int|null $limit = null,
     ) {
-        if ($limit && $limit < 0) {
-            throw new RuntimeException('Association limits must be positive integers.');
-        }
     }
 
     public function getLimit(): int|null
