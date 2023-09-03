@@ -30,7 +30,7 @@ class Association
         }
     }
 
-    public function getLimit(): int
+    public function getLimit(): int|null
     {
         return $this->limit;
     }
