@@ -8,12 +8,10 @@ use ApiSkeletons\Doctrine\GraphQL\Config;
 use ApiSkeletons\Doctrine\GraphQL\Driver;
 use ApiSkeletonsTest\Doctrine\GraphQL\AbstractTest;
 use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Artist;
-use ApiSkeletonsTest\Doctrine\GraphQL\Entity\Performance;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 
-use function base64_encode;
 use function count;
 
 class AttributeLimitTest extends AbstractTest

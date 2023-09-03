@@ -252,7 +252,7 @@ class ResolveCollectionFactory
     {
         $offset = 0;
 
-        $limit = $this->metadata[$targetClassName]['limit'];
+        $limit            = $this->metadata[$targetClassName]['limit'];
         $associationLimit = $this->metadata[$entityClassName]['fields'][$associationName]['limit'] ?? null;
 
         if ($associationLimit) {
