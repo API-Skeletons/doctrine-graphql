@@ -9,6 +9,7 @@ use ApiSkeletons\Doctrine\GraphQL\Criteria\Filters as FiltersDef;
 use ApiSkeletons\Doctrine\GraphQL\Event\FilterQueryBuilder;
 use ApiSkeletons\Doctrine\GraphQL\Type\Entity;
 use ApiSkeletons\Doctrine\QueryBuilder\Filter\Applicator;
+use ArrayObject;
 use Closure;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -26,6 +27,7 @@ class ResolveEntityFactory
         protected Config $config,
         protected EntityManager $entityManager,
         protected EventDispatcher $eventDispatcher,
+        protected ArrayObject $metadata,
     ) {
     }
 
@@ -40,6 +42,7 @@ class ResolveEntityFactory
                 ->select('entity');
 
             return $this->buildPagination(
+                entity: $entity,
                 queryBuilder: $queryBuilder,
                 aliasMap: $queryBuilderFilter->getEntityAliasMap(),
                 eventName: $eventName,
@@ -100,6 +103,7 @@ class ResolveEntityFactory
      * @return mixed[]
      */
     public function buildPagination(
+        Entity $entity,
         QueryBuilder $queryBuilder,
         array $aliasMap,
         string $eventName,
@@ -128,7 +132,7 @@ class ResolveEntityFactory
             }
         }
 
-        $offsetAndLimit = $this->calculateOffsetAndLimit($paginationFields);
+        $offsetAndLimit = $this->calculateOffsetAndLimit($entity, $paginationFields);
 
         if ($offsetAndLimit['offset']) {
             $queryBuilder->setFirstResult($offsetAndLimit['offset']);
@@ -222,10 +226,15 @@ class ResolveEntityFactory
      *
      * @return array<string, int>
      */
-    protected function calculateOffsetAndLimit(array $paginationFields): array
+    protected function calculateOffsetAndLimit(Entity $entity, array $paginationFields): array
     {
         $offset = 0;
-        $limit  = $this->config->getLimit();
+
+        $limit = $this->metadata[$entity->getEntityClass()]['limit'];
+
+        if (! $limit) {
+            $limit = $this->config->getLimit();
+        }
 
         $adjustedLimit = $paginationFields['first'] ?: $paginationFields['last'] ?: $limit;
         if ($adjustedLimit < $limit) {

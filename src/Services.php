@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ApiSkeletons\Doctrine\GraphQL;
 
 use ApiSkeletons\Doctrine\GraphQL\Metadata\GlobalEnable;
+use ArrayObject;
 use Doctrine\ORM\EntityManager;
 use League\Event\EventDispatcher;
 
@@ -25,6 +26,8 @@ trait Services
         Config|null $config = null,
         array $metadata = [],
     ) {
+        $metadata = new ArrayObject($metadata);
+
         $this
             // Plain classes
             ->set(EntityManager::class, $entityManager)
@@ -54,6 +57,7 @@ trait Services
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
                         $container->get(GlobalEnable::class),
+                        $container->get(EventDispatcher::class),
                     ))();
                 },
             )
@@ -63,6 +67,7 @@ trait Services
                     return new Metadata\GlobalEnable(
                         $container->get(EntityManager::class),
                         $container->get(Config::class),
+                        $container->get(EventDispatcher::class),
                     );
                 },
             )
@@ -95,6 +100,7 @@ trait Services
                         $container->get(Config::class),
                         $container->get(EntityManager::class),
                         $container->get(EventDispatcher::class),
+                        $container->get('metadata'),
                     );
                 },
             )
