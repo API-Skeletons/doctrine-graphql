@@ -43,8 +43,7 @@ class NullifyOwningAssociation extends AbstractCollectionStrategy implements
      *
      * @codeCoverageIgnore
      */
-    public function hydrate(mixed $value, array|null $data): null
+    public function hydrate(mixed $value, array|null $data): void
     {
-        return null;
     }
 }
