@@ -15,7 +15,6 @@ you'll see, there's a lot of customizable power built in too.
 
     :caption: Table of Contents
 
-    about
     install
     justthebasics
     queries
@@ -26,7 +25,9 @@ you'll see, there's a lot of customizable power built in too.
     caching-metadata
     containers
     strategies
+    metadata
     tips
+    about
 
 
 .. role:: raw-html(raw)

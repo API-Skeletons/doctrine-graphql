@@ -6,3 +6,4 @@ show_sphinx = True
 commit = True
 last_updated = True
 pygments_style = 'sphinx'
+html_theme = 'sphinx_rtd_theme'
