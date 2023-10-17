@@ -1,9 +1,13 @@
-<p align="center">
-    <img src="https://raw.githubusercontent.com/API-Skeletons/doctrine-graphql/master/banner.png" width="450px">
-</p>
-
 GraphQL Type Driver for Doctrine ORM
 ====================================
+
+This project has been retired in favor of [API-Skeletons/doctrine-orm-graphql](https://github.com/API-Skeletons/doctrine-orm-graphql)
+===================================
+
+All the original documentation can be found below.
+
+
+
 
 [![Build Status](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/API-Skeletons/doctrine-graphql/actions/workflows/continuous-integration.yml?query=branch%3Amain)
 [![Code Coverage](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main/graphs/badge.svg)](https://codecov.io/gh/API-Skeletons/doctrine-graphql/branch/main)
