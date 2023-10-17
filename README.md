@@ -4,6 +4,8 @@ GraphQL Type Driver for Doctrine ORM
 This project has been retired in favor of [API-Skeletons/doctrine-orm-graphql](https://github.com/API-Skeletons/doctrine-orm-graphql)
 ===================================
 
+See the [upgrade guide](https://doctrine-orm-graphql.apiskeletons.dev/en/latest/upgrade.html) if you're a user of the 8.x branch.
+
 All the original documentation can be found below.
 
 
